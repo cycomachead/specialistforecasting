@@ -27,7 +27,7 @@ public with sharing class HierarchyUtil {
      */
     public static RoleNodeWrapper getSubordinates(Id identifier, String type){
         if (identifier == null) {
-            throw new HierarchyUtilException('Id is null 1');
+            throw new SpecialistForecastException('Id is null 1');
             return null;
         }
         if (type == null) {
@@ -53,23 +53,14 @@ public with sharing class HierarchyUtil {
             //get the current role and user
             if (currentNode.myMappedUser != null) {
                 subOrdinates.put(currentNode.myRoleName, currentNode.myMappedUser.name);
-                /* FIXME: Remove before prod! */
-                System.debug('myROleName:' + currentNode.myRoleName + ' userName = ' + currentNode.myMappedUser.name);
             }
             //end of current node user info
             List<RoleNodeWrapper> childNodes = currentNode.myChildNodes;
             if (childNodes != null) {
-                /* FIXME: Remove before prod! */
-                System.debug('childNodes.size() = ' + childNodes.size());
-                for (RoleNodeWrapper child: childNodes){
-                    if (child.myUsers != null && child.myUsers.size()> 0){
-                        if (child.myMappedUser != null){
-                            /* FIXME: Remove before prod! */
-                            System.debug('child.myRoleName:' + child.myRoleName);
-                            /* FIXME: Remove before prod! */
-                            System.debug('myMappedUsers:' + child.myMappedUser.name);
-                            subOrdinates.put(child.myRoleName, child.myMappedUser.name);
-                        }
+                for (RoleNodeWrapper child : childNodes) {
+                    if (child.myUsers != null && child.myUsers.size() > 0) &&
+                    child.myMappedUser != null) {
+                        subOrdinates.put(child.myRoleName, child.myMappedUser.name);
                     }
                 }
             }
@@ -81,12 +72,12 @@ public with sharing class HierarchyUtil {
     /* // public method to get all the direct subordinates by userId */
     public static RoleNodeWrapper getSubordinatesByUser(Id userId){
         if (userId == null) {
-            throw new HierarchyUtilException('Id is null 2');
+            throw new SpecialistForecastException('Id is null 2');
             return null;
         }
         User myUser;
         try {
-            myUser = [SELECT Id, Name, UserRoleId FROM User WHERE Id =: userId];
+            myUser = [SELECT Id, Name, UserRoleId FROM User WHERE Id = :userId];
         } catch (Exception ex) {
             /* FIXME: Remove before prod! */
             System.debug('Exception in getSubordinatesByUser' + ex.getMessage());
@@ -98,7 +89,7 @@ public with sharing class HierarchyUtil {
     /* // public method to get all the direct subordinates by role */
     public static RoleNodeWrapper getSubordinatesByRole(Id parentRoleId) {
         if (parentRoleId == null) {
-            throw new HierarchyUtilException('Id is null 3');
+            throw new SpecialistForecastException('Id is null 3');
             return null;
         }
         /* FIXME: Remove before prod! */
@@ -148,7 +139,7 @@ public with sharing class HierarchyUtil {
      */
     public static RoleNodeWrapper getMappedAllLevelSubordinatesByUser(Id userId){
         if (userId == null) {
-            throw new HierarchyUtilException('Id is null 4');
+            throw new SpecialistForecastException('Id is null 4');
             return null;
         }
         User myUser;
@@ -173,11 +164,10 @@ public with sharing class HierarchyUtil {
     public static RoleNodeWrapper getMappedAllLevelSubordinatesByRole(
     Id parentRoleId) {
         if (parentRoleId == null) {
-            throw new HierarchyUtilException('Unable To Find Subordinate Roles for the Current User.');
+            throw new SpecialistForecastException(
+                'Unable To Find Subordinate Roles for the Current User.');
             return null;
         }
-        /* FIXME: Remove before prod! */
-        System.debug('parentRoleId of starting node = ' + parentRoleId);
 
         allSubordinates = new List<User>();
         parentChildRoleMap = new Map<Id, List<UserRole>>();

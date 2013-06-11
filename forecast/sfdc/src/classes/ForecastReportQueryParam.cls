@@ -7,8 +7,6 @@
  */
 public with sharing class ForecastReportQueryParam {
 
-    public with sharing class ForecastReportQueryParamException extends Exception {}
-
     String fiscalYear;
     List<String> monthsInQrtr;
     Set<Id> ownerIds;

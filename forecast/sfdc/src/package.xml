@@ -13,6 +13,7 @@
         <members>RoleUserInfoVO</members>
         <members>SpecialistForecastController</members>
         <members>SpecialistForecastBatch</members>
+        <members>SpecialistForecastException</members>
         <members>SpecialistForecastSubmitBatch</members>
         <members>SpecialistForecastOverrideController</members>
         <members>SpecialistForecastLineItemVO</members>

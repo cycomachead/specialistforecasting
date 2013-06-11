@@ -21,12 +21,6 @@ global with sharing class ForecastIterable implements Iterator<AggregateResult> 
 
     global boolean hasNext() {
         return count < ownerMap.size();
-
-//       if(count >= ownerMap.size()) {
-//             return false;
-//         } else {
-//             return true;
-//         }
     }
 
     global AggregateResult next() {
