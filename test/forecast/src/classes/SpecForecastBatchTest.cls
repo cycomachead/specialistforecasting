@@ -19,7 +19,8 @@ public class SpecForecastBatchTest {
         TextUtil.writeDebug('specialistForecastBatchID = ' + batchProcessId);
     
         System.Assert(batchProcessId != null);
-        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors FROM AsyncApexJob WHERE Id =: batchProcessId];
+        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors 
+            FROM AsyncApexJob WHERE Id = :batchProcessId];
         TextUtil.writeDebug('aaj for SpecialistForecastBatch = ' + aaj);
     
         
