@@ -54,7 +54,7 @@ public with sharing class HierarchyUtil {
             if (currentNode.myMappedUser != null) {
                 subOrdinates.put(currentNode.myRoleName, currentNode.myMappedUser.name);
                 /* FIXME: Remove before prod! */
-                System.debug('myROleName:'+ currentNode.myRoleName + ' userName = ' + currentNode.myMappedUser.name);
+                System.debug('myROleName:' + currentNode.myRoleName + ' userName = ' + currentNode.myMappedUser.name);
             }
             //end of current node user info
             List<RoleNodeWrapper> childNodes = currentNode.myChildNodes;
@@ -65,9 +65,9 @@ public with sharing class HierarchyUtil {
                     if (child.myUsers != null && child.myUsers.size()> 0){
                         if (child.myMappedUser != null){
                             /* FIXME: Remove before prod! */
-                            System.debug('child.myRoleName:'+child.myRoleName);
+                            System.debug('child.myRoleName:' + child.myRoleName);
                             /* FIXME: Remove before prod! */
-                            System.debug('myMappedUsers:'+child.myMappedUser.name);
+                            System.debug('myMappedUsers:' + child.myMappedUser.name);
                             subOrdinates.put(child.myRoleName, child.myMappedUser.name);
                         }
                     }
@@ -89,7 +89,7 @@ public with sharing class HierarchyUtil {
             myUser = [SELECT Id, Name, UserRoleId FROM User WHERE Id =: userId];
         } catch (Exception ex) {
             /* FIXME: Remove before prod! */
-            System.debug('Exception in getSubordinatesByUser'+ ex.getMessage());
+            System.debug('Exception in getSubordinatesByUser' + ex.getMessage());
             return null;
         }
         return getSubordinatesByRole(myUser.UserRoleId);
@@ -120,7 +120,7 @@ public with sharing class HierarchyUtil {
             roleUsersMap.put(parentRoleInfo.id, parentRoleInfo);
         } catch (Exception ex) {
             /* FIXME: Remove before prod! */
-            System.debug('Exception in getSubordinatesByRole, '+ ex.getMessage());
+            System.debug('Exception in getSubordinatesByRole, ' + ex.getMessage());
             return null;
         }
         // populate parent role - child roles map
@@ -228,7 +228,7 @@ public with sharing class HierarchyUtil {
             roleUsersMap.put(parentRoleInfo.id, parentRoleInfo);
         } catch (Exception ex) {
             /* FIXME: Remove before prod! */
-            System.debug('Exception in getSubordinatesByRole, '+ ex.getMessage());
+            System.debug('Exception in getSubordinatesByRole, ' + ex.getMessage());
             return null;
         }
         // populate parent role - child roles map
@@ -356,7 +356,7 @@ public with sharing class HierarchyUtil {
             return null;
         }
         /* FIXME: Remove before prod! */
-        System.debug('the list of configurations retrieved='+configurationsList);
+        System.debug('the list of configurations retrieved=' + configurationsList);
         for(ForecastHierarchyConfigurations__c config : configurationsList){
             forecastHierarchyConfigRoleUserMap.put(config.HierarchyRole__c,
                 config.HierarchyRoleUser__r.id);

@@ -184,8 +184,8 @@ public class SpecForecastHierarchyHelperTest {
                expectedNumberOfChildren = myTestData.numberOfChildren;
            }
            
-         System.debug('roleNode.myRoleId:'+roleNode.myRoleId);
-        System.debug('roleNode.myRoleName:'+roleNode.myRoleName);
+         System.debug('roleNode.myRoleId:' + roleNode.myRoleId);
+        System.debug('roleNode.myRoleName:' + roleNode.myRoleName);
         
         System.assertEquals(roleNode.myRoleId,expectedRoleId);
         System.assertEquals(roleNode.myRoleName,expectedRoleName);
@@ -196,7 +196,7 @@ public class SpecForecastHierarchyHelperTest {
         
         List<User> usersInRole = roleNode.myUsers;
         if(usersInRole != null){
-            System.debug('myUsers:'+usersInRole.get(0).name);
+            System.debug('myUsers:' + usersInRole.get(0).name);
         }
         
         List <ForecastHierarchyHelper.RoleNodeWrapper> childNodes = new List<ForecastHierarchyHelper.RoleNodeWrapper>();
@@ -204,13 +204,13 @@ public class SpecForecastHierarchyHelperTest {
         if(childNodes != null){
             System.assertEquals(childNodes.size(), expectedNumberOfChildren);        
             for(ForecastHierarchyHelper.RoleNodeWrapper child: childNodes){
-                System.debug('child.myRoleName:'+child.myRoleName);
+                System.debug('child.myRoleName:' + child.myRoleName);
                 List<User> usersInChildRole = child.myUsers;
                 if(usersInChildRole != null){
-                    System.debug('myUsers:'+usersInChildRole.get(0).name);
+                    System.debug('myUsers:' + usersInChildRole.get(0).name);
                 }
                 //for(User u : usersInChildRole){
-                //    System.debug('myUsers:'+u.name);
+                //    System.debug('myUsers:' + u.name);
                 //}                
             }
         } 
@@ -257,9 +257,9 @@ public class SpecForecastHierarchyHelperTest {
             for(ForecastHierarchyHelper.RoleNodeWrapper child: childNodes){
                 User mappedUserInChildRole = child.myMappedUser;
                 if(mappedUserInChildRole != null){
-                    System.debug('child.myRoleName:'+child.myRoleName);
-                    System.debug('child.myRoleId:'+child.myRoleId);                    
-                    System.debug('child.myMappedUsers:'+mappedUserInChildRole);
+                    System.debug('child.myRoleName:' + child.myRoleName);
+                    System.debug('child.myRoleId:' + child.myRoleId);                    
+                    System.debug('child.myMappedUsers:' + mappedUserInChildRole);
                 }       
             }
         }   

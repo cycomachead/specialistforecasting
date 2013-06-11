@@ -140,12 +140,14 @@
 
 	<taskdef name="deploy" classname="com.salesforce.ant.DeployTask" classpath="${tools.home}/java/ext/ant-salesforce.jar"/>
 	<!-- Include this taskdef to use loop functions -->
-	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	<!-- ><taskdef resource="net/sf/antcontrib/antlib.xml"/> < -->
 
 	<tstamp>
 		<format property="tempDateTimePattern" pattern="MM_dd_yyyy_hh_mm_aa"/>
 	</tstamp>
 
+	<!-- FIXME THIS IS A TEST 
+	REMOVE THIS COMMENT AND LN 162
 	<if>
 		<isset property="env.JOB_NAME"/>
 		<then>
@@ -155,8 +157,9 @@
 		<else>
 			<property name="finalCoverageResultsXML" value="fr_${tempDateTimePattern}.xml"/>
 			<property name="finalCoverageResultsHTML" value="fr_html_${tempDateTimePattern}.html"/>
-	</else>
+		</else>
 	</if>
+	-->
 
 	<!-- Shows deploying code & running tests for package 'codepkg' -->
 	<target name="deployBasebizDE" description="Puts the components from basebiz de dir.">
@@ -1965,7 +1968,7 @@
 		<echo message="deployWebstore:       	 Loads components of Webstore 62 Org." />
 		<echo message="deployBillingDE:          Loads components from Billing DE Org." />
 		<echo message="deployBillingSFDC:        Loads components of Billing 62 Org." />
-		<echo message="deployOmDE:	         Loads components from OM DE Org." />
+		<echo message="deployOmDE:				 Loads components from OM DE Org." />
 		<echo message="deployOmSFDC:             Loads components of OM 62 Org." />
 		<echo message="deployEntitlementSFDC:    Loads components of Entitlement 62 Org." />
 		<echo message="deployLicensingSFDC:      Loads components of Licensing SFDC org"/>
@@ -1980,7 +1983,7 @@
 		<echo message="deployTestForecast:       Loads components of Forecast 62 Org from test branch and runs all the ftests." />
 		<echo message="deployBillingDETest:      Loads components from Billing DE Org and runs all the ftests." />
 		<echo message="deployBillingSFDCTest:    Loads components of Billing 62 Org and runs all the ftests." />
-		<echo message="deployOmDETest:		 Loads components from OM DE Org and runs all the ftests." />
+		<echo message="deployOmDETest:		 	 Loads components from OM DE Org and runs all the ftests." />
 		<echo message="deployOmSFDCTest:         Loads components of OM 62 Org and runs all the ftests." />
 		<echo message="deployEntitlementSFDCTest:Loads components of Entitlement 62 Org and runs all the ftests." />
 		<echo message="deployLicensingSFDCTests: Loads components of Licensing SFDC org"/>

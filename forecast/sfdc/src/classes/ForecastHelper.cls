@@ -9,7 +9,7 @@
  * Clean up exception handling.
  *
  * @author Michael Ball
- * @since 178.store
+ * @since
  */
 public with sharing class ForecastHelper {
 
@@ -310,11 +310,11 @@ public with sharing class ForecastHelper {
                       ];
 
           /* FIXME: Remove before prod! */
-          System.debug('####months '+ queryParam.getMonthsInQrtr());
+          System.debug('####months ' + queryParam.getMonthsInQrtr());
           /* FIXME: Remove before prod! */
-          System.debug('####Year '+ queryParam.getFiscalYear());
+          System.debug('####Year ' + queryParam.getFiscalYear());
           /* FIXME: Remove before prod! */
-          System.debug('####uers '+ queryParam.getOwnerIds());
+          System.debug('####uers ' + queryParam.getOwnerIds());
 
          return lineItemsData;
      }

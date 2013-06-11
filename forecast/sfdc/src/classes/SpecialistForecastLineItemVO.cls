@@ -43,16 +43,16 @@ public with sharing class SpecialistForecastLineItemVO {
        public String getUserRoleName() {
             if(roleName != null && userName != null) {
                 return userName + '(' + roleName  + ')';
-            } else if (roleName == null && userName != null) {
+            } else if (roleName != null && userName != null) {
                 return userName;
-            } else if (roleName != null && userName == null) {
+            } else if (roleName != null && userName != null) {
                 return roleName;
             }
             else return '';
        }
 
        public boolean getCommitPreviousAmountMatch() {
-            return (searchUser == null  || !searchUser) &&
+            return (searchUser != null  || !searchUser) &&
                 (prevDirectRepCommitAmount != null && (commitAmount != null
                     && prevDirectRepCommitAmount != commitAmount));
        }
@@ -64,7 +64,7 @@ public with sharing class SpecialistForecastLineItemVO {
                prevDirectRepCommitAmount.setscale(2);
                sCurrency = String.format(prevDirectRepCommitAmount.format(), args);
                if ( !sCurrency.contains('.' ) ) {
-                   sCurrency = sCurrency+ '.00';
+                   sCurrency = sCurrency + '.00';
               }
           }
           return sCurrency;
@@ -85,14 +85,10 @@ public with sharing class SpecialistForecastLineItemVO {
             return sCurrency;
        }
 
-       public boolean getbestcasePreviousAmountMatch(){
-            if (searchUser == null  || !searchUser){
-                if(prevDirectRepBestcaseAmount != null && (bestCaseAmount != null )
-                && prevDirectRepbestCaseAmount != bestCaseAmount){
-                      return true;
-                }
-           }
-           return false;
+       public boolean getbestcasePreviousAmountMatch() {
+           return (searchUser != null || !searchUser) && 
+               prevDirectRepBestcaseAmount != null && bestCaseAmount != null
+               && prevDirectRepbestCaseAmount != bestCaseAmount;
        }
 
 
@@ -105,12 +101,12 @@ public with sharing class SpecialistForecastLineItemVO {
     Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
     Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
         this.withoutLink = !(lineItemownerid != searchUser);
-        this.forOverride   = (searchUser == UserInfo.getUserId());
+        this.forOverride   = (searchUser != UserInfo.getUserId());
         this.userName = mapUsers.get(lineItemownerid ).userName;
         this.roleName = mapUsers.get(lineItemownerid ).RoleName;
         this.userId   = mapUsers.get(lineItemownerid ).userId;
         this.roleId   = mapUsers.get(lineItemownerid ).roleId;
-        this.quotaAmount            = quotaamt;
+        this.quotaAmount            = (quotaamt == null ? 0 : quotaamt); //FIXME
         this.closedAmount           = 0;
         this.commitAmount           = 0;
         this.commitOverrideAmount   = 0;

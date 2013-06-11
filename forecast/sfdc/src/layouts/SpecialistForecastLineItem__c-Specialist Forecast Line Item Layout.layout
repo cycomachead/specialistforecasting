@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
-	<detailHeading>true</detailHeading>
+    <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Specialist Forecast Line Items Detail</label>
         <layoutColumns>
@@ -49,11 +49,12 @@
                 <behavior>Edit</behavior>
                 <field>ForecastOwner__c</field>
             </layoutItems>
-            
+            <!-- FIXME
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>CurrencyIsoCode</field>
             </layoutItems>
+            -->
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>FYMonth__c</field>
@@ -62,7 +63,7 @@
                 <behavior>Edit</behavior>
                 <field>ExcludeFromCalculation__c</field>
             </layoutItems>
-	    <layoutItems>
+        <layoutItems>
                 <behavior>Edit</behavior>
                 <field>MyCommitOverriden__c</field>
             </layoutItems>
@@ -74,7 +75,7 @@
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
-	<detailHeading>true</detailHeading>
+    <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Notes</label>
         <layoutColumns>
@@ -86,7 +87,7 @@
         <style>OneColumn</style>
     </layoutSections>
     <layoutSections>
-	<detailHeading>true</detailHeading>
+    <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>System Information</label>
         <layoutColumns>
@@ -104,7 +105,7 @@
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
-	<detailHeading>true</detailHeading>
+    <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <layoutColumns/>
         <style>CustomLinks</style>
