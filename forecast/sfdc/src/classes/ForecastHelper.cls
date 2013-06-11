@@ -367,13 +367,13 @@ public with sharing class ForecastHelper {
 
         String [] accessFields = new String [] {'checkAccessToSyncJob__c'};
         if (mForecast == null || mForecast.size() == 0) {
-            hasAccess= false;
+            hasAccess = false;
         }
         // Check if the user has Read access for the field
         for (String fieldToCheck : accessFields) {
             if (mForecast .get(fieldToCheck) == null ||
             !mForecast.get(fieldToCheck).getDescribe().isAccessible()) {
-                hasAccess =false;
+                hasAccess = false;
             }
         }
 

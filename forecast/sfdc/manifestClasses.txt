@@ -3,11 +3,13 @@ class RetrieveForecastConfigurations
 class BaseSpecialistForecastController
 class SpecialistForecastController
 class StoreBatchAdminController
-class ForecastHierarchyHelper
+class tHierarchyUtil
+class MonthUtil
 class ForecastReportQueryParam
 class StoreScheduler
 class StoreScheduleWrapper
 class SpecialistForecastBatch
+class SpecialistForecastException
 class SpecialistForecastSubmitBatch
 class SpecialistForecastOverrideController
 class SpecialistForecastLineItemVO

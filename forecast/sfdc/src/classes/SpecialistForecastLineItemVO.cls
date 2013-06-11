@@ -64,7 +64,7 @@ public with sharing class SpecialistForecastLineItemVO {
                prevDirectRepCommitAmount.setscale(2);
                sCurrency = String.format(prevDirectRepCommitAmount.format(), args);
                if ( !sCurrency.contains('.' ) ) {
-                   sCurrency= sCurrency+ '.00';
+                   sCurrency = sCurrency+ '.00';
               }
           }
           return sCurrency;
@@ -73,11 +73,11 @@ public with sharing class SpecialistForecastLineItemVO {
       public string  getprevVFDirectRepBestcaseAmount(){
           List<String> args = new String[]{'0','number','###,###,##0.00'};
           String sCurrency;
-          if (prevDirectRepBestcaseAmount!=null){
+          if (prevDirectRepBestcaseAmount != null){
               prevDirectRepBestcaseAmount.setscale(2);
-              sCurrency= String.format(prevDirectRepBestcaseAmount.format(), args);
+              sCurrency = String.format(prevDirectRepBestcaseAmount.format(), args);
               if( !sCurrency.contains('.' ) ) {
-                    sCurrency= sCurrency+ '.00';
+                    sCurrency = sCurrency + '.00';
               }
 
 
@@ -86,9 +86,9 @@ public with sharing class SpecialistForecastLineItemVO {
        }
 
        public boolean getbestcasePreviousAmountMatch(){
-            if (searchUser==null  || !searchUser){
-                if(prevDirectRepBestcaseAmount!=null && (bestCaseAmount!=null )
-                && prevDirectRepbestCaseAmount!=bestCaseAmount){
+            if (searchUser == null  || !searchUser){
+                if(prevDirectRepBestcaseAmount != null && (bestCaseAmount != null )
+                && prevDirectRepbestCaseAmount != bestCaseAmount){
                       return true;
                 }
            }

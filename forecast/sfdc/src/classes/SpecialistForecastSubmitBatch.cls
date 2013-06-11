@@ -21,7 +21,7 @@ global with sharing class SpecialistForecastSubmitBatch implements
     Database.BatchableContext context) {
         System.debug('Start SpecialistForecastsubmitBatch ' + System.now());
         lineItemRecords =[SELECT ID,SubmittedDate__C FROM
-            SpecialistForecastLineItem__c WHERE SubmittedDate__c!=null];
+            SpecialistForecastLineItem__c WHERE SubmittedDate__c != null];
         return lineItemRecords;
     }
 

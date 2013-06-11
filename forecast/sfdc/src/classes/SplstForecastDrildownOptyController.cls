@@ -8,20 +8,20 @@ public with sharing class SplstForecastDrildownOptyController {
 
      /**********Constructor***********/
     public SplstForecastDrildownOptyController(){
-         String SELECTedFQ =System.currentPageReference().getParameters().get('fq');
-         String SELECTedFY= System.currentPageReference().getParameters().get('fy');
-         Id SELECTedOwner= System.currentPageReference().getParameters().get('oId');
-         String status= System.currentPageReference().getParameters().get('st');
+         String SELECTedFQ = System.currentPageReference().getParameters().get('fq');
+         String SELECTedFY = System.currentPageReference().getParameters().get('fy');
+         Id SELECTedOwner = System.currentPageReference().getParameters().get('oId');
+         String status = System.currentPageReference().getParameters().get('st');
 
-         SELECTedFQ =(SELECTedFQ !=null?String.escapeSingleQuotes(SELECTedFQ ):null);
-         SELECTedFY=(SELECTedFY!=null?String.escapeSingleQuotes(SELECTedFY):null);
-         SELECTedOwner=(SELECTedOwner!=null?String.escapeSingleQuotes(SELECTedOwner):null);
-         status=(status!=null?String.escapeSingleQuotes(status):null);
+         SELECTedFQ =(SELECTedFQ != null?String.escapeSingleQuotes(SELECTedFQ ):null);
+         SELECTedFY=(SELECTedFY != null?String.escapeSingleQuotes(SELECTedFY):null);
+         SELECTedOwner=(SELECTedOwner != null?String.escapeSingleQuotes(SELECTedOwner):null);
+         status=(status != null?String.escapeSingleQuotes(status):null);
          List<String> lstStatus = new List<String>();
          lstStatus.add(status);
-         if(status==ForecastHelper.SUBTYPE_CLOSED)
+         if(status == ForecastHelper.SUBTYPE_CLOSED)
          lstStatus.add('Closed Won');
-         if(SELECTedFQ !=null && SELECTedFY!=null&& SELECTedOwner!=null ) {
+         if(SELECTedFQ != null && SELECTedFY != null&& SELECTedOwner != null ) {
                  this.getSpecialistForecastRecords(SELECTedFY,SELECTedFQ,SELECTedOwner,lststatus);
          }
     }

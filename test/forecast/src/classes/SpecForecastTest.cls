@@ -57,7 +57,7 @@ public class SpecForecastTest {
          User u = createOrGetUser();
          
          
-         SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
+         SpecialistForecastLineItem__c specItem = new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
                                         FiscalYear__c='FY13',FYMonth__c='August',OwnerId = u.Id);  
                                         
          insert specItem;                        
@@ -84,7 +84,7 @@ public class SpecForecastTest {
           //insert data if not exist
           User u = createOrGetUser();
          
-         SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 5000,
+         SpecialistForecastLineItem__c specItem = new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 5000,
                                         FiscalYear__c='FY10',FYMonth__c='March',OwnerId = u.Id);  
                                         
          insert specItem;                        
@@ -112,7 +112,7 @@ public class SpecForecastTest {
           //insert data if not exist
           User u = createOrGetUser();
          
-         SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
+         SpecialistForecastLineItem__c specItem = new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
                                         FiscalYear__c='FY13',FYMonth__c='August',OwnerId = u.Id);  
                                         
          insert specItem;                        
@@ -125,7 +125,7 @@ public class SpecForecastTest {
                 specialistController.selectedUserId = u.Id;
                 PageReference drillDownPage = specialistController.reportDrildownByUser_Role();
                
-                System.Assert(drillDownPage ==null);
+                System.Assert(drillDownPage == null);
          }
     
     }
@@ -139,7 +139,7 @@ public class SpecForecastTest {
          //insert data if not exist
           User u = createOrGetUser();
          
-         SpecialistForecastOverride__c overrideItem =new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c = 6000,
+         SpecialistForecastOverride__c overrideItem = new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c = 6000,
                                         PeriodType__c='Q3',OwnerId = u.Id);  
                                         
          insert overrideItem;                        
@@ -168,7 +168,7 @@ public class SpecForecastTest {
          //insert data if not exist
           User u = createOrGetUser();
          
-         SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
+         SpecialistForecastLineItem__c specItem = new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
                                         FiscalYear__c='FY13',FYMonth__c='August',OwnerId = u.Id);  
                                         
          insert specItem;                        
@@ -182,7 +182,7 @@ public class SpecForecastTest {
                
                  SpecialistForecastLineItem__c  sfLI = new SpecialistForecastLineItem__c();
                  sfLI.ForecastOwner__c = UserInfo.getUserId();
-                 set<id> ownerIdsforQuery =new set<Id>();
+                 set<id> ownerIdsforQuery = new set<Id>();
           
                  ownerIdsforQuery.add(sfLI.ForecastOwner__c);
             //set the query parameters
@@ -198,7 +198,7 @@ public class SpecForecastTest {
                            AggregateResult ar = (AggregateResult) so; 
                            Id OwnerId = (Id) ar.get('SpecialistForecastUser__c');
                            Decimal tempAmount = (Decimal) ar.get('amnt');
-                           System.Assert(tempAmount !=null);
+                           System.Assert(tempAmount != null);
                  } 
         }
     }

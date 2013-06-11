@@ -331,7 +331,7 @@ public with sharing class SpecialistForecastController extends
              /* FIXME: Remove before prod! */
              System.debug('@lineItem'+lineItem );
              if (lineItem != null) {
-                 lineItem.quotaAmount= tempAmount ;
+                 lineItem.quotaAmount = tempAmount ;
                  ownerlineItemsMap.put(OwnerId ,lineItem);
              }
          }
@@ -371,7 +371,7 @@ public with sharing class SpecialistForecastController extends
                     quotaAmount = (lineItem.QuotaAmount != null ?
                         lineItem.quotaAmount : 0);
 
-                    //lineItem.mgrCommitOverriden =true;
+                    //lineItem.mgrCommitOverriden = true;
                     //add to subtotal amount variables
                     if (commitOvrrideAmount > 0 && commitOvrrideAmount != commitAmount
                     && childLinesOwnerId != lineItemOwnerId) {
@@ -458,7 +458,7 @@ public with sharing class SpecialistForecastController extends
                     System.debug(lineItemOwnerId + 'is submit' + lineItem.isSubmitted);
                         // FIXME
                     splLine.isSubmitted = (lineItem.isSubmitted || splLine.isSubmitted);
-                    // splLine.isSubmitted = (lineItem.isSubmitted==true || splLine.isSubmitted==true?true:false);
+                    // splLine.isSubmitted = (lineItem.isSubmitted == true || splLine.isSubmitted == true?true:false);
                     splLine.SubmittedDate = lineItem.SubmittedDate;
                     splLine.mgrCommitOverrideNotes = lineItem.mgrCommitOverrideNotes;
                     splLine.mgrBestCaseOverrideNotes = lineItem.mgrBestCaseOverrideNotes;
@@ -524,8 +524,8 @@ System.debug(splFClineItems + 'splFClineItems'); // FIXME
                     lineItem.bestCaseOverrideAmount : bestCaseAmount);
                 pipelineAmount = (lineItem.PipelineAmount != null ?
                     lineItem.PipelineAmount : 0);
-                quotaAmount = (lineItem.quotaAmount!=null?lineItem.quotaAmount:0);
-                // spline= getlineItemVO(true,false,(sfLI.ForecastOwner__c == UserInfo.getUserId()?true:false),
+                quotaAmount = (lineItem.quotaAmount != null?lineItem.quotaAmount:0);
+                // spline = getlineItemVO(true,false,(sfLI.ForecastOwner__c == UserInfo.getUserId()?true:false),
 
                 splLine.withoutLink   = true;
                 splLine.reportingUser = false;
@@ -537,7 +537,7 @@ System.debug(splFClineItems + 'splFClineItems'); // FIXME
                 splLine.roleId = mapUsers.get(sfLI.ForecastOwner__c).roleId;
                 splLine.closedAmount = closedAmount;
                 splLine.commitAmount = commitAmount;
-                splLine.bestCaseAmount= bestCaseAmount;
+                splLine.bestCaseAmount = bestCaseAmount;
                 splLine.commitOverrideAmount = commitOvrrideAmount;
                 splLine.bestCaseOverrideAmount = bestCaseOverrideAmount;
                 splLine.pipelineAmount = pipelineAmount;
@@ -555,8 +555,8 @@ System.debug(splFClineItems + 'splFClineItems'); // FIXME
                  totbestCaseAmount += bestCaseAmount;
                  totpipelineAmount += pipelineAmount;
                  totQuotaAmount += quotaAmount;
-                 totbestCaseOverrideAmount +=bestCaseOverrideAmount;
-                 totcommitOvrrideAmount +=commitOvrrideAmount;
+                 totbestCaseOverrideAmount += bestCaseOverrideAmount;
+                 totcommitOvrrideAmount += commitOvrrideAmount;
 
        } else {
                 splLine.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
@@ -701,7 +701,7 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
              for (HierarchyUtil.RoleNodeWrapper rw : rolewrapper.myChildNodes){
                  /* FIXME: Remove before prod! */
                  System.debug(rw +'$$$$$$$$1'+ rw.myroleName); //FIXME
-                 //if(rw.myMappedUser!=null){
+                 //if(rw.myMappedUser != null){
                  if (rw.myUsers != null && rw.myUsers.size() > 1 && rw.isLeafNode) {
                      for(user usr : rw.myUsers){
                          alluserIds.add(usr.Id);
@@ -786,7 +786,7 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
                  previousOwnerId = currentOwnerId;
                  splv.closedAmount = closedAmount ;
                  splv.commitAmount = commitAmount ;
-                 splv.bestCaseAmount= bestCaseAmount;
+                 splv.bestCaseAmount = bestCaseAmount;
                  splv.pipelineAmount = pipelineAmount;
                  splv.commitOverrideAmount = commitOverrideAmount;
                  splv.bestCaseOverrideAmount = bestCaseOverrideAmount;
@@ -815,14 +815,14 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
                      sfl.SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c;
 
             } else {
-                splv.closedAmount+=closedAmount;
-                splv.commitAmount+=commitAmount;
-                splv.bestCaseAmount+= bestCaseAmount;
-                splv.pipelineAmount+=pipelineAmount ;
-                splv.commitOverrideAmount+=commitOverrideAmount;
-                splv.bestCaseOverrideAmount+=bestCaseOverrideAmount;
-                splv.mgrCommitOverrideAmount+=commitMgrOvrrideAmount;
-                splv.mgrBestCaseOverrideAmount+=bestCaseMgrOverrideAmount;
+                splv.closedAmount += closedAmount;
+                splv.commitAmount += commitAmount;
+                splv.bestCaseAmount += bestCaseAmount;
+                splv.pipelineAmount += pipelineAmount ;
+                splv.commitOverrideAmount += commitOverrideAmount;
+                splv.bestCaseOverrideAmount += bestCaseOverrideAmount;
+                splv.mgrCommitOverrideAmount += commitMgrOvrrideAmount;
+                splv.mgrBestCaseOverrideAmount += bestCaseMgrOverrideAmount;
                 splv.MycommitOverriden =
                     (sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c
                     != null || splv.MycommitOverriden);

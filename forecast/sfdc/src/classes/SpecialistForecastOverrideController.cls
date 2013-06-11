@@ -33,7 +33,7 @@ public with sharing class SpecialistForecastOverrideController {
             temp = String.escapeSingleQuotes(temp);
 
             try {
-                  originalAmount =decimal.valueOf(temp);
+                  originalAmount = decimal.valueOf(temp);
             } catch (Exception ex) {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,'Invalid Override Amount'));
             }
@@ -57,11 +57,11 @@ public with sharing class SpecialistForecastOverrideController {
             strRecordId = String.escapeSingleQuotes(strRecordId );
         }
        strField = System.currentPageReference().getParameters().get('field');
-       if(strField!=null) {
+       if(strField != null) {
             strField = String.escapeSingleQuotes(strField);
        }
-       lineItemownerID =System.currentPageReference().getParameters().get('ownerId');
-       if(lineItemownerID !=null)
+       lineItemownerID = System.currentPageReference().getParameters().get('ownerId');
+       if(lineItemownerID != null)
        {
             lineItemownerID = String.escapeSingleQuotes(lineItemownerID );
 
@@ -69,15 +69,15 @@ public with sharing class SpecialistForecastOverrideController {
 System.debug('lineItemownerID'+lineItemownerID);
        }
        strFQ = System.currentPageReference().getParameters().get('fq');
-       if(strFQ!=null)
+       if(strFQ != null)
        {
             strFQ = String.escapeSingleQuotes(strFQ);
 
        }
        strFY = System.currentPageReference().getParameters().get('fy');
-       if(strFY!=null)
+       if(strFY != null)
        {
-            strFY= String.escapeSingleQuotes(strFY);
+            strFY = String.escapeSingleQuotes(strFY);
             /* FIXME: Remove before prod! */
 System.debug('fy'+strFY);
        }
