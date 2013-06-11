@@ -1,0 +1,14 @@
+<QuoteLoginInfo>
+    <QuoteLogin>
+      <quote>CMGT Automated Test NewBiz Selenium</quote>
+      <username>ae.cs.demo@salesforce.com</username>
+      <password>123456</password>
+      <usertype>AE</usertype>
+    </QuoteLogin>
+    <QuoteLogin>
+      <quote>CMGT Automated Test NewBiz GE Selenium</quote>
+      <username>ae.cs.demo@salesforce.com</username>
+      <password>123456</password>
+      <usertype>AE</usertype>
+    </QuoteLogin>
+</QuoteLoginInfo>

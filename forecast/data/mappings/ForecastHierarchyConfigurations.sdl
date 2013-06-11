@@ -1,0 +1,11 @@
+#Mapping values
+#Tue Jun 22 10:20:00 PDT 2012
+HIERARCHY_ROLE__C=HierarchyRole__c
+HIERARCHY_ROLE_USER__c=HierarchyRoleUser__c
+ISMANAGER__c=IsManager__c
+ISACTIVE__c=IsActive__c
+COMMENT__c=Comment__c
+EXTIDENTIFIER__c=ExtIdentifier__c
+
+
+

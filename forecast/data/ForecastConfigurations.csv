@@ -1,0 +1,6 @@
+NAME,CONFIGURATIONCATEGORY__c,CONFIGURATIONVALUE__c,ISACTIVE__c,COMMENT__c
+"SpecialistForecastBatch",StoreBatchJob,"yes",true,Specialist Forecast Batch Job
+"SchedulerFrequency",CronExpression,"7 * * ?",true,Store Scheduler Frequency
+"BatchCompletedEmail",CronEmail,"afryhoff@salesforce.com",true,Email address of a d-list
+SpecialistForecastSubmitBatch,StoreBatchJob,yes,true,Specialist Forecast Submitted date null on weekly Batch Job
+SpecialistForecastSubmitRun,RunDay,Monnday,true,Day Specialistforecast Submitted date will run and set thedates to null

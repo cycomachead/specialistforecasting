@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ftests>
+
+    <category name="Initial Set Up" owner="hsodha">
+            <test class="testcase.appStore.comergent.apiTests.TestOneTimeSetUp" />
+    </category>
+
+    <category name="Comergent Tests" owner="dgupta - hsodha">
+        <category name="API Tests" owner="dgupta">
+            <test class="testcase.appStore.comergent.apiTests.NewBizAddProdAllLangEEAllLicTest" />
+            <test class="testcase.appStore.comergent.apiTests.NewBizAddProdAllLangGELicTest" />
+            <test class="testcase.appStore.comergent.apiTests.NewBizAddProdAllLangPESFATest" />
+            <test class="testcase.appStore.comergent.apiTests.NewBizAddProdAllLangUEAllLicTest" />
+        </category>
+        <category name="Selenium Tests" owner="hsodha">
+            <test class="testcase.appStore.comergent.seleniumTests.TestEECrmLicPacConServ" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizEditionLangSded" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizEEQuoteLicenceQty" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizEEQuotePortugueseLicenceQty" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizEEQuoteSChineseLicenceQty" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizEEQuoteSpanishLicenceQty" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizEEQuoteTChineseLicenceQty" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizPEQuoteLicenceQty" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizzEEPremiumSupport" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestNewBizzPEPremiumSupport" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestPECrmLicPacConServ" />
+            <test class="testcase.appStore.comergent.seleniumTests.TestUECrmLicPacConServ" />
+        </category>
+    </category>
+
+
+    <category name="Final Clean Up" owner="dgupta">
+            <test class="testcase.appStore.comergent.apiTests.TestFinalCleanUp" />
+    </category>
+
+</ftests>

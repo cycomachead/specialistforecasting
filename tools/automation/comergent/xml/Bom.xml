@@ -1,0 +1,158 @@
+<Bominfo>
+	<Bom>
+	  <quote>CMGT Automated Test NewBiz TE</quote>
+	  <edition>TE</edition>
+	  <licence1>CrmSFaQty1TE</licence1>
+	  <product1>QSImpSuccCoachTE</product1>
+	  <product2>QSAsstOnsiteTE</product2>
+	  <product3>QSAsstRemTE</product3>
+	  <product4>QSDataMigrActTE</product4>
+	  <product5>QSImpCnsltBlksTE</product5>
+	  <product6>QSOptOnsiteTE</product6>
+	  <product7>QSOptRemTE</product7>
+	  <product8>Stor500MbTE</product8>
+	  <product9>Stor50MbTE</product9>
+	  <street>One Market</street>
+	  <state>CA</state>
+	  <city>San Francisco</city>
+	  <postal>94012</postal>
+	  <copy>CopyBilling</copy>
+	  <paymethod>DirectDebit</paymethod>
+	  <payterms>OnReceipt</payterms>
+	  <dispatch>Email</dispatch>
+	</Bom>
+	<Bom>
+	  <quote>CMGT Automated Test NewBiz PE</quote>
+	  <edition>PE</edition>
+	  <licence1>CrmGenericSfaPE</licence1>
+	  <licence2>CrmGenericSssPE</licence2>
+	  <licence3>CrmSFaRstrPE</licence3>
+	  <licenceqty1>23</licenceqty1>
+	  <!--Educational Products-->
+	  <product1>AdminWksPE</product1>
+	  <product2>NewFeatWksPE</product2>
+	  <product3>PrtnrAdmWksPE</product3>
+	  <product4>NewFeatWksClsrmPE</product4>
+	  <product5>SCntrlWksPE</product5>
+	  <product6>AppXAPIWksPE</product6>
+	  <product7>AppXDtaMigrWksPR</product7>
+	  <product8>AppXLabWksPE</product8>
+	  <product9>AppXMobWksPE</product9>
+	  <!--Package Consulting Services-->
+	  <product10>QSImpSuccCoachPE</product10>
+	  <product11>QSAsstOnsitePE</product11>
+	  <product12>QSAsstRemPE</product12>
+	  <product13>QSOptOnsitePE</product13>
+	  <product14>QSOptRemPE</product14>
+	  <!--Additional features-->
+	  <product15>SFMktgPE</product15>
+	  <product16>PrdSchdPE</product16>
+	  <product17>OfflinePE</product17>
+	  <product18>AppExchMobilePE</product18>
+	  <product19>WklyExprtPE</product19>
+	  <product20>Stor500MbPE</product20>
+	  <product21>Stor50MbPE</product21>
+	  <product22>DeptPgLtPE</product22>
+	  <product23>ApiPE</product23>
+	  <street>One Market</street>
+	  <state>CA</state>
+	  <city>San Francisco</city>
+	  <postal>94012</postal>
+	  <copy>CopyBilling</copy>
+	  <paymethod>DirectDebit</paymethod>
+	  <payterms>OnReceipt</payterms>
+	  <dispatch>Email</dispatch>
+	</Bom>
+	<Bom>
+	  <quote>CMGT Automated Test NewBiz EE</quote>
+	  <edition>EE</edition>
+	  <licence1>CrmGenericSfaEE</licence1>
+	  <licence2>CrmGenericSssEE</licence2>
+	  <licence3>CrmSFaRstrEE</licence3>
+	  <licence4>AulEE</licence4>
+	  <licence5>Aul1EE</licence5>
+	  <licence6>PRMSeatsStrtEE</licence6>
+	  <licence7>PRMSeatsStdEE</licence7>
+	  <!--<licence8>PRMSeatsBscEE</licence8>-->
+	  <licence8>PrtlStdEE</licence8>
+	  <licence9>PrtlBscEE</licence9>
+	  <licenceqty1>20</licenceqty1>
+	  <licenceqty2>10</licenceqty2>
+	  <licenceqty3>5</licenceqty3>
+	  <licenceqty4>5</licenceqty4>
+	  <licenceqty5>5</licenceqty5>
+	  <!--<licenceqty6>5</licenceqty6>-->
+	  <!--Educational Products-->
+	  <product1>AdminWksEE</product1>
+	  <product2>NewFeatWksEE</product2>
+	  <product3>PrtnrAdmWksEE</product3>
+	  <product4>NewFeatWksClsrmEE</product4>
+	  <product5>SCntrlWksEE</product5>
+	  <product6>AppXDtaMigrWksEE</product6>
+	  <product7>AppXAPIWksEE</product7>
+	  <product8>AppXLabWksEE</product8>
+	  <product9>AppXMobWksEE</product9>
+	  <!--Additional features-->
+	  <product10>AppExchMobileEE</product10>
+	  <product11>Stor500MbEE</product11>
+	  <product12>Stor50MbEE</product12>
+	  <product13>ConSAPEE</product13>
+	  <!--Packaged consulting services
+      <product14>QSImpSuccCoachEE</product14>
+	  <product15>QSPrmSuccEE</product15>
+	  <product16>QSAsstOnsiteEE</product16>
+	  <product17>QSAsstRemEE</product17>
+	  <product18>QSOptOnsiteEE</product18>
+	  <product19>QSOptRemEE</product19>-->
+	  <street>One Market</street>
+	  <state>CA</state>
+	  <city>San Francisco</city>
+	  <postal>94012</postal>
+	  <copy>CopyBilling</copy>
+	  <paymethod>DirectDebit</paymethod>
+	  <payterms>OnReceipt</payterms>
+	  <dispatch>Email</dispatch>
+	</Bom>
+	<Bom>
+	  <quote>CMGT Automated Test NewBiz UE</quote>
+	  <edition>UE</edition>
+	  <licence1>CrmGenericSfaUE</licence1>
+	  <licence2>CrmGenericSssUE</licence2>
+	  <licence3>CrmSFaRstrUE</licence3>
+	  <licence4>AulUE</licence4>
+	  <licence5>Aul1UE</licence5>
+	  <!--<licence6>PRMSeatsUE</licence6>-->
+	  <licenceqty1>20</licenceqty1>
+	  <licenceqty2>10</licenceqty2>
+	  <licenceqty3>5</licenceqty3>
+	  <licenceqty4>5</licenceqty4>
+	  <licenceqty5>5</licenceqty5>
+	  <!--<licenceqty6>5</licenceqty6>-->
+	  <!--Educational Products-->
+	  <product1>AdminWksUE</product1>
+	  <product2>NewFeatWksUE</product2>
+	  <product3>PrtnrAdmWksUE</product3>
+	  <product4>NewFeatWksClsrmUE</product4>
+	  <product5>SCntrlWksUE</product5>
+	  <product6>AppXAPIWksUE</product6>
+	  <product7>AppXDtaMigrWksUE</product7>
+	  <product8>AppXLabWksUE</product8>
+	  <product9>AppXMobWksUE</product9>-->
+	  <!--Additional features-->
+	  <product10>ConSAPUE</product10>
+	  <product11>Stor500MbUE</product11>
+	  <product12>Stor50MbUE</product12>
+	  <!--Integration Support-->
+	  <product13>IntegSupLev1UE</product13>
+	  <product14>IntegSupLev2UE</product14>
+	  <product15>IntegSupLev3UE</product15>
+	  <street>One Market</street>
+	  <state>CA</state>
+	  <city>San Francisco</city>
+	  <postal>94012</postal>
+	  <copy>CopyBilling</copy>
+	  <paymethod>DirectDebit</paymethod>
+	  <payterms>OnReceipt</payterms>
+	  <dispatch>Email</dispatch>
+	</Bom>
+</Bominfo>

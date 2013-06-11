@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Forecast Hierarchy Configurations</label>
+    <pluralLabel>Forecast Hierarchy Configurations</pluralLabel>
+    <description>Forecast Hierarchy Configurations to Map a specific Role to a User that will act as a manager</description>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>true</enableFeeds>
+    <enableReports>true</enableReports>
+    <enableHistory>false</enableHistory>
+    <sharingModel>Private</sharingModel>
+    <nameField>
+        <displayFormat>FHC-{000000}</displayFormat>
+        <label>Record #</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>   
+    <fields>
+        <fullName>HierarchyRole__c</fullName>
+        <label>Hierarchy Role</label>
+	    <length>20</length>
+        <required>true</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+	<fullName>HierarchyRoleUser__c</fullName>
+	<label>Hierarchy Role User</label>
+	<referenceTo>User</referenceTo>
+	<relationshipName>HierarchyRoleUsers</relationshipName>
+	<type>Lookup</type>
+	</fields>	 
+    <fields>
+        <fullName>IsManager__c</fullName>
+        <label>Is Manager?</label>
+        <defaultValue>true</defaultValue>
+        <type>Checkbox</type>    
+    </fields>
+    <fields>
+        <fullName>IsActive__c</fullName>
+        <label>Is Active?</label>
+        <defaultValue>true</defaultValue>
+        <type>Checkbox</type>    
+    </fields>    
+    <fields>
+        <fullName>Comment__c</fullName>
+        <label>Comment</label>
+        <length>200</length>
+        <required>false</required>
+        <type>Text</type>    
+    </fields> 
+    <fields>
+        <fullName>HashForCheck__c</fullName>
+        <externalId>false</externalId>
+        <label>Hash Code Check</label>
+        <length>80</length>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>ExtIdentifier__c</fullName>
+        <externalId>true</externalId>
+        <label>External Identifier</label>
+        <length>80</length>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+   <fields>
+        <fullName>checkAccessToSyncJob__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Check AccessTo SyncJob</label>
+        <type>Checkbox</type>
+    </fields>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>HierarchyRole__c</columns>
+        <columns>HierarchyRoleUser__c</columns>
+        <columns>IsManager__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>Comment__c</columns>
+        <columns>HashForCheck__c</columns>
+        <columns>ExtIdentifier__c</columns>
+	<columns>CheckAccessToSyncJob__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+
+</CustomObject>
+

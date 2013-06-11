@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Specialist Forecast Override</label>
+    <pluralLabel>Specialist Forecast Overrides</pluralLabel>
+    <description>Specialist Forecast Overrides within 62 Org</description>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableFeeds>true</enableFeeds>
+    <enableReports>true</enableReports>
+    <enableHistory>true</enableHistory>
+    <sharingModel>Private</sharingModel>
+
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+
+    <nameField>
+	<displayFormat>SFO-{00000000}</displayFormat>
+	<label>Specialist Forecast Override</label>
+	<type>AutoNumber</type>
+    </nameField>
+
+     <fields>
+	<fullName>OwnOverrideNotes__c</fullName>
+	<label>Own Override Notes</label>
+	<length>32768</length>
+	<type>LongTextArea</type>
+	<visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+	<fullName>ManagerOverrideCommitNotes__c</fullName>
+	<label>Manager Override Commit  Notes</label>
+	<length>32768</length>
+	<type>LongTextArea</type>
+	<visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+	<fullName>ManagerOverrideBestCaseNotes__c</fullName>
+	<label>Manager Override best case Notes</label>
+	<length>32768</length>
+	<type>LongTextArea</type>
+	<visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+	<fullName>OwnOverridenBestCaseAmount__c</fullName>
+	<label>Own Overriden Bestcase Amount</label>
+	<precision>16</precision>
+	<scale>2</scale>
+	<type>Currency</type>
+	<trackHistory>true</trackHistory>
+	<description>Own Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+    </fields>
+    <fields>
+	<fullName>OwnOverridenCommitAmount__c</fullName>
+	<label>Own Overriden Commit Amount</label>
+	<precision>16</precision>
+	<scale>2</scale>
+	<type>Currency</type>
+	<trackHistory>true</trackHistory>
+	<description>Own Overridden Commit forecasted opportunity  total amount for cloud-specific products</description>
+    </fields>
+    <fields>
+	<fullName>ManagerOverridenCommitAmount__c</fullName>
+	<label>Manager Overriden Commit Amount</label>
+	<precision>16</precision>
+	<scale>2</scale>
+	<type>Currency</type>
+	<trackHistory>true</trackHistory>
+	<description>Manager Overridden Commit forecasted opportunity  total amount for cloud-specific 	products</description>
+    </fields>
+    <fields>
+	<fullName>ManagerOverridenBestCaseAmount__c</fullName>
+	<label>Manager Overriden Bestcase Amount</label>
+	<precision>16</precision>
+	<scale>2</scale>
+	<type>Currency</type>
+	<trackHistory>true</trackHistory>
+	<description>Manager Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+    </fields>
+    <fields>
+	<fullName>PreviousDirectRepCommitAmount__c</fullName>
+	<label>Previous Commit Amount</label>
+	<precision>16</precision>
+	<scale>2</scale>
+	<type>Currency</type>
+	<trackHistory>true</trackHistory>
+	<description>Old Direct Report Commit forecasted opportunity  total amount for cloud-specific products</description>
+    </fields>
+    <fields>
+    	<fullName>PreviousDirectRepBestcaseAmount__c</fullName>
+    	<label>Previous Bestcase Amount</label>
+	<precision>16</precision>
+	<scale>2</scale>
+	<type>Currency</type>
+	<trackHistory>true</trackHistory>
+    	<description>Old Direct Report Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+    </fields>
+   <fields>
+	<fullName>PeriodType__c</fullName>
+	<label>Period Type</label>
+        <length>20</length>
+	<type>Text</type>
+	<trackHistory>false</trackHistory>
+	<description>PeriodType (values Could be Month Name(June, July etc..)  or Q1,Q2, etc depending upon the values</description>
+    </fields>
+     <fields>
+        <fullName>ExtIdentifier__c</fullName>
+        <externalId>true</externalId>
+        <label>External Identifier</label>
+        <length>80</length>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+ 	<columns>OwnOverridenBestCaseAmount__c</columns>
+	<columns>OwnOverridenCommitAmount__c</columns>
+	<columns>ManagerOverridenBestCaseAmount__c</columns>
+	<columns>ManagerOverridenCommitAmount__c</columns>
+	<columns>PeriodType__c</columns>
+       <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+
+    
+</CustomObject>
+
+
+
+

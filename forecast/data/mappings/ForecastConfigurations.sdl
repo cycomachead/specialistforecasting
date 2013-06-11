@@ -1,0 +1,8 @@
+#Mapping values
+#Tue Mar 27 00:34:53 PDT 2012
+NAME=Name
+CONFIGURATIONCATEGORY__c=ConfigurationCategory__c
+CONFIGURATIONVALUE__c=ConfigurationValue__c
+ISACTIVE__c=IsActive__c
+COMMENT__c=Comment__c
+
