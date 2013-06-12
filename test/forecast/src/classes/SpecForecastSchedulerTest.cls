@@ -1,11 +1,11 @@
 /**
  *
- * Class Name : TestSpecialistForecastScheduler
  * Description: Contains test cases to test utility methods for special forecast scheduler
- * @since
+ * @since 178.store
  */
 
 public class SpecForecastSchedulerTest {
+
 
     /*
     Method Name: testStoreScheduler
@@ -16,14 +16,14 @@ public class SpecForecastSchedulerTest {
         try{
             String sch = '0 50 * * * ?';
             System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
-           
+
             System.Assert(true);
-        } catch(Exception e) {
-            System.Assert(false);
+        }catch(Exception e){
+            System.Assert(false, 'Test failed, useful info is still TODO.');
         }
-    
+
     }
-    
+
     /*
     Method Name: testStartScheduledJob
     Parameters : None
@@ -34,12 +34,12 @@ public class SpecForecastSchedulerTest {
             StoreBatchAdminController storeBatchAdmin = new StoreBatchAdminController();
             storeBatchAdmin.setNotificationMinute('50');
             storeBatchAdmin.startScheduledJob();
-           
+
             System.Assert(true);
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.Assert(false);
         }
-    
+
     }
-    
+
 }
