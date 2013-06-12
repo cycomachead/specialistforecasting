@@ -29,7 +29,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *
  * Class Name : TestSpecialistForecastBatch
- * Description: Contains test cases to test utility methods for special forecast batch processor
+ * Description: Contains test cases to test utility methods for special 
+ * forecast batch processor
  * @since 178.store
  */
 
@@ -47,20 +48,9 @@ public class SpecForecastBatchTest {
         System.debug('specialistForecastBatchID = ' + batchProcessId);
 
         System.assert(batchProcessId != null);
-<<<<<<< HEAD
         AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors 
             FROM AsyncApexJob WHERE Id = :batchProcessId];
-        TextUtil.writeDebug('aaj for SpecialistForecastBatch = ' + aaj);
-    
-        
-=======
-        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems,
-            NumberOfErrors FROM AsyncApexJob WHERE Id = :batchProcessId];
         System.debug('aaj for SpecialistForecastBatch = ' + aaj);
-
-
->>>>>>> clean-test
-        System.assert(batchProcessId ==  aaj.Id);
 
     }
 

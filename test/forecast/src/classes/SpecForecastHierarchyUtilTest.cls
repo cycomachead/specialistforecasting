@@ -26,17 +26,6 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISE
 OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
-/*
- * RelEng Perforce/RCS Header - Do not remove!
- *
- * $Author: mkatragadda $
- * $Change: $
- * $DateTime:  $
- * $File: //store/main/test/forecast/src/classes/TestHierarchyUtil.cls $
- * $Id: //store/main/test/forecast/src/classes/TestHierarchyUtil.cls $
- * $Revision: #1 $
- */
-
 /**
  *
  *  Class Name : SpecForecastHierarchyUtilTest

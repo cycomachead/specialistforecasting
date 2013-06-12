@@ -32,7 +32,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * @since
  */
 
-private class SpecForecastConfigTest {
+public class SpecForecastConfigTest {
 
     // Test the data Retrieval from ForecastConfigurations custom settings
     private static testMethod void testRetrieveForecastConfigurations() {
@@ -90,7 +90,7 @@ private class SpecForecastConfigTest {
         //Test Commercial Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_COMMERCIAL);
         if (fConfig == null) {
-            System.asser t(false, 'Null Item Found, test failed');
+            System.assert(false, 'Null Item Found, test failed');
         }
 
         System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));

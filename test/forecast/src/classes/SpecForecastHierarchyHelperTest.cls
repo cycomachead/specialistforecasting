@@ -212,7 +212,7 @@ public class SpecForecastHierarchyHelperTest {
                expectedNumberOfChildren = myTestData.numberOfChildren;
            }
            
-         System.debug('roleNode.myRoleId:' + roleNode.myRoleId);
+        System.debug('roleNode.myRoleId:' + roleNode.myRoleId);
         System.debug('roleNode.myRoleName:' + roleNode.myRoleName);
         
         System.assertEquals(roleNode.myRoleId,expectedRoleId);
