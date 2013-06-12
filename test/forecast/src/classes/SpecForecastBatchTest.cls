@@ -46,7 +46,7 @@ public class SpecForecastBatchTest {
         Test.stopTest();
         System.debug('specialistForecastBatchID = ' + batchProcessId);
 
-        System.Assert(batchProcessId != null);
+        System.assert(batchProcessId != null);
 <<<<<<< HEAD
         AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors 
             FROM AsyncApexJob WHERE Id = :batchProcessId];
@@ -60,7 +60,7 @@ public class SpecForecastBatchTest {
 
 
 >>>>>>> clean-test
-        System.Assert(batchProcessId ==  aaj.Id);
+        System.assert(batchProcessId ==  aaj.Id);
 
     }
 
@@ -75,7 +75,7 @@ public class SpecForecastBatchTest {
         Test.stopTest();
         System.debug('specialistForecastSubmitBatchID = ' + batchProcessId);
 
-        System.Assert(batchProcessId != null);
+        System.assert(batchProcessId != null);
 
 
     }

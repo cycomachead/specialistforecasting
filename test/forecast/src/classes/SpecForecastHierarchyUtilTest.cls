@@ -39,9 +39,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *
- * Class Name : SpecForecastHierarchyUtilTest
- * Description: Contains test cases to test utility methods for forecast hierarchu
- * @since 180.store
+ *  Class Name : SpecForecastHierarchyUtilTest
+ *  Description: Contains test cases to test utility methods for forecast hierarchy
+ *  @since 180.store
  */
 
 public class SpecForecastHierarchyUtilTest {
@@ -97,12 +97,8 @@ public class SpecForecastHierarchyUtilTest {
                                                                         );
 
         testDataAsMap.put('00E00000006DERY', new Map<String,String>{'EMEA - CS - VP'=>'Rob Acker'
-                                                     //               ,'EMEA SR & EBR Manager'=>'Elaine O\'Callaghan'
-                                                     //               ,'EMEA - CS - UK&I - AVP'=>'Ciaran Shanley'
-                                                      //              ,'EMEA - CS - EU - AVP'=>'Ronan Copeland'
+                                        
                                                       });
-
-                                                      //'AMER - CS - AVP - WEST=Robert Zimmermann','>
     }
 
     /*

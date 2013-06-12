@@ -132,18 +132,18 @@ public with sharing class SpecForecastMonthUtilTest {
 
     /** Positive Tests for all 12 cases of fiscal month rotation */
     public static testMethod void testRotation() {
-        System.AssertEquals(MonthUtil.rotatedFrom(1), ROT_JAN);
-        System.AssertEquals(MonthUtil.rotatedFrom(2), ROT_FEB);
-        System.AssertEquals(MonthUtil.rotatedFrom(3), ROT_MAR);
-        System.AssertEquals(MonthUtil.rotatedFrom(4), ROT_APR);
-        System.AssertEquals(MonthUtil.rotatedFrom(5), ROT_MAY);
-        System.AssertEquals(MonthUtil.rotatedFrom(6), ROT_JUN);
-        System.AssertEquals(MonthUtil.rotatedFrom(7), ROT_JUL);
-        System.AssertEquals(MonthUtil.rotatedFrom(8), ROT_AUG);
-        System.AssertEquals(MonthUtil.rotatedFrom(9), ROT_SEP);
-        System.AssertEquals(MonthUtil.rotatedFrom(10), ROT_OCT);
-        System.AssertEquals(MonthUtil.rotatedFrom(11), ROT_NOV);
-        System.AssertEquals(MonthUtil.rotatedFrom(12), ROT_DEC);
+        System.assertEquals(MonthUtil.rotatedFrom(1), ROT_JAN);
+        System.assertEquals(MonthUtil.rotatedFrom(2), ROT_FEB);
+        System.assertEquals(MonthUtil.rotatedFrom(3), ROT_MAR);
+        System.assertEquals(MonthUtil.rotatedFrom(4), ROT_APR);
+        System.assertEquals(MonthUtil.rotatedFrom(5), ROT_MAY);
+        System.assertEquals(MonthUtil.rotatedFrom(6), ROT_JUN);
+        System.assertEquals(MonthUtil.rotatedFrom(7), ROT_JUL);
+        System.assertEquals(MonthUtil.rotatedFrom(8), ROT_AUG);
+        System.assertEquals(MonthUtil.rotatedFrom(9), ROT_SEP);
+        System.assertEquals(MonthUtil.rotatedFrom(10), ROT_OCT);
+        System.assertEquals(MonthUtil.rotatedFrom(11), ROT_NOV);
+        System.assertEquals(MonthUtil.rotatedFrom(12), ROT_DEC);
         // tests for invalid months should give a predicatable result
         // see the function in getFiscalMonthNum()
 

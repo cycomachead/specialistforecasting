@@ -28,8 +28,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *
- * Description: Contains test cases to test utility methods for special forecast batch processor
- * @since 178.store
+ *  Description: Contains test cases to test utility methods for special forecast
+ *  batch processor
+ *  @since 178.store
  */
 
 public class SpecForecastTest {
@@ -46,7 +47,7 @@ public class SpecForecastTest {
         for(SelectOption option : fiscalYears) {
             optionValue = optionValue + option.getValue() + ' ';
         }
-        System.Assert(optionValue.contains(specialistController.selectedFY));
+        System.assert(optionValue.contains(specialistController.selectedFY));
 
     }
 
@@ -62,7 +63,7 @@ public class SpecForecastTest {
         for(SelectOption option : fiscalQuarters) {
             optionValue = optionValue + option.getValue() + ' ';
         }
-        System.Assert(optionValue.contains(specialistController.selectedFQ));
+        System.assert(optionValue.contains(specialistController.selectedFQ));
 
     }
 
@@ -91,7 +92,7 @@ public class SpecForecastTest {
 
             List<SpecialistForecastLineItemVO> specialistVO = specialistController.getSpecialistforecastLineItemsData();
 
-            System.Assert(specialistVO.size() > 0);
+            System.assert(specialistVO.size() > 0);
         }
     }
 
@@ -119,7 +120,7 @@ public class SpecForecastTest {
 
             List<SpecialistForecastLineItemVO> specialistVO = specialistController.getSpecialistforecastLineItemsData();
 
-            System.Assert(specialistVO.size() > 0);
+            System.assert(specialistVO.size() > 0);
         }
     }
 
@@ -145,7 +146,7 @@ public class SpecForecastTest {
                 specialistController.selectedUserId = u.Id;
                 PageReference drillDownPage = specialistController.reportDrildownByUser_Role();
 
-                System.Assert(drillDownPage == null);
+                System.assert(drillDownPage == null);
          }
 
     }
@@ -156,36 +157,26 @@ public class SpecForecastTest {
     Description: f-test utility that is used to assert special forecast override
     */
     private static testMethod void testOverride() {
-         //insert data if not exist
-          User u = createOrGetUser();
+        //insert data if not exist
+        User u = createOrGetUser();
 
-         SpecialistForecastOverride__c overrideItem =new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c=6000,
+        SpecialistForecastOverride__c overrideItem =new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c=6000,
                                         PeriodType__c='Q3',OwnerId=u.Id);
 
-         insert overrideItem;
+        insert overrideItem;
 
-         setUpPageRef('6000', overrideItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
+        setUpPageRef('6000', overrideItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
 
-         SpecialistForecastOverrideController overrideController = new
-             SpecialistForecastOverrideController();
-         overrideController.saveOverride();
+        SpecialistForecastOverrideController overrideController = new
+            SpecialistForecastOverrideController();
+        overrideController.saveOverride();
 
-         SpecialistForecastOverride__c aSpecialistForecastOverride = (
-              [SELECT Id, IsDeleted, LastActivityDate, LastModifiedById,
-                 LastModifiedDate, ManagerOverridenCommitAmount__c,
-                 Name, OwnerId, OwnOverridenBestCaseAmount__c,
-                 OwnOverridenCommitAmount__c, OwnOverrideNotes__c, PeriodType__c,
-                 SystemModstamp
-             FROM SpecialistForecastOverride__c WHERE Id = :overrideItem.id]);
-
-// SpecialistForecastOverride__c aSpecialistForecastOverride = (
-//              [SELECT Id, IsDeleted, IsLocked, LastActivityDate, LastModifiedById,
-//                 LastModifiedDate, ManagerOverridenBestCaseAmount__c,
-//                 ManagerOverridenCommitAmount__c, ManagerOverrideNotes__c,
-//                 MayEdit, Name, OwnerId, OwnOverridenBestCaseAmount__c,
-//                 OwnOverridenCommitAmount__c, OwnOverrideNotes__c, PeriodType__c,
-//                 SystemModstamp
-//             FROM SpecialistForecastOverride__c WHERE Id = :overrideItem.id]);
+        SpecialistForecastOverride__c aSpecialistForecastOverride = (
+            [SELECT Id, IsDeleted, LastActivityDate, LastModifiedById,
+                LastModifiedDate, ManagerOverridenCommitAmount__c, Name,
+                OwnerId, OwnOverridenBestCaseAmount__c,SystemModstamp,
+                OwnOverridenCommitAmount__c, OwnOverrideNotes__c, PeriodType__c
+            FROM SpecialistForecastOverride__c WHERE Id = :overrideItem.id]);
 
         //check override amount
         System.debug('after override bestcase ' +
@@ -232,7 +223,7 @@ public class SpecForecastTest {
                            AggregateResult ar = (AggregateResult) so;
                            Id OwnerId = (Id) ar.get('SpecialistForecastUser__c');
                            Decimal tempAmount = (Decimal) ar.get('amnt');
-                           System.Assert(tempAmount !=null);
+                           System.assert(tempAmount !=null);
                  }
         }
     }
@@ -255,7 +246,7 @@ public class SpecForecastTest {
 
     private static User createOrGetUser() {
         User u = [SELECT Id FROM User WHERE UserName='srikanta.mohapatra@salesforce.com'];
-        if(u == null){
+        if (u == null) {
             u = new User(Email='srikanta.mohapatra@salesforce.com', FirstName='Srikanta', LastName='Mohapatra', IsActive=true,
                 Username='srikanta.mohapatra@salesforce.com', Alias='sm', CommunityNickname='srmo', TimeZoneSidKey='America/Los_Angeles', LocaleSidKey='en_US', EmailEncodingKey='ISO-8859-1',
                 ProfileId='00e30000000brH1', LanguageLocaleKey='en_US');

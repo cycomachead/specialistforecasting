@@ -28,8 +28,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *
- * Description: Contains test cases to test utility methods for special forecast scheduler
- * @since 178.store
+ *  Description: Contains test cases to test utility methods for special 
+ *  forecast scheduler
+ *  @since 178.store
  */
 
 public class SpecForecastSchedulerTest {
@@ -38,16 +39,17 @@ public class SpecForecastSchedulerTest {
     /*
     Method Name: testStoreScheduler
     Parameters : None
-    Description: f-test utility that is used to assert special forecast store scheduler
+    Description: f-test utility that is used to assert special forecast store 
+        scheduler
     */
     private static testMethod void testStoreScheduler() {
         try{
             String sch = '0 50 * * * ?';
             System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
 
-            System.Assert(true);
+            System.assert(true);
         }catch(Exception e){
-            System.Assert(false, 'Test failed, useful info is still TODO.');
+            System.assert(false, 'Test failed, useful info is still TODO.');
         }
 
     }
@@ -55,7 +57,8 @@ public class SpecForecastSchedulerTest {
     /*
     Method Name: testStartScheduledJob
     Parameters : None
-    Description: f-test utility that is used to test startScheduledJob of StoreBatchAdminController.cls
+    Description: f-test utility that is used to test startScheduledJob of 
+        StoreBatchAdminController.cls
     */
     private static testMethod void testStartScheduledJob() {
         try {
@@ -63,9 +66,9 @@ public class SpecForecastSchedulerTest {
             storeBatchAdmin.setNotificationMinute('50');
             storeBatchAdmin.startScheduledJob();
 
-            System.Assert(true);
+            System.assert(true);
         } catch (Exception e) {
-            System.Assert(false);
+            System.assert(false);
         }
 
     }
