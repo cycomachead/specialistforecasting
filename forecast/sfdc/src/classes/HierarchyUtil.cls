@@ -47,16 +47,24 @@ public with sharing class HierarchyUtil {
 
     //Map to hole the role and forecast hierarchy configurations
     private static Map<Id, Id>  forecastHierarchyConfigRoleUserMap;
+    
+    /** Standard error messages. */
+    private static Final String ROLE_ID_NULL = 
+        'No Role ID could be found for the current user.';
+    private static Final String USER_ID_NULL = 
+        'No User ID could be found for the current user.';
+    private static Final String PARENT_ID_NULL = 
+        'No Parent User could be found for the current user.';
+    
 
     /**
      * public method to get all the subordinates
      *
      * @return TODO
      */
-    public static RoleNodeWrapper getSubordinates(Id identifier, String type){
+    public static RoleNodeWrapper getSubordinates(Id identifier, String type) {
         if (identifier == null) {
-            throw new SpecialistForecastException('Id is null 1');
-            return null;
+            throw new SpecialistForecastException(ROLE_ID_NULL);
         }
         if (type == null) {
             type = ForecastHelper.HIERARCHY_TYPE_ROLE;
@@ -96,34 +104,29 @@ public with sharing class HierarchyUtil {
         return subOrdinates;
     }
 
-
-    /* // public method to get all the direct subordinates by userId */
-    public static RoleNodeWrapper getSubordinatesByUser(Id userId){
+    // FIXME role ID or user ID?
+    /* public method to get all the direct subordinates by userId */
+    public static RoleNodeWrapper getSubordinatesByUser(Id userId) {
         if (userId == null) {
-            throw new SpecialistForecastException('Id is null 2');
+            throw new SpecialistForecastException(USER_ID_NULL);
             return null;
         }
         User myUser;
         try {
-            myUser = [SELECT Id, Name, UserRoleId FROM User WHERE Id = :userId];
+            myUser = [SELECT UserRoleId FROM User WHERE Id = :userId];
         } catch (Exception ex) {
-            /* FIXME: Remove before prod! */
-            System.debug('Exception in getSubordinatesByUser' + ex.getMessage());
-            return null;
+            throw new SpecialistForecastException(ROLE_ID_NULL);
         }
         return getSubordinatesByRole(myUser.UserRoleId);
     }
 
-    /* // public method to get all the direct subordinates by role */
+    /* public method to get all the direct subordinates by role */
     public static RoleNodeWrapper getSubordinatesByRole(Id parentRoleId) {
         if (parentRoleId == null) {
-            throw new SpecialistForecastException('Id is null 3');
-            return null;
+            throw new SpecialistForecastException(PARENT_ID_NULL);
         }
-        /* FIXME: Remove before prod! */
-        System.debug('parentRoleId of starting node = ' + parentRoleId);
 
-        allSubordinates = new List<User>();
+        allSubordinates = new User[]();
 
         // Get role to users mapping in a map with key as role id
         try {
@@ -138,9 +141,7 @@ public with sharing class HierarchyUtil {
                 FROM UserRole WHERE id = :parentRoleId];
             roleUsersMap.put(parentRoleInfo.id, parentRoleInfo);
         } catch (Exception ex) {
-            /* FIXME: Remove before prod! */
-            System.debug('Exception in getSubordinatesByRole, ' + ex.getMessage());
-            return null;
+            throw new SpecialistForecastException(PARENT_ID_NULL);
         }
         // populate parent role - child roles map
         parentChildRoleMap = new Map<Id, List<UserRole>>();
@@ -165,18 +166,16 @@ public with sharing class HierarchyUtil {
      *  public method to get all the seven level subordinates by userId
      *  @return
      */
-    public static RoleNodeWrapper getMappedAllLevelSubordinatesByUser(Id userId){
+    public static RoleNodeWrapper getMappedAllLevelSubordinatesByUser(Id userId) {
         if (userId == null) {
-            throw new SpecialistForecastException('Id is null 4');
-            return null;
+            throw new SpecialistForecastException(USER_ID_NULL);
         }
+        
         User myUser;
         try {
             myUser = [SELECT UserRoleId FROM User WHERE Id = :userId];
         } catch (Exception ex) {
-            /* FIXME: Remove before prod! */
-            System.debug('Exception in getSubordinatesByUser' + ex.getMessage());
-            return null;
+            throw new SpecialistForecastException(ROLE_ID_NULL);
         }
         if (myUser.UserRoleId != null) {
             return getMappedAllLevelSubordinatesByRole(myUser.UserRoleId);
@@ -193,7 +192,7 @@ public with sharing class HierarchyUtil {
     Id parentRoleId) {
         if (parentRoleId == null) {
             throw new SpecialistForecastException(
-                'Unable To Find Subordinate Roles for the Current User.');
+                'Unable to find a parent account ID for the current user.');
             return null;
         }
 
@@ -201,7 +200,7 @@ public with sharing class HierarchyUtil {
         parentChildRoleMap = new Map<Id, List<UserRole>>();
 
         //fetch all the forecast hierarchy configurations Role/User Map
-        if(forecastHierarchyConfigRoleUserMap == null){
+        if (forecastHierarchyConfigRoleUserMap == null) {
             forecastHierarchyConfigRoleUserMap =
                 getForecastHierarchyConfigurationsRoleUserMap();
         }

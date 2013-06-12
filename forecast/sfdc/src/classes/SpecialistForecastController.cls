@@ -27,11 +27,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Controller to display and override Special AE Forecast
+ *  Controller to display and override Special AE Forecast
  *
- * @see BaseSpecialForecastController
- * @author auzzaman,smohapatra
- * @since 180.store
+ *  @see BaseSpecialForecastController
+ *  @author auzzaman,smohapatra
+ *  @since 180.store
  */
 public with sharing class SpecialistForecastController extends
     BaseSpecialistForecastController {
@@ -45,23 +45,23 @@ public with sharing class SpecialistForecastController extends
     private Map<Id,RoleUserInfoVO> mapUsers = new Map <Id,RoleUserInfoVO>();
     private Boolean isvalidated = true;
 
-    public boolean displayPopup {get; set;}
+    public boolean displayPopup { get;set; }
 
-    public Decimal overrideAmount{get;set;}
-    public Decimal originalAmount{get;set;}
-    public Decimal originaloldAmount{get;set;}
-    public String overrideComment{get;set;}
-    public String strRecordId {get;set;}
-    public String strField {get;set;}
-    public String lineItemOwnerId {get;set;}
+    public Decimal overrideAmount    { get;set; }
+    public Decimal originalAmount    { get;set; }
+    public Decimal originaloldAmount { get;set; }
+    public String overrideComment    { get;set; }
+    public String strRecordId        { get;set; }
+    public String strField           { get;set; }
+    public String lineItemOwnerId    { get;set; }
 
-    public String fiscalYear{get;set;}
-    public String fiscalQuarter{get;set;}
-    public String SelectedFY{get;set;}
-    public String SelectedFQ{get;set;}
-    public String PreparedByUser{get;set;}
-    public String SELECTedUserId{get;set;}
-    public String SELECTedRoleId{get;set;}
+    public String fiscalYear         { get;set; }
+    public String fiscalQuarter      { get;set; }
+    public String SelectedFY         { get;set; }
+    public String SelectedFQ         { get;set; }
+    public String PreparedByUser     { get;set; }
+    public String SelectedUserId     { get;set; }
+    public String SelectedRoleId     { get;set; } //Not Used?
 
     public SpecialistForecastlineItem__c sfLI;
     private List<SpecialistForecastlineItemVO> splFClineItems;
@@ -70,18 +70,20 @@ public with sharing class SpecialistForecastController extends
     private List<SelectOption> fiscalQuarters;
 
     /**
-     * Constructs a new Specialist Forecast Controller Class
+     *  Constructs a new Specialist Forecast Controller Class
      */
-    public SpecialistForecastController (){
+    public SpecialistForecastController () {
         this.sfLI = new SpecialistForecastlineItem__c ();
         this.sfLI.ForecastOwner__c = UserInfo.getUserId();
         PreparedbyUser = UserInfo.getName();
-        if (SelectedFY == null) {
-            SelectedFY = ForecastHelper.getCurrentFiscalYear();
+        if (selectedFY == null) {
+            selectedFY = ForecastHelper.getCurrentFiscalYear();
         }
-        if (SelectedFQ == null) {
-            SelectedFQ = ForecastHelper.getCurrentQuarter();
+        if (selectedFQ == null) {
+            selectedFQ = ForecastHelper.getCurrentQuarter();
         }
+        // TODO This is probably best spot to setup FY start month.\
+        // Place query in SfLI class?
     }
 
     // Will need to be updated for month editing.
@@ -98,26 +100,33 @@ public with sharing class SpecialistForecastController extends
      */
     public List<SelectOption> getFiscalYears() {
         if (this.fiscalYears == null) {
-            this.fiscalYears = new List<SelectOption>();
-            List<String> fYears = ForecastHelper.getSupportedFiscalYears();
-
-            for(String fYear : fYears) {
-                this.fiscalYears.add(new SelectOption(fYear, fYear));
-            }
+            this.setFiscalYears();
         }
         return this.fiscalYears;
     }
 
     /**
-     *
+     *  @parak fYears is a SelectOption[]
      */
     public void setFiscalYears(List<SelectOption> fYears) {
         this.fiscalYears = fYears;
     }
+    
+    /**
+     *
+     */
+    public void setFiscalYears() {
+        this.fiscalYears = new List<SelectOption>();
+        List<String> fYears = ForecastHelper.getSupportedFiscalYears();
+
+        for(String fYear : fYears) {
+            this.fiscalYears.add(new SelectOption(fYear, fYear));
+        }
+    }
 
 
     /**
-     * @return the list of fiscal quaters //TODO more?
+     * @return the list of fiscal quaters as a SelectOption[]
      */
     public List<SelectOption> getFiscalQuarters() {
         if (this.fiscalQuarters == null) {
@@ -167,7 +176,7 @@ public with sharing class SpecialistForecastController extends
             this.getMappedUserInfoFROMRoleHierarchy(UserInfo.getUserId());
             if (!allTotaluserIds.contains(sfLI.ForecastOwner__c)) {
                 isvalidated = false;
-                //TODO- Convert the error message to custom label
+                //TODO - Convert the error message to custom label
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
                     ' You do not have privileges to view data for this user ?' +
                     ' Not in Role hierarchy / Below user in role hierarchy'));
@@ -187,7 +196,7 @@ public with sharing class SpecialistForecastController extends
     }
 
     /**
-     * Called FROM userlink for drildown
+     * Called from userlink for drildown
      */
     public PageReference reportDrildownByUser_Role(){
         if (SelectedUserId != null && SelectedUserId.length() > 10) {
@@ -195,10 +204,6 @@ public with sharing class SpecialistForecastController extends
             PreparedbyUser = usr.Name;
 
             sfLI.ForecastOwner__c = SelectedUserId;
-            /* FIXME: Remove before prod! */
-            System.debug('@@@@' + SELECTedUserId  ); // FIXME
-            /* FIXME: Remove before prod! */
-            System.debug('@@@@' + sfLI.ForecastOwner__c);
         }
 
         return null;
@@ -207,7 +212,7 @@ public with sharing class SpecialistForecastController extends
     /**
      * Called from submit button
      */
-    public PageReference submitReport() { // FIXME Return type?!
+    public PageReference submitReport() {
         if (SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL) {
             String strMonth = ForecastHelper.getMonthsInQuarter(SelectedFQ).get(0);
             SpecialistForecastlineItem__c splLI = new SpecialistForecastlineItem__c();
@@ -1002,7 +1007,7 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
 
 
     /***************Specialist Forecast DrillDown**********************/
-    public List<SpecialistForecast__c> specialistforecastList{get;set;}
+    public List<SpecialistForecast__c> specialistforecastList{ get;set; }
 
     public boolean displayDrilDownPopup {get; set;}
 

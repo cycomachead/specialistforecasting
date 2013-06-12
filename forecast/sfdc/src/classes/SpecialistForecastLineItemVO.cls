@@ -35,36 +35,39 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 public with sharing class SpecialistForecastLineItemVO {
 
-       public boolean  withoutLink{get;set;}
-       public boolean  reportingUser{get;set;}
-       public boolean  forOverride{get;set;}
-       public String   roleName{get;set;}
-       public String   userName{get;set;}
-       public String   roleId{get;set;}
-       public String   userId{get;set;}
-       public Decimal  closedAmount{get;set;}
-       public Decimal  commitAmount{get;set;}
-       public Decimal  bestCaseAmount{get;set;}
-       public Decimal  commitOverrideAmount{get;set;}
-       public Decimal  bestCaseOverrideAmount{get;set;}
-       public Decimal  mgrbestCaseOverrideAmount{get;set;}
-       public Decimal  mgrcommitOverrideAmount{get;set;}
-       public String  mgrCommitOverrideNotes{get;set;}
-       public String   mgrbestcaseOverrideNotes{get;set;}
-       public Decimal  prevDirectRepCommitAmount{get;set;}
-       public Decimal  prevDirectRepBestcaseAmount{get;set;}
-       public Decimal  quotaAmount{get;set;}
-       public Decimal  pipelineAmount{get;set;}
-       public String   strLineItmId{get;set;}
-       public String   submittedDate{get;set;}
-       public boolean  MycommitOverriden {get;set;}
-       public boolean  MyBestcaseOverriden {get;set;}
-       public boolean  mgrcommitOverriden {get;set;}
-       public boolean  mgrBestcaseOverriden {get;set;}
-       public boolean  isSubmitted {get;set;}
-       public boolean  isCommitOverriden{get;set;}
-       public boolean  isBestcaseOverriden{get;set;}
-       public boolean  searchUser{get;set;}
+       public Boolean  withoutLink                 { get;set; }
+       public Boolean  reportingUser               { get;set; }
+       public Boolean  forOverride                 { get;set; }
+       public Boolean  myCommitOverriden           { get;set; }
+       public Boolean  myBestcaseOverriden         { get;set; }
+       public Boolean  mgrCommitOverriden          { get;set; }
+       public Boolean  mgrBestcaseOverriden        { get;set; }
+       public Boolean  isSubmitted                 { get;set; }
+       public Boolean  isCommitOverriden           { get;set; }
+       public Boolean  isBestcaseOverriden         { get;set; }
+       public Boolean  searchUser                  { get;set; }
+       
+       public Decimal  closedAmount                { get;set; }
+       public Decimal  commitAmount                { get;set; }
+       public Decimal  bestCaseAmount              { get;set; }
+       public Decimal  commitOverrideAmount        { get;set; }
+       public Decimal  bestCaseOverrideAmount      { get;set; }
+       public Decimal  mgrbestCaseOverrideAmount   { get;set; }
+       public Decimal  mgrcommitOverrideAmount     { get;set; }
+       public Decimal  prevDirectRepCommitAmount   { get;set; }
+       public Decimal  prevDirectRepBestcaseAmount { get;set; }
+       public Decimal  quotaAmount                 { get;set; }
+       public Decimal  pipelineAmount              { get;set; }
+       
+       public String   roleName                    { get;set; }
+       public String   userName                    { get;set; }
+       public String   roleId                      { get;set; }
+       public String   userId                      { get;set; }
+       public String   mgrCommitOverrideNotes      { get;set; }
+       public String   mgrbestcaseOverrideNotes    { get;set; }
+       public String   strLineItmId                { get;set; }
+       public String   submittedDate               { get;set; }
+
 
 
 

@@ -57,7 +57,8 @@ public class SpecForecastTest {
     Description: f-test utility that is used to assert special forecast getFiscalQuarters
     */
     private static testMethod void testGetFiscalQuarters() {
-        SpecialistForecastController specialistController = new SpecialistForecastController();
+        SpecialistForecastController specialistController = new 
+            SpecialistForecastController();
         List<SelectOption> fiscalQuarters = specialistController.getFiscalQuarters();
         String optionValue;
         for(SelectOption option : fiscalQuarters) {
@@ -88,11 +89,11 @@ public class SpecForecastTest {
 
         System.runAs(u) {
             // The following code runs as user 'u'
-            SpecialistForecastController specialistController = new SpecialistForecastController();
-
-            List<SpecialistForecastLineItemVO> specialistVO = specialistController.getSpecialistforecastLineItemsData();
-
-            System.assert(specialistVO.size() > 0);
+            SpecialistForecastController specialistController = new 
+                SpecialistForecastController();
+            SpecialistForecastLineItemVO[] specialistVO = 
+                specialistController.getSpecialistforecastLineItemsData();
+            System.assert(specialistVO.size() > 0); //FIXME 
         }
     }
 
@@ -102,24 +103,25 @@ public class SpecForecastTest {
     Description: f-test utility that is used to assert special forecast getSpecialistforecastLineItemsData with the user and no entry
     */
     private static testMethod void testGetSpecialistforecastLineItemsDataNoEntry() {
-          //insert data if not exist
-          User u = createOrGetUser();
+        //insert data if not exist
+        User u = createOrGetUser();
 
-         SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c=5000,
-                                        FiscalYear__c='FY10',FYMonth__c='March',OwnerId=u.Id);
+        SpecialistForecastLineItem__c specItem = new
+            SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 5000,
+            FiscalYear__c = 'FY10', FYMonth__c = 'March', OwnerId = u.Id);
 
-         insert specItem;
+        INSERT specItem;
 
-         setUpPageRef('5000', specItem.Id, 'mybestcase', u.Id, 'Q1', 'FY10');
+        setUpPageRef('5000', specItem.Id, 'mybestcase', u.Id, 'Q1', 'FY10');
 
-      // This code runs as the system user
+        // This code runs as the system user
 
-         System.runAs(u) {
-          // The following code runs as user 'u'
-            SpecialistForecastController specialistController = new SpecialistForecastController();
-
-            List<SpecialistForecastLineItemVO> specialistVO = specialistController.getSpecialistforecastLineItemsData();
-
+        System.runAs(u) {
+            // The following code runs as user 'u'
+            SpecialistForecastController specialistController = new 
+                SpecialistForecastController();
+            List<SpecialistForecastLineItemVO> specialistVO = 
+                specialistController.getSpecialistforecastLineItemsData();
             System.assert(specialistVO.size() > 0);
         }
     }
@@ -127,7 +129,8 @@ public class SpecForecastTest {
     /*
     Method Name: testReportDrildownByUser_Role
     Parameters : None
-    Description: f-test utility that is used to assert special forecast reportDrildownByUser_Role
+    Description: f-test utility that is used to assert special forecast 
+        reportDrildownByUser_Role
     */
     private static testMethod void testReportDrildownByUser_Role() {
           //insert data if not exist
@@ -210,7 +213,7 @@ public class SpecForecastTest {
                  set<id> ownerIdsforQuery =new set<Id>();
 
                  ownerIdsforQuery.add(sfLI.ForecastOwner__c);
-            //set the query parameters
+                 //set the query parameters
                 ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
                 queryParam.setFiscalYear('FY13');
                 queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter('Q3'));
