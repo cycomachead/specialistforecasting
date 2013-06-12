@@ -34,10 +34,12 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class SpecForecastTestUtil {
 
-    public static final String UC_SALES_OUTLOOK_PLAN_REPORT = 'Sales Forecast Report with Finance Outlook and Plan';
-    public static final String UC_SALES_FORECAST_REPORT_GEO = 'Sales Forecast Report By Geo';
-    public static final String UC_SALES_FORECAST_REPORT_REGION = 'Sales Forecast Report By Region';
-    //public static final String UC_DEAL_REPORTS = Label.lblReportsAndDashboards; // 'Reports And Dashboards'
+    public static final String UC_SALES_OUTLOOK_PLAN_REPORT =
+        'Sales Forecast Report with Finance Outlook and Plan';
+    public static final String UC_SALES_FORECAST_REPORT_GEO =
+        'Sales Forecast Report By Geo';
+    public static final String UC_SALES_FORECAST_REPORT_REGION =
+        'Sales Forecast Report By Region';
 
     public static final String BU_ENTERPRISE = 'Enterprise';
     public static final String BU_COMMERCIAL = 'Commercial';
@@ -79,10 +81,10 @@ public with sharing class SpecForecastTestUtil {
     public static final String CAT_VALID_SUBTYPES_SALES = 'ValidSubtypesSales';
     public static final String CAT_VALID_SUBTYPES_OUTLOOK = 'ValidSubtypesOutlook';
     public static final String CAT_VALID_SUBTYPES_PLAN = 'ValidSubtypesPlan';
-    
-    public static final String HIERARCHY_TYPE_ROLE = 'ROLE';
-    public static final String HIERARCHY_TYPE_USER = 'USER';    
 
-    
+    public static final String HIERARCHY_TYPE_ROLE = 'ROLE';
+    public static final String HIERARCHY_TYPE_USER = 'USER';
+
+
 }
 

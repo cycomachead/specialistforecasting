@@ -33,10 +33,13 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 
 private class SpecForecastConfigTest {
-     
+
     // Test the data Retrieval from ForecastConfigurations custom settings
     private static testMethod void testRetrieveForecastConfigurations() {
         Map<String, String> fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_ENTERPRISE);
+        if (fConfig == null) {
+            System.assert(false, 'Null Item Found, test failed');
+        }
         System.Assert(fConfig.get('ConfigurationValue').contains('AMER-FS,JP-FS,EMEA-FS,APAC-FS'));
         System.Assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
         System.Assert(fConfig.get('IsActive') == 'true');
@@ -48,7 +51,7 @@ private class SpecForecastConfigTest {
             System.Assert(rfce.getMessage().contains('There is no category as '));
         }
 
-        
+
         Set<String> bUnits = RetrieveForecastConfigurations.getForecastConfigurationNames(TestForecastUtil.CAT_BUSINESS_UNIT);
         System.Assert(bUnits.contains('Enterprise'));
         System.Assert(bUnits.contains('Commercial'));
@@ -79,38 +82,41 @@ private class SpecForecastConfigTest {
         System.Assert(validSubtypesValues.contains(TestForecastUtil.SUBTYPE_PLAN));
 
     }
-    
+
     // Test the extra data Retrieval from ForecastConfigurations custom settings
     private static testMethod void testExtraRetrieveForecastConfigurations() {
-        
+
         Map<String, String> fConfig;
         //Test Commercial Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_COMMERCIAL);
-        //System.Assert(fConfig.get('ConfigurationValue').contains('AMER/EMEA-CS,JP-CS,APAC-CS'));
+        if (fConfig == null) {
+            System.asser t(false, 'Null Item Found, test failed');
+        }
+
         System.Assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
         System.Assert(fConfig.get('IsActive') == 'true');
-        
+
         //Test Public Sector Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_PUBLIC_SECTOR);
         System.Assert(fConfig.get('ConfigurationValue').contains('AMER-PUBSEC'));
         System.Assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
         System.Assert(fConfig.get('IsActive') == 'true');
-        
+
         //Test Data.com Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_DATA_DOT_COM);
-        //System.Assert(fConfig.get('ConfigurationValue').contains('Data-Alliances,Data-Marketing,Data-SVP,Data-Services'));
+        
         System.Assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
         System.Assert(fConfig.get('IsActive') == 'true');
-        
+
         //Test Radian6 Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_RADIAN6);
         System.Assert(fConfig.get('ConfigurationValue').contains('R6-COO'));
         System.Assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
         System.Assert(fConfig.get('IsActive') == 'true');
-        
+
         //Test Heroku Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_HEROKU);
-        //System.Assert(fConfig.get('ConfigurationValue').contains('R6-COO'));//TODO
+
         System.Assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
         System.Assert(fConfig.get('IsActive') == 'true');
 
@@ -120,29 +126,5 @@ private class SpecForecastConfigTest {
         System.Assert(geos.contains('JP-CS'));
 
     }
-    
-    /**
-     * Check in custom settings if the supplied User is present in forecast configuration.
-     */
-/*    private static testMethod void  testCheckCategory() {
-        
-        //Test empty user
-        try{
-            RetrieveForecastConfigurations.checkEcommMembers('');
-        }catch(Exception ex){
-            System.Assert(ex.getMessage().contains('Invalid User Id'));
-        }
-        
-        //Test invalid user
-        try{
-            RetrieveForecastConfigurations.checkEcommMembers('005300000014I6h');
-        }catch(Exception ex){
-            System.Assert(ex.getMessage().contains('Invalid User Id'));
-        }
-        
-        //Test valid user but non-ECOMM member
-        System.Assert(!RetrieveForecastConfigurations.checkEcommMembers('005x0000000Kl40'),'userId is not ECOMM member');
-        
-    }*/
 
 }

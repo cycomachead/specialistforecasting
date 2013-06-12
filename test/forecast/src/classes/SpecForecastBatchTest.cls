@@ -28,9 +28,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *
- * Class Name : SpecForecastBatchTest
+ * Class Name : TestSpecialistForecastBatch
  * Description: Contains test cases to test utility methods for special forecast batch processor
- * @since
+ * @since 178.store
  */
 
 public class SpecForecastBatchTest {
@@ -44,18 +44,26 @@ public class SpecForecastBatchTest {
         Test.startTest();
         Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), 20);
         Test.stopTest();
-        TextUtil.writeDebug('specialistForecastBatchID = ' + batchProcessId);
-    
+        System.debug('specialistForecastBatchID = ' + batchProcessId);
+
         System.Assert(batchProcessId != null);
+<<<<<<< HEAD
         AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors 
             FROM AsyncApexJob WHERE Id = :batchProcessId];
         TextUtil.writeDebug('aaj for SpecialistForecastBatch = ' + aaj);
     
         
+=======
+        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems,
+            NumberOfErrors FROM AsyncApexJob WHERE Id = :batchProcessId];
+        System.debug('aaj for SpecialistForecastBatch = ' + aaj);
+
+
+>>>>>>> clean-test
         System.Assert(batchProcessId ==  aaj.Id);
-    
+
     }
-    
+
     /*
     Method Name: testSubmitBatch
     Parameters : None
@@ -65,11 +73,11 @@ public class SpecForecastBatchTest {
         Test.startTest();
         Id batchProcessId = Database.executeBatch(new SpecialistForecastSubmitBatch(), 20);
         Test.stopTest();
-        TextUtil.writeDebug('specialistForecastSubmitBatchID = ' + batchProcessId);
-    
+        System.debug('specialistForecastSubmitBatchID = ' + batchProcessId);
+
         System.Assert(batchProcessId != null);
-        
-    
+
+
     }
-    
+
 }

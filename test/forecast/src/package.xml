@@ -4,7 +4,8 @@
         <member>SpecForecastBatchTest</member>
         <member>SpecForecastConfigTest</member>
         <member>SpecForecastHelperTest</member>
-        <member>SpecForecastHierarchyHelperTest</member>
+        <member>SpecForecastHierarchyUtilTest</member>
+        <member>SpecForecastMonthUtilTest</member>
         <member>SpecForecastSchedulerTest</member>
         <member>SpecForecastTest</member>
         <member>SpecForecastTestUtil</member>
