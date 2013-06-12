@@ -86,7 +86,7 @@ public with sharing class HierarchyUtil {
             List<RoleNodeWrapper> childNodes = currentNode.myChildNodes;
             if (childNodes != null) {
                 for (RoleNodeWrapper child : childNodes) {
-                    if (child.myUsers != null && child.myUsers.size() > 0) &&
+                    if ((child.myUsers != null && child.myUsers.size() > 0) &&
                     child.myMappedUser != null) {
                         subOrdinates.put(child.myRoleName, child.myMappedUser.name);
                     }

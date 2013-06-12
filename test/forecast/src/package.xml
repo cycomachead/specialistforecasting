@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <member>SpecForecastBatchTest</member>
-        <member>SpecForecastConfigTest</member>
-        <member>SpecForecastHelperTest</member>
-        <member>SpecForecastHierarchyUtilTest</member>
-        <member>SpecForecastMonthUtilTest</member>
-        <member>SpecForecastSchedulerTest</member>
-        <member>SpecForecastTest</member>
-        <member>SpecForecastTestUtil</member>
+        <members>SpecForecastBatchTest</members>
+        <members>SpecForecastConfigTest</members>
+        <members>SpecForecastHelperTest</members>
+        <members>SpecForecastHierarchyUtilTest</members>
+        <members>SpecForecastMonthUtilTest</members>
+        <members>SpecForecastSchedulerTest</members>
+        <members>SpecForecastTest</members>
+        <members>SpecForecastTestUtil</members>
         <name>ApexClass</name>
     </types>
     <version>24.0</version>
