@@ -1,0 +1,1994 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AppStroreDeploy" default="help" basedir="." xmlns:sf="antlib:com.salesforce">
+	<description>
+		If you want to see all the ant targets available for this project use - ant help.
+	</description>
+
+	<echo />
+	<echo />
+	<property file='build.properties'/>
+	<property environment="env"/>
+
+	<property name="basebizns" value="${basebiz.prefix}"/>  
+	<property name="quotens" value="${quote.prefix}"/>
+	<property name="billingns" value="${billing.prefix}"/>
+	<property name="omns" value="${om.prefix}"/>
+
+	<property name="build.dir" value="${basedir}"/>
+	<property name="loader.dir" value="${loader.home}"/>
+	<property name="loader.conf.dir" value="${loader.conf}"/>
+
+	<property name="basebizde.cls.dir" value="${basebiz.home}/de/src/classes/"/>
+	<property name="basebizsfdc.cls.dir" value="${basebiz.home}/sfdc/src/classes/"/>
+
+	<property name="basebizde.trg.dir" value="${basebiz.home}/de/src/triggers/"/>
+	<property name="basebizsfdc.trg.dir" value="${basebiz.home}/sfdc/src/triggers/"/>
+
+	<property name="basebizsfdc.pages.dir" value="${basebiz.home}/sfdc/src/pages/"/>
+
+	<property name="basebiz.data.dir" value="${basebiz.home}/data"/>
+	<property name="basebiz.data.mapping.dir" value="${basebiz.home}/data/mappings"/>
+
+	<property name="forecast.data.dir" value="${forecast.home}/data"/>
+	<property name="forecast.data.mapping.dir" value="${forecast.home}/data/mappings"/>
+
+	<property name="billingde.cls.dir" value="${billing.home}/de/src/classes/"/>
+	<property name="billingsfdc.cls.dir" value="${billing.home}/sfdc/src/classes/"/>
+
+	<property name="billingde.trg.dir" value="${billing.home}/de/src/triggers/"/>
+	<property name="billingsfdc.trg.dir" value="${billing.home}/sfdc/src/triggers/"/>
+
+	<property name="billingsfdc.pages.dir" value="${billing.home}/sfdc/src/pages/"/>
+
+	<property name="quotede.cls.dir" value="${quote.home}/de/src/classes/"/>
+	<property name="quotesfdc.cls.dir" value="${quote.home}/sfdc/src/classes/"/>
+
+	<property name="quotede.trg.dir" value="${quote.home}/de/src/triggers/"/>
+	<property name="quotesfdc.trg.dir" value="${quote.home}/sfdc/src/triggers/"/>
+
+	<property name="quotesfdc.pages.dir" value="${quote.home}/sfdc/src/pages/"/>
+
+	<property name="forecastsfdc.cls.dir" value="${forecast.home}/sfdc/src/classes/"/>
+	<property name="forecastsfdc.trg.dir" value="${forecast.home}/sfdc/src/triggers/"/>
+	<property name="forecastsfdc.pages.dir" value="${forecast.home}/sfdc/src/pages/"/>
+
+	<property name="teamsfdc.cls.dir" value="${team.home}/sfdc/src/classes/"/>
+	<property name="teamsfdc.trg.dir" value="${team.home}/sfdc/src/triggers/"/>
+	<property name="teamsfdc.pages.dir" value="${team.home}/sfdc/src/pages/"/>
+
+	<property name="omde.cls.dir" value="${om.home}/de/src/classes/"/>
+	<property name="omde.trg.dir" value="${om.home}/de/src/triggers/"/>
+
+	<property name="omsfdc.cls.dir" value="${om.home}/sfdc/src/classes/"/>   
+	<property name="omsfdc.trg.dir" value="${om.home}/sfdc/src/triggers/"/>
+	<property name="omsfdc.pages.dir" value="${om.home}/sfdc/src/pages/"/>
+
+	<property name="entitlementsfdc.cls.dir" value="${entitlement.home}/sfdc/src/classes/"/>   
+	<property name="entitlementsfdc.trg.dir" value="${entitlement.home}/sfdc/src/triggers/"/>
+	<property name="entitlementsfdc.pages.dir" value="${entitlement.home}/sfdc/src/pages/"/>  
+
+	<property name="webstore.cls.dir" value="${webstore.home}/sfdc/src/classes/"/>
+	<property name="webstore.pages.dir" value="${webstore.home}/sfdc/src/pages/"/>
+	<property name="tools.dir" value="${tools.home}"/>
+
+	<property name="renewalsSfdc.cls.dir" value="${renewals.home}/sfdc/src/classes/"/>   
+	<property name="renewalsSfdc.trg.dir" value="${renewals.home}/sfdc/src/triggers/"/>   
+	<property name="renewalsSfdc.pages.dir" value="${renewals.home}/sfdc/src/pages/"/>   
+	
+	<property name="testUtils.home" value="${tests.home}/utils"/>
+	<property name="testQuote.home" value="${tests.home}/quote"/>
+	<property name="testForecast.home" value="${tests.home}/forecast"/>
+	<property name="testBilling.home" value="${tests.home}/billing"/>
+	<property name="testOM.home" value="${tests.home}/om"/>
+	<property name="testBasebiz.home" value="${tests.home}/basebiz"/>
+	<property name="testWebstore.home" value="${tests.home}/webstore"/>
+	<property name="testLicensing.home" value="${tests.home}/licensing"/>
+	<property name="testEntitlement.home" value="${tests.home}/entitlements"/>
+	
+	<property name="testBilling.home.src" value="${testBilling.home}/src"/>
+	<property name="testUtils.cls.dir" value="${testUtils.home}/src/classes/"/>
+	<property name="testQuote.cls.dir" value="${testQuote.home}/src/classes/"/>
+	<property name="testQuote.trg.dir" value="${testQuote.home}/src/triggers/"/>
+	<property name="testForecast.cls.dir" value="${testForecast.home}/src/classes/"/>
+	<property name="testForecast.trg.dir" value="${testForecast.home}/src/triggers/"/>
+	<property name="testBilling.cls.dir" value="${testBilling.home}/src/classes/"/>
+	<property name="testOM.cls.dir" value="${testOM.home}/src/classes/"/>
+	<property name="testBasebiz.cls.dir" value="${testBasebiz.home}/src/classes/"/>
+	<property name="testWebstore.cls.dir" value="${testWebstore.home}/src/classes/"/>
+	<property name="testEntitlement.cls.dir" value="${$testEntitlement.home}/src/classes"/>
+	
+	<property name="dealmaker.home" value="${managedapps.home}/dealmaker"/>
+	
+	<!-- custom task definitions -->
+	<path id="loader.classpath">
+		<pathelement location="${loader.dir}/DataLoader.jar"/>
+		<pathelement location="${loader.dir}/classes"/>
+		<!--  <fileset dir="${loader.dir}/lib"/> -->
+	</path>
+
+	<import file="${tools.dir}/build/tools.xml"/>
+
+	<echo message="build dir: ${build.dir}"/>
+	<echo message="Java Home: ${JAVA_HOME}"/>
+	<echo message="Ant Home: ${ant.home}"/>
+	<echo message="Connecting to: ${env.endpoint}"/>
+	<echo />
+	<echo />
+
+	<echo message="basebizHome: ${basebiz.home}"/>
+	<echo message="quoteHome: ${quote.home}"/>
+	<echo message="forecastHome: ${forecast.home}"/>
+	<echo message="billingHome: ${billing.home}"/>
+	<echo message="omHome: ${om.home}"/>
+	<echo message="entitlementHome: ${entitlement.home}"/>
+	<echo message="webstoreHome: ${webstore.home}"/>
+    <echo message="dealmakerHome: ${dealmaker.home}"/>	
+	<echo message="testUtils.home: ${testUtils.home}"/>
+	<echo message="testQuote.home: ${testQuote.home}"/>
+	<echo message="testForecast.home: ${testForecast.home}"/>
+	<echo message="testBilling.home: ${testBilling.home}"/>
+	<echo message="testOM.home: ${testOM.home}"/>
+	<echo message="testBasebiz.home: ${testBasebiz.home}"/>
+	<echo message="licensing.home: ${licensing.home}" />
+	<echo message="testLicensing.home: ${testLicensing.home}" />
+	<echo message="testWebstore.home: ${testWebstore.home}"/>
+	<echo />
+	<echo />
+
+	<property name="basebizDE.dir" value="${basebiz.home}/de/src"/>
+	<property name="basebizSFDC.dir" value="${basebiz.home}/sfdc/src"/>
+
+	<taskdef name="deploy" classname="com.salesforce.ant.DeployTask" classpath="${tools.home}/java/ext/ant-salesforce.jar"/>
+	<!-- Include this taskdef to use loop functions -->
+	<!-- ><taskdef resource="net/sf/antcontrib/antlib.xml"/> < -->
+
+	<tstamp>
+		<format property="tempDateTimePattern" pattern="MM_dd_yyyy_hh_mm_aa"/>
+	</tstamp>
+
+	<!-- FIXME THIS IS A TEST 
+	REMOVE THIS COMMENT AND LN 162
+	<if>
+		<isset property="env.JOB_NAME"/>
+		<then>
+			<property name="finalCoverageResultsXML" value="fr_${env.JOB_NAME}_${env.BUILD_NUMBER}_${tempDateTimePattern}.xml"/>
+			<property name="finalCoverageResultsHTML" value="${env.JOB_NAME}_${env.BUILD_NUMBER}_${tempDateTimePattern}.html"/>
+		</then>
+		<else>
+			<property name="finalCoverageResultsXML" value="fr_${tempDateTimePattern}.xml"/>
+			<property name="finalCoverageResultsHTML" value="fr_html_${tempDateTimePattern}.html"/>
+		</else>
+	</if>
+	-->
+
+	<!-- Shows deploying code & running tests for package 'codepkg' -->
+	<target name="deployBasebizDE" description="Puts the components from basebiz de dir.">
+		<echo message="username: ${basebiz.login}"/>
+		<echo message="Deploying DE Code from: ${basebizDE.dir}"/>
+		<deploy username="${basebiz.login}"
+				password="${basebiz.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${basebizDE.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployBasebizDETest" description="Puts the components from basebiz de dir and runs all the ftests.">
+		<echo message="username: ${basebiz.login}"/>
+		<echo message="Deploying DE Code from: ${basebizDE.dir}"/>
+		<deploy username="${basebiz.login}"
+				password="${basebiz.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${basebizDE.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="1000" pollWaitMillis="100000"/>
+	</target>
+
+	<target name="deployBasebizSFDC" description="Puts the components from basebiz sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${basebizSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${basebizSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployBasebizSFDCTest" description="Puts the components from basebiz sfdc source dir and runs all the ftests.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${basebizSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${basebizSFDC.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="1000" pollWaitMillis="100000" />
+	</target>
+
+	<property name="quoteDE.dir" value="${quote.home}/de/src"/>
+	<property name="quoteSFDC.dir" value="${quote.home}/sfdc/src"/>
+
+	<target name="deployQuoteDE" description="Puts the components from quote de dir.">
+		<echo message="username: ${quote.login}"/>
+		<echo message="Deploying DE Code from: ${quoteDE.dir}"/>
+		<deploy username="${quote.login}"
+				password="${quote.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${quoteDE.dir}"
+				maxPoll="100"
+				pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployQuoteDETest" description="Puts the components from quote de dir and runs all the ftests.">
+		<echo message="username: ${quote.login}"/>
+		<echo message="Deploying DE Code from: ${quoteDE.dir}"/>
+		<deploy username="${quote.login}"
+				password="${quote.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${quoteDE.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<target name="deployQuoteSFDC" description="Puts the components from quote sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${quoteSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${quoteSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployQuoteSFDCTest" description="Puts the components from quote sfdc source dir and runs all the ftests.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${quoteSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${quoteSFDC.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<property name="forecastSFDC.dir" value="${forecast.home}/sfdc/src"/>
+
+	<target name="deployForecastSFDC" description="Puts the components from forecast sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${forecastSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${forecastSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<property name="teamSFDC.dir" value="${team.home}/sfdc/src"/>
+
+	<target name="deployTeamSFDC" description="Puts the components from team sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${teamSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${teamSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<property name="billingDE.dir" value="${billing.home}/de/src"/>
+	<property name="billingSFDC.dir" value="${billing.home}/sfdc/src"/>
+
+	<target name="deployBillingDE" description="Puts the components from billing de dir.">
+		<echo message="username: ${billing.login}"/>
+		<echo message="Deploying DE Code from: ${billingDE.dir}"/>
+		<deploy username="${billing.login}"
+				password="${billing.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${billingDE.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployBillingDETest" description="Puts the components from billing de dir and runs all the ftests.">
+		<echo message="username: ${billing.login}"/>
+		<echo message="Deploying DE Code from: ${billingDE.dir}"/>
+		<deploy username="${billing.login}"
+				password="${billing.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${billingDE.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<target name="deployBillingSFDC" description="Puts the components from billing sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${billingSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${billingSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployBillingSFDCTest" description="Puts the components from billing sfdc source dir and runs all the ftests.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testBilling.home.src}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testBilling.home.src}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<!-- OM Targets -->
+	<property name="omSFDC.dir" value="${om.home}/sfdc/src"/>
+	<property name="omDE.dir" value="${om.home}/de/src"/>
+
+	<target name="deployOmDE" description="Puts the components from om de dir.">
+		<echo message="username: ${om.login}"/>
+		<echo message="Deploying DE Code from: ${omDE.dir}"/>
+		<deploy username="${om.login}"
+				password="${om.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${omDE.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployOmDETest" description="Puts the components from OM de dir and runs all the ftests.">
+		<echo message="username: ${om.login}"/>
+		<echo message="Deploying DE Code from: ${omDE.dir}"/>
+		<deploy username="${om.login}"
+				password="${om.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${omDE.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<target name="deployOmSFDC" description="Puts the components from om sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${omSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${omSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+	
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployOmSFDCTest" description="Puts the components from om sfdc source dir and runs all the ftests.">
+	<echo message="username: ${sfdc.login}"/>
+	<echo message="Deploying 62 Org Code from: ${omSFDC.dir}"/>
+	<deploy username="${sfdc.login}"
+			password="${sfdc.password}"
+			serverurl="${env.endpoint}"
+			deployroot="${omSFDC.dir}"
+			runAllTests="true"
+			logType="${logType}"
+			maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<!-- Targets for Licensing code-->
+
+	<property name="licensingSFDC.dir" value="${licensing.home}/sfdc/src/"/>
+	<property name="licensingSFDC.dir.cls" value="${licensingSFDC.dir}/classes/"/>
+	<property name="licensingTestSrc.home" value="${tests.home}/licensing/src/"/>
+
+	<target name="deployLicensingSFDC" description="Puts the components from licensing sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${licensingSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${licensingSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<target name="deployLicensingSFDCTests" description="Puts the components from licensing sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${licensingTestSrc.home}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${licensingTestSrc.home}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<target name="runLicensingSFDCTests"  description="Run ftests for Licensing Org62 apex classes from test/licensing branch">
+		<record name="runLicensingTest.log" action="start"/>
+		<echo message="Executing ftest for Licensing classes in Org62 from test/licensing branch"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${testLicensing.home}" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runLicensingTest.log" action="stop"/>
+	</target>
+
+	<target name="loadLicensing62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Licensing SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${licensingSFDC.dir.cls}" server="${env.endpoint}"
+					manifestdir="${licensing.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<property name="entitlementSFDC.dir" value="${entitlement.home}/sfdc/src"/>
+	<target name="deployEntitlementSFDC" description="Puts the components from entitlements sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${entitlementSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${entitlementSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+	
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployEntitlementSFDCTest" description="Puts the components from entitlement sfdc source dir and runs all the ftests.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${entitlementSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${entitlementSFDC.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />    
+	</target>
+
+	<!-- webstore deploy -->
+	<property name="webstore.dir" value="${webstore.home}/sfdc/src"/>
+
+	<target name="deployWebstore" description="Puts the components from webstore source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${webstore.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${webstore.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+	
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployWebstoreTest" description="Puts the components from webstore source dir and runs all the ftests.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${webstore.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${webstore.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />
+	</target>
+
+	<!-- Renewals Targets -->
+	<property name="renewalsSFDC.dir" value="${renewals.home}/sfdc/src"/>
+	<target name="deployRenewalsSFDC" description="Puts the components from renewals sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${renewalsSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${renewalsSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+	
+	<!-- DealMaker Targets -->
+	<property name="dealmakerSFDC.dir" value="${dealmaker.home}/sfdc/src"/>
+	<target name="deployDealmakerSFDC" description="Puts the components from dealmaker sfdc source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${dealmakerSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${dealmakerSFDC.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>	
+	
+	<!-- This target compiles and runs all the ftests -->
+	<target name="deployRenewalsSFDCTests" description="Puts the components from renewals sfdc source dir and runs all the ftests.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${renewalsSFDC.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${renewalsSFDC.dir}"
+				runAllTests="true"
+				logType="${logType}"
+				maxPoll="100" pollWaitMillis="100000" />    
+	</target>
+
+	<!-- Ftest Utility Targets -->
+	<property name="testUtils.dir" value="${testUtils.home}/src"/>
+	<target name="deployTestUtils" description="Puts the components from test/utils source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testUtils.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testUtils.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- Ftest Quote Targets -->
+	<property name="testQuote.dir" value="${testQuote.home}/src"/>
+	<target name="deployTestQuote" description="Puts the components from test/quote source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testQuote.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testQuote.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- Ftest Forecast Targets -->
+	<property name="testForecast.dir" value="${testForecast.home}/src"/>
+	<target name="deployTestForecast" description="Puts the components from test/forecast source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testForecast.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testForecast.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- Ftest Billing Targets -->
+	<property name="testBilling.dir" value="${testBilling.home}/src"/>
+	<target name="deployTestBilling" description="Puts the components from test/billing source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testBilling.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testBilling.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<property name="testEntitlments.dir" value="${testEntitlement.home}/src"/>
+	<target name="deployTestEntitlements" description="Deploys compoments from test/entitlements directory">
+	  <echo message="username: ${sfdc.login}"/>
+	  <echo message="Deploying 62 Org Code from: ${testEntitlements.dir}"/>
+	  <deploy username="${sfdc.login}"
+		  password="${sfdc.password}"
+		  serverurl="${env.endpoint}"
+		  deployroot="${testEntitlments.dir}"
+		  maxPoll="1000" pollWaitMillis="100000">
+	  </deploy> 
+	</target>
+	
+	<!-- Ftest OM Targets -->
+	<property name="testOM.dir" value="${testOM.home}/src"/>
+	<target name="deployTestOM" description="Puts the components from test/OM source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testOM.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testOM.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy> 
+	</target>
+
+	<!-- Ftest Basebiz Targets -->
+	<property name="testBasebiz.dir" value="${testBasebiz.home}/src"/>
+	<target name="deployTestBasebiz" description="Puts the components from test/basebiz source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testBasebiz.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testBasebiz.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- Ftest Webstore Targets -->
+	<property name="testWebstore.dir" value="${testWebstore.home}/src"/>
+	<target name="deployTestWebstore" description="Puts the components from test/webstore source dir.">
+		<echo message="username: ${sfdc.login}"/>
+		<echo message="Deploying 62 Org Code from: ${testWebstore.dir}"/>
+		<deploy username="${sfdc.login}"
+				password="${sfdc.password}"
+				serverurl="${env.endpoint}"
+				deployroot="${testWebstore.dir}"
+				maxPoll="1000" pollWaitMillis="100000">
+		</deploy>
+	</target>
+
+	<!-- This target compiles and runs ftests against org62 renewals class-->
+	<target name="runRenewalsOrg62Test"  description="Run ftest for Renewals Org62 apex classes">
+		<record name="runRenewalsOrg62Test.log" action="start"/>
+		<echo message="Executing ftest for Renewals classes in Org62"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${renewals.home}/sfdc" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runRenewalsOrg62Test.log" action="stop"/>
+	</target>
+
+	<!--
+	<target name='build' description='Compile and test the code against your org'>
+	<echo message='Compiling based on org in ${basebiz.endpoint} as ${basebiz.login}'/>
+	<sf:compileAndTest username='${basebiz.login}' password='${basebiz.password}' server='${env.endpoint}' deployroot="${de.dir}"/>
+	</target>
+	-->
+
+	<target name="loadBasebizDeClasses" depends="compileApexLoader" description="Loads apex classes code in Basebiz DE">
+		<apexLoader user="${basebiz.login}" password="${basebiz.password}"
+					directory="${basebizde.cls.dir}" server="${env.endpoint}"
+					manifestdir="${basebiz.home}/de" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadBasebizDeTriggers" depends="compileApexLoader" description="Loads apex triggers code in Basebiz DE">
+		<apexLoader user="${basebiz.login}" password="${basebiz.password}"
+					directory="${basebizde.trg.dir}" server="${env.endpoint}"
+					manifestdir="${basebiz.home}/de" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadBasebiz62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Basebiz DE dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${basebizsfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${basebiz.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadBasebiz62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Basebiz DE dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${basebizsfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${basebiz.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadBasebiz62OrgPages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Basebiz DE dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${basebizsfdc.pages.dir}" server="${env.endpoint}"
+						manifestdir="${basebiz.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<target name="runBasebizDeTests" depends="compileApexRunTests" description="Run ftest for Basebiz DE apex code">
+		<record name="runBasebizDeTests.log" action="start"/>
+		<property name="noargs" value="true" />
+		<property name="orguser.login" value="${basebiz.login}" />
+		<property name="orguser.password" value="${basebiz.password}" />	 
+
+		<antcall target="apexRunTestsCheckCoverageTarget">
+			<param name="result.dir" value="${basebiz.home}/de" />
+			<param name="xml.results" value="${basebiz.home}/de/results/result-BasebizDe.xml" />
+		</antcall>
+		<copy file="${tools.dir}/template/results.xsl" todir="${basebiz.home}/de/results" />
+		<record name="runBasebizDeTests.log" action="stop"/>
+	</target>
+	
+	<target name="apexRunTestsCheckCoverageTarget">
+		<if>
+			<equals arg1="${codecoverage}" arg2="true" />
+			<then>
+				<antcall target="apexRunTestsWithCodeCov"/>			
+			</then>
+			<else>			
+				<antcall target="apexRunTestsWithoutCodeCov"/>
+			</else>
+		</if>		
+	</target>		
+	
+	<target name="apexRunTestsWithoutCodeCov">
+		<if>
+			<equals arg1="${noargs}" arg2="true" />
+			<then>		
+			<apexRunTests user="${orguser.login}" password="${orguser.password}"  xmlResults="${xml.results}"
+				server="${env.endpoint}"  />
+			</then>
+			<else>
+			<apexRunTests user="${orguser.login}" password="${orguser.password}"  xmlResults="${xml.results}"
+				server="${env.endpoint}" extraArgs="${extraArgsVal}"  />				
+			</else>
+		</if>
+	</target>
+	
+	<target name="apexRunTestsWithCodeCov">
+		<echo message="value of folderForDataFiles is ${folderForDataFiles}"/>
+		<echo message="value of folderForFinalResults is ${folderForFinalResults}" /> 
+
+		<fail unless="folderForDataFiles" message="Folder name for data files not set. Please set and retry"/>
+		<fail unless="folderForFinalResults" message="Folder name for results files not set. Please set and retry"/> 
+		<tstamp>
+			<format property="tempDateTimePattern" pattern="MM_dd_yyyy_hh_mm_aa"/>
+		</tstamp>
+		<var name="folderForDataFilesVal" value="${folderForDataFiles}/run_${tempDateTimePattern}"/>
+		<var name="finalResultsFileNameVal" value="${result.dir}/results/${finalCoverageResultsXML}"/>
+		<var name="htmlFileNameVal" value="${result.dir}/results/${finalCoverageResultsHTML}"/>
+
+		<mkdir dir="${folderForDataFilesVal}"/>
+		<copy file="${folderForFinalResults}/results.xsl" todir="${folderForDataFiles}" overwrite="true"/>
+		<if>
+			<equals arg1="${noargs}" arg2="true" />
+			<then>		
+				<apexRunTests user="${orguser.login}" password="${orguser.password}" xmlResults="${xml.results}"
+					server="${env.endpoint}"  folderForDataFiles="${folderForDataFilesVal}"/>
+			</then>
+			<else>
+				<apexRunTests user="${orguser.login}" password="${orguser.password}" xmlResults="${xml.results}"
+					server="${env.endpoint}" extraArgs="${withCodeCovExtraFlags}"  folderForDataFiles="${folderForDataFilesVal}"/>				
+			</else>
+		</if>
+		
+		<apexCodeCovProcessData dataFileFolderName="${folderForDataFilesVal}" finalResultsFolderName="${finalResultsFileNameVal}"  />
+		<if>
+			<equals arg1="${deleteDataFiles}" arg2="true" />
+			<then> 
+				<delete dir="${folderForDataFilesVal}"/>
+			</then>
+		</if>
+	
+		<updateXMLFileNameInHtmlFile xmlFileName="${finalCoverageResultsXML}"  htmlFileName="${htmlFileNameVal}"/>
+
+	</target>	
+	
+	<target name="runBasebizClassTest" depends="compileApexRunTests" description="Run ftest for basebiz de apex code for specific class">
+		<property name="noargs" value="false" />
+		<property name="extraArgsVal" value="-nc -k ${class.name} -n sfbase" />
+		<property name="withCodeCovExtraFlags" value="-k ${class.name} -n sfbase" />	 	
+		<property name="orguser.login" value="${basebiz.login}" />
+		<property name="orguser.password" value="${basebiz.password}" />	  		  	
+		<antcall target="apexRunTestsCheckCoverageTarget">
+			<param name="result.dir" value="${basebiz.home}/de" />
+			<param name="xml.results" value="${basebiz.home}/de/results/result-BasebizDe.xml" />
+		</antcall>
+		<copy file="${tools.dir}/template/results.xsl" todir="${basebiz.home}/de/results" />
+	</target>
+
+	<target name="runBasebizOrg62Test"  description="Run ftest for basebiz Org62 apex classes">
+		<record name="runBasebizOrg62Test.log" action="start"/>
+		<echo message="Executing ftest for Basebiz classes in Org62"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${basebiz.home}/sfdc"/>
+			<param name="manifest" value="manifestClasses.txt"/>
+		</antcall>
+		<record name="runBasebizOrg62Test.log" action="stop"/>
+	</target>
+
+	<target name="loadBillingDeClasses" depends="compileApexLoader" description="Loads apex classes code in Billing DE">
+		<apexLoader user="${billing.login}" password="${billing.password}"
+					directory="${billingde.cls.dir}" server="${env.endpoint}"
+					manifestdir="${billing.home}/de" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadBillingDeTriggers" depends="compileApexLoader" description="Loads apex triggers code in Billing DE">
+		<apexLoader user="${billing.login}" password="${billing.password}"
+					directory="${billingde.trg.dir}" server="${env.endpoint}"
+					manifestdir="${billing.home}/de" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadBilling62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Billing DE dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${billingsfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${billing.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadBilling62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Billing DE dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${billingsfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${billing.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadBilling62OrgPages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Billing DE dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${billingsfdc.pages.dir}" server="${env.endpoint}"
+						manifestdir="${billing.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+	<target name="runBillingOrg62Test"  description="Run ftest for Billing Org62 apex classes"> 
+
+		<record name="runBillingOrg62Test.log" action="start"/>
+		<echo message="Executing ftest for Billing classes in Org62"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${testBilling.home}"/>
+			<param name="manifest" value="manifestClasses.txt"/>
+		</antcall>
+		<record name="runBillingOrg62Test.log" action="stop"/>
+	</target>
+
+	<target name="runBillingDeTests" depends="compileApexRunTests" description="Run ftest for Billing DE apex code">
+		<record name="runBillingDeTests.log" action="start"/>
+		<property name="noargs" value="true" />
+		<property name="orguser.login" value="${billing.login}" />
+		<property name="orguser.password" value="${billing.password}" />	  	
+		<antcall target="apexRunTestsCheckCoverageTarget">
+			<param name="result.dir" value="${billing.home}/de" />
+			<param name="xml.results" value="${billing.home}/de/results/result-BillingDe.xml" />
+		</antcall>
+		<copy file="${tools.dir}/template/results.xsl" todir="${billing.home}/de/results" />
+		<record name="runBillingDeTests.log" action="stop"/>
+	</target>
+
+	<target name="runInvoiceEmailer" depends="compileApexRunner" description="Run Invoice Emailer">
+		<apexRunner user="${sfdc.login}" password="${sfdc.password}"
+					method="InvoiceEmailer.invoiceEmailProcess"
+					server = "${env.endpoint}" start="${start}"/>
+	</target>
+
+	<target name="runDunning" depends="compileApexRunner" description="Run Dunning Process">
+		<apexRunner user="${sfdc.login}" password="${sfdc.password}"
+					method="storDunningProcess.dunningProcess"
+					server = "${env.endpoint}" start="${start}"/>
+	</target>
+
+	<target name="loadQuoteDeClasses" depends="compileApexLoader" description="Loads apex classes code in Quote DE Org from Quote DE dir">
+		<apexLoader user="${quote.login}" password="${quote.password}"
+					directory="${quotede.cls.dir}" server="${env.endpoint}"
+					manifestdir="${quote.home}/de" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadQuoteDeTriggers" depends="compileApexLoader" description="Loads apex triggers code in Quote DE Org from Quote DE dir">
+		<apexLoader user="${quote.login}" password="${quote.password}"
+					directory="${quotede.trg.dir}" server="${env.endpoint}"
+					manifestdir="${quote.home}/de" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadQuote62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Quote SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${quotesfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${quote.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadQuote62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Quote SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${quotesfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${quote.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadQuote62OrgPages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Quote SFDC dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${quotesfdc.pages.dir}" server="${env.endpoint}"
+						manifestdir="${quote.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<target name="loadForecast62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Forecast SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${forecastsfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${forecast.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadForecast62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Forecast SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${forecastsfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${forecast.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadForecast62OrgPages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Forecast SFDC dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${forecastsfdc.pages.dir}" server="${env.endpoint}"
+						manifestdir="${forecast.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<target name="loadTeam62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Team SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${teamsfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${team.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+	<target name="loadTeam62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Team SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${teamsfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${team.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadTeam62OrgPages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Team SFDC dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${teamsfdc.pages.dir}" server="${env.endpoint}"
+						manifestdir="${team.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<target name="runQuoteDeTests" depends="compileApexRunTests" description="Run ftest for Quote DE apex code">
+		<record name="runQuoteDeTests.log" action="start"/>
+		<property name="noargs" value="true" />
+		<property name="orguser.login" value="${quote.login}" />
+		<property name="orguser.password" value="${quote.password}" />	  		  	
+		<antcall target="apexRunTestsCheckCoverageTarget">
+			<param name="result.dir" value="${quote.home}/de" />
+			<param name="xml.results" value="${quote.home}/de/results/result-QuoteDe.xml" />
+		</antcall>
+		<copy file="${tools.dir}/template/results.xsl" todir="${quote.home}/de/results" />
+		<record name="runQuoteDeTests.log" action="stop"/>
+	</target>
+
+	<target name="runQuoteOrg62Test"  description="Run ftest for Quote Org62 apex classes">
+		<record name="runQuoteOrg62Test.log" action="start"/>
+		<echo message="Executing ftest for Quote classes in Org62"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${quote.home}/sfdc" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runQuoteOrg62Test.log" action="stop"/>
+	</target>
+
+	<target name="loadOm62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Order Management DE dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${omsfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${om.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadOm62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Order Management DE dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${omsfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${om.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadOm62OrgPages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Order Management DE dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${omsfdc.pages.dir}" server="${env.endpoint}"
+						manifestdir="${om.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<!-- webstore targets -->
+	<target name="loadWebstore62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Webstore dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${webstore.cls.dir}" server="${env.endpoint}"
+					manifestdir="${webstore.home}/app" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadWebstorePages" depends="compileScontrolLoader" description="Loads apex pages in Org62 from Webstore dir">
+		<scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+						directory="${webstore.pages.dir}" server="${env.endpoint}"
+						manifestdir="${webstore.home}/app" manifest="manifestPages.txt"/>
+	</target>
+
+	<target name="runOmOrg62Test"  description="Run ftest for Om Org62 apex classes">
+		<record name="runOmOrg62Test.log" action="start"/>
+		<echo message="Executing ftest for Om classes in Org62"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${om.home}/sfdc" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runOmOrg62Test.log" action="stop"/>
+	</target>	  		
+
+	<target name="runOrg62ClassTestWithCodeCov">
+		<mkdir dir="${folderForDataFilesVal}"/>
+		<copy file="${folderForFinalResults}/results.xsl" todir="${folderForDataFiles}" overwrite="true"/>  	
+		<echo message="Running ftest for ${class.name}"/>
+		<apexRunTests user="${sfdc.login}" password="${sfdc.password}" xmlResults="${manifestdir}/results/result-${class.name}.xml" 
+			server="${env.endpoint}" extraArgs="-k ${class.name}" folderForDataFiles="${folderForDataFilesVal}"/>
+	</target>
+	
+	<target name="viewAnyXmlFile">
+		<updateXMLFileNameInHtmlFile xmlFileName="${resultsXMLFileName}"/>
+	</target>
+	
+	<macrodef name="updateXMLFileNameInHtmlFile" >
+		<attribute name="xmlFileName"/>	
+		<attribute name="htmlFileName"/>			
+		<sequential>
+			<copy tofile="@{htmlFileName}" overwrite="true">
+				<fileset dir="${folderForFinalResults}">
+					<include name="**/*.htmltemplate"/>
+				</fileset>
+				<globmapper from="*.htmltemplate" to="*"/>
+				<filterset>
+					<filter token="XML.filename" value="@{xmlFileName}"/>
+				</filterset>
+			</copy>
+		</sequential>
+	</macrodef>	
+
+	<target name="runOrg62ClassTestWithoutCodeCov">
+		<echo message="Running ftest for ${class.name}"/>
+		<apexRunTests user="${sfdc.login}" password="${sfdc.password}" xmlResults="${manifestdir}/results/result-${class.name}.xml"
+			server="${env.endpoint}" extraArgs="-nc -k ${class.name}" />
+	</target>
+
+	<target name="runOrg62ClassTest" depends="compileApexRunTests, checkResultDirExists, createResultsDir" description="Run ftest for Org62 apex code for specific class">
+		<if>
+			<equals arg1="${codecoverage}" arg2="true" />
+			<then>
+				<antcall target="runOrg62ClassTestWithCodeCov"/>			
+			</then>
+			<else>		
+				<antcall target="runOrg62ClassTestWithoutCodeCov"/>
+			</else>
+		</if>		
+	</target>
+
+	<target name="checkResultDirExists">
+		<available file="${manifestdir}/results" type="dir" property="resultdir.present"/>
+		<if>
+			<equals arg1="resultdir.present" arg2="true" />
+			<then>
+				<delete file="${manifestdir}/results/*.xml"/>
+			</then>	 
+		</if>
+	</target>
+
+	<target name="createResultsDir" unless="${resultdir.present}">
+		<mkdir dir="${manifestdir}/results"/>
+	</target>
+
+	<target name="loadEntit62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Entitlements SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${entitlementsfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${entitlement.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadEntit62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from Entitlements SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${entitlementsfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${entitlement.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadEntit62OrgPages" depends="compileApexLoader" description="Loads apex pages code in Org62 from Entitlements SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${entitlementsfdc.pages.dir}" server="${env.endpoint}"
+					manifestdir="${entitlement.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<target name="loadRenewals62OrgClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from Renewals SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${renewalsSfdc.cls.dir}" server="${env.endpoint}"
+					manifestdir="${renewals.home}/sfdc" manifest="manifestClasses.txt"/>
+	</target>
+	
+	<target name="loadRenewals62OrgTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from renewals SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${renewalsSfdc.trg.dir}" server="${env.endpoint}"
+					manifestdir="${renewals.home}/sfdc" manifest="manifestTriggers.txt"/>
+	</target>
+	
+	<target name="loadRenewals62OrgPages" depends="compileApexLoader" description="Loads apex pages code in Org62 from renewals SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${renewalsSfdc.pages.dir}" server="${env.endpoint}"
+					manifestdir="${renewals.home}/sfdc" manifest="manifestPages.txt"/>
+	</target>
+
+	<!-- Ftest targets -->
+	<target name="loadTestUtilClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from test/utils SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testUtils.cls.dir}" server="${env.endpoint}"
+					manifestdir="${testUtils.home}" manifest="manifestClasses.txt"/>
+	</target>
+	
+	<target name="loadTestQuoteClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from test/quote SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testQuote.cls.dir}" server="${env.endpoint}"
+					manifestdir="${testQuote.home}" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadTestQuoteTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from test/quote SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testQuote.trg.dir}" server="${env.endpoint}"
+					manifestdir="${testQuote.home}" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadTestForecastClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from test/forecast SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testForecast.cls.dir}" server="${env.endpoint}"
+					manifestdir="${testForecast.home}" manifest="manifestClasses.txt"/>
+	</target>
+
+	<target name="loadTestForecastTriggers" depends="compileApexLoader" description="Loads apex triggers code in Org62 from test/forecast SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testForecast.trg.dir}" server="${env.endpoint}"
+					manifestdir="${testForecast.home}" manifest="manifestTriggers.txt"/>
+	</target>
+
+	<target name="loadTestBillingClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from test/billing SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testBilling.cls.dir}" server="${env.endpoint}"
+					manifestdir="${testBilling.home}" manifest="manifestClasses.txt"/>
+	</target>
+	
+	<target name="loadTestBasebizClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from test/basebiz SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testBasebiz.cls.dir}" server="${env.endpoint}"
+					manifestdir="${testBasebiz.home}" manifest="manifestClasses.txt"/>
+	</target>
+	
+	<target name="loadTestWebstoreClasses" depends="compileApexLoader" description="Loads apex classes code in Org62 from test/webstore SFDC dir">
+		<apexLoader user="${sfdc.login}" password="${sfdc.password}"
+					directory="${testWebstore.cls.dir}" server="${env.endpoint}"
+					manifestdir="${testWebstore.home}" manifest="manifestClasses.txt"/>
+	</target>
+	
+	<target name="runQuoteTest"  description="Run ftest for Quote Org62 apex classes from test/quote branch">
+		<record name="runQuoteTest.log" action="start"/>
+		<echo message="Executing ftest for Quote classes in Org62 from test/quote branch"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${testQuote.home}" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runQuoteTest.log" action="stop"/>
+	</target>
+
+	<target name="runForecastTest"  description="Run ftest for Forecast Org62 apex classes from test/forecast branch">
+		<record name="runForecastTest.log" action="start"/>
+		<echo message="Executing ftest for Forecast classes in Org62 from test/forecast branch"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${testForecast.home}" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runForecastTest.log" action="stop"/>
+	</target>
+
+	<target name="runBillingTest"  description="Run ftest for Billing Org62 apex classes from test/billing branch">
+		<record name="runBillingTest.log" action="start"/>
+			<echo message="Executing ftest for Billing classes in Org62 from test/billing branch"/>
+			<antcall target="runOrg62fTest">
+				<param name="manifestdir" value="${testBilling.home}" />
+				<param name="manifest" value="manifestClasses.txt" />
+			</antcall>
+		<record name="runBillingTest.log" action="stop"/>
+	</target>
+	
+	<target name="runOMTest"  description="Run ftest for OM Org62 apex classes from test/OM branch">
+		<record name="runOMTest.log" action="start"/>
+			<echo message="Executing ftest for OM classes in Org62 from test/OM branch"/>
+			<antcall target="runOrg62fTest">
+				<param name="manifestdir" value="${testOM.home}" />
+				<param name="manifest" value="manifestClasses.txt" />
+			</antcall>
+		<record name="runOMTest.log" action="stop"/>
+	</target>
+	
+	<target name="runEntitlementsTest" description="run ftest for entitlements in Org 62">
+	  <record name="runEntitlementsTest.log" action="start"/>
+	  <echo message="Executing ftest for Entitlements classes in Org62 from test/OM branch"/>
+	  <antcall target="runOrg62fTest">
+	    <param name="manifestdir" value="${testEntitlement.home}" />
+	    <param name="manifest" value="manifestClasses.txt" />
+	  </antcall>
+	  <record name="runEntitlementsTest.log" action="stop"/>
+	</target>
+	
+	<target name="runBasebizTest"  description="Run ftest for Basebiz Org62 apex classes from test/basebiz branch">
+		<record name="runBasebizTest.log" action="start"/>
+		<echo message="Executing ftest for Basebiz classes in Org62 from test/basebiz branch"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${testBasebiz.home}" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runBasebizTest.log" action="stop"/>
+	</target>
+	
+	<target name="runWebstoreTest"  description="Run ftest for Webstore Org62 apex classes from test/webstore branch">
+		<record name="runWebstoreTest.log" action="start"/>
+		<echo message="Executing ftest for webstore classes in Org62 from test/webstore branch"/>
+		<antcall target="runOrg62fTest">
+			<param name="manifestdir" value="${testWebstore.home}" />
+			<param name="manifest" value="manifestClasses.txt" />
+		</antcall>
+		<record name="runWebstoreTest.log" action="stop"/>
+	</target>
+
+	<!-- This target will read individual classes from manifest file and pass them to runOrg62ClassTest -->
+	<target name="runOrg62fTest" depends="compileApexRunTests, compileApexCodeCovMetrics, checkResultDirExists, createResultsDir" description="Run ftest for Org62 apex code for list of classes">
+		<loadfile srcFile="${manifestdir}/${manifest}" property="ftestmanifest">
+			<filterchain>
+				<tokenfilter>  
+					<trim/>
+					<deletecharacters chars="\t"/>
+					<ignoreblank/>
+					<containsregex pattern="^ *class *" replace="," flags="gi"/>
+				</tokenfilter>
+			</filterchain>
+		</loadfile> 
+		<if>
+			<equals arg1="${codecoverage}" arg2="true" />
+			<then>
+				<fail unless="folderForDataFiles" message="Folder name for data files not set. Please set and retry"/>
+				<fail unless="folderForFinalResults" message="Folder name for results files not set. Please set and retry"/> 
+				<tstamp>
+					<format property="tempDateTimePattern" pattern="MM_dd_yyyy_hh_mm_aa"/>
+				</tstamp>
+			</then>
+		</if>		
+
+		<for list="${ftestmanifest}" delimiter="," trim="true" param="class.name">
+			<sequential>
+				<trycatch>
+					<try>
+	  					<antcall target="runOrg62ClassTest">
+	     					<param name="class.name" value="@{class.name}"/>
+							<param name="folderForDataFilesVal" value="${folderForDataFiles}/run_${tempDateTimePattern}"/>
+							<param name="finalResultsFileNameVal" value="${manifestdir}/results/${finalCoverageResultsXML}"/>
+							<param name="htmlFileNameVal" value="${manifestdir}/results/${finalCoverageResultsHTML}"/>
+						</antcall>  
+					</try>
+					<catch>
+	  					<echo> Caught an exception in @{class.name} </echo>
+	  					<property name="returncode" value="1"/>
+						<if>
+							<equals arg1="${codecoverage}" arg2="true" />
+							<then>
+								<delete dir="${folderForDataFilesVal}"/>
+							</then>
+						</if>
+					</catch>
+				</trycatch>
+			</sequential>
+		</for>
+		<if>
+			<equals arg1="${returncode}" arg2="1" />
+			<then>
+				<fail message="ant failed in runOrg62fTest" status="1"/> 
+			</then>
+		</if>  
+		<if>
+			<equals arg1="${codecoverage}" arg2="true" />
+			<then>
+				<echo message="about to process coverage metrics"/>
+				<property name="folderForDataFilesVal" value="${folderForDataFiles}/run_${tempDateTimePattern}"/>
+				<property name="finalResultsFileNameVal" value="${manifestdir}/results/${finalCoverageResultsXML}"/>
+				<property name="htmlFileNameVal" value="${manifestdir}/results/${finalCoverageResultsHTML}"/>
+				<apexCodeCovProcessData dataFileFolderName="${folderForDataFilesVal}" finalResultsFolderName="${finalResultsFileNameVal}"  />
+				
+				<if>
+					<equals arg1="${deleteDataFiles}" arg2="true" />
+					<then> 
+						<delete dir="${folderForDataFilesVal}"/>
+					</then>
+				</if>
+				<updateXMLFileNameInHtmlFile xmlFileName="${finalCoverageResultsXML}" htmlFileName="${htmlFileNameVal}"/>
+			</then>
+		</if>
+	</target>
+
+	<!-- Execute ftest for all modules and classes --> 
+	<target name="runAllfTest" depends="compileApexRunTests" description="Run ftest for all modules and classes">
+		<trycatch>
+			<try>
+				<echo message="Executing runBasebizDeTests"/>
+				<antcall target="runBasebizDeTests"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<echo message="Executing runBillingDeTests"/>
+				<antcall target="runBillingDeTests"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<echo message="Executing runQuoteDeTests"/>
+				<antcall target="runQuoteDeTests"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runBasebizOrg62Test"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runBillingOrg62Test"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runQuoteOrg62Test"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runOmOrg62Test"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runQuoteTest"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runForecastTest"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runBasebizTest"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<trycatch>
+			<try>
+				<antcall target="runWebstoreTest"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+
+		<if>
+			<equals arg1="${returncode}" arg2="1" />
+			<then>
+				<fail message="ant failed in runAllfTest" status="1"/> 
+			</then>
+		</if>  
+		<trycatch>
+			<try>
+				<antcall target="runRenewalsOrg62Test"/>
+			</try>
+			<catch>
+				<property name="returncode" value="1"/>
+			</catch>
+		</trycatch>
+		<if>
+			<equals arg1="${returncode}" arg2="1" />
+			<then>
+				<fail message="ant failed in runAllfTest" status="1"/> 
+			</then>
+		</if>  
+	</target>
+
+	<target name="getOrgUsage" depends="compileGetOrgUsage" description="Utility to find Org Usage for given orgid">
+		<getOrgUsage user="${sfdc.login}" password="${sfdc.password}"
+			server="${env.endpoint}" org="${orgid}" />
+	</target>
+
+	<target name="enqueueAllAccounts" depends="compileMassEnqueue">
+        	<enqueueAccounts user="${sfdc.login}" password="${sfdc.password}"
+                	server="${env.endpoint}" file="allOrgs.txt" />
+    	</target>
+
+	<target name="insertCountryRevenueMap">
+		<upsertCustomObjMacro fileName="CountryRevenueMap" entityName="CountryRevenueMap"
+			username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}" 
+			dataMappingDir="${basebiz.data.mapping.dir}"/>
+	</target>
+
+	<target name="insertSpecialistForecast">
+		<insertCustomObjMacro fileName="SpecialistForecast" entityName="SpecialistForecast"
+			username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}" 
+			dataMappingDir="${forecast.data.mapping.dir}"/>
+	</target>
+
+	<target name="insertSpecialistForecastLineItem">
+		<insertCustomObjMacro fileName="SpecialistForecastLineItem" entityName="SpecialistForecastLineItem"
+			username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}" 
+			dataMappingDir="${forecast.data.mapping.dir}"/>
+	</target>
+
+	<target name="insertForecastConfigurations">
+		<insertCustomObjMacro fileName="ForecastConfigurations" entityName="ForecastConfigurations"
+			username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}" 
+			dataMappingDir="${forecast.data.mapping.dir}"/>
+	</target>
+	
+	<target name="insertForecastHierarchyConfigurations">
+		<insertCustomObjMacro fileName="ForecastHierarchyConfigurations" entityName="ForecastHierarchyConfigurations"
+			username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}" 
+			dataMappingDir="${forecast.data.mapping.dir}"/>
+	</target>
+
+	<target name="insertStoreConfigurations">
+		<insertCustomObjMacro fileName="StoreConfigurations" entityName="StoreConfigurations"
+			username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}" 
+			dataMappingDir="${basebiz.data.mapping.dir}"/>
+	</target>
+
+	<target name="insertSOBPaymentMethodMap">
+	<upsertCustomObjMacro fileName="SOBPaymentMethodMap" entityName="SOBPaymentMethodMap"
+		username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+		dataMappingDir="${basebiz.data.mapping.dir}"/>                          
+	</target>
+
+	<target name="insertDivisionInformation">
+		<upsertCustomObjMacro fileName="DivisionInformation" entityName="DivisionInformation"
+			username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+			dataMappingDir="${basebiz.data.mapping.dir}"/>
+	</target>
+
+	<target name="insertPaymentMethodInstruction">
+	  <upsertCustomObjMacro fileName="PaymentMethodInstruction" entityName="PaymentMethodInstruction"
+	          username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+	          dataMappingDir="${basebiz.data.mapping.dir}"/>                          
+	</target>
+
+	<target name="upsertProductAccountingSFDC" depends="getSfdcPassword">
+		<antcall target="upsertProductAccounting">
+		  <param name="current.username" value="${sfdc.login}"/>
+		  <param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="upsertProductAccounting" description="upserts the product accounting data">
+	  <sequential>
+	  <baseUpsertCall>
+            <arg value="sfdc.entity=Product2"/>
+            <arg value="dataAccess.name=${basebiz.data.dir}/ProductAccounting.csv"/>
+            <arg value="process.mappingFile=${basebiz.data.mapping.dir}/ProductAccounting.sdl"/>
+            <arg value="sfdc.externalIdField=${basebizns}SKU__c"/>
+            <arg value="sfdc.username=${sfdc.login}"/>
+            <arg value="sfdc.password=${sfdc.password.enc}"/>
+	  </baseUpsertCall>
+	  </sequential>
+	</target>
+
+
+	<target name="insertCntryRevMapIntoSfdc" depends="getSfdcPassword" description="Upserts Country Revenue Map data in destination org">
+		<antcall target="insertCountryRevenueMap">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertSpecialistForecastIntoSfdc" depends="getSfdcPassword" description="Inserts Specialist Forecast data in 62 org">
+		<antcall target="insertSpecialistForecast">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertSpecialistForecastLineItemIntoSfdc" depends="getSfdcPassword" description="Inserts Specialist Forecast Line Item data in 62 org">
+		<antcall target="insertSpecialistForecastLineItem">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertForecastConfigurationsIntoSfdc" depends="getSfdcPassword" description="Inserts Corporate Forecast Report custom settings data in 62 org">
+		<antcall target="insertForecastConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+	
+	<target name="insertForecastHierarchyConfigurationsIntoSfdc" depends="getSfdcPassword" description="Inserts specialist forecast hierarchy Role-User Mapping data in 62 org">
+		<antcall target="insertForecastHierarchyConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertStoreConfigurationsIntoSfdc" depends="getSfdcPassword" description="Inserts Store custom settings data in 62 org">
+		<antcall target="insertStoreConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+	
+	<target name="insertStoreConfigurationsIntoQuoteDE" depends="getQuotePassword" description="Inserts Store custom settings data in Quote DE org">
+		<antcall target="insertStoreConfigurations">
+			<param name="current.username" value="${quote.login}"/>
+			<param name="current.encPwd" value="${quote.password.enc}"/>
+		</antcall>
+	</target>	
+
+	<target name="insertSOBPmtMthdMapIntoSfdc" depends="getSfdcPassword" description="Upserts SOB Payment Method data in destination org">
+		<antcall target="insertSOBPaymentMethodMap">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertDivisionInformationIntoSfdc" depends="getSfdcPassword" description="Upserts Division Information data in destination org">
+		<antcall target="insertDivisionInformation">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertPaymentMethodInstructionIntoSfdc" depends="getSfdcPassword" description="Upserts Payment Method Instruction data in destination org">
+		<antcall target="insertPaymentMethodInstruction">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertCompassMapDataSFDC" depends="insertCntryRevMapIntoSfdc,insertSOBPmtMthdMapIntoSfdc,insertDivisionInformationIntoSfdc,insertPaymentMethodInstructionIntoSfdc" description="Upserts all data in destination org"/>
+
+	<target name="insertCntryRevMapIntoBaseBiz" depends="getBaseBizPassword" description="Upserts Country Revenue Map data in basebiz">
+		<antcall target="insertCountryRevenueMap">
+			<param name="current.username" value="${basebiz.login}"/>
+			<param name="current.encPwd" value="${basebiz.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertSOBPmtMthdMapIntoBaseBiz" depends="getBaseBizPassword" description="Upserts SOB Payment Method data in basebiz">
+		<antcall target="insertSOBPaymentMethodMap">
+			<param name="current.username" value="${basebiz.login}"/>
+			<param name="current.encPwd" value="${basebiz.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertDivisionInformationIntoBaseBiz" depends="getBaseBizPassword" description="Upserts Division Information data in basebiz">
+		<antcall target="insertDivisionInformation">
+			<param name="current.username" value="${basebiz.login}"/>
+			<param name="current.encPwd" value="${basebiz.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertPaymentMethodInstructionIntoBaseBiz" depends="getBaseBizPassword" description="Upserts Payment Method Instruction data in basebiz">
+		<antcall target="insertPaymentMethodInstruction">
+			<param name="current.username" value="${basebiz.login}"/>
+			<param name="current.encPwd" value="${basebiz.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertAllIntoBaseBiz"
+			depends="insertCntryRevMapIntoBaseBiz,insertSOBPmtMthdMapIntoBaseBiz,insertDivisionInformationIntoBaseBiz,insertPaymentMethodInstructionIntoBaseBiz"
+			description="Upserts all data in basebiz"/>
+
+
+	<target name="insertCntryRevMapIntoBilling" depends="getBillingPassword" description="Upserts Country Revenue Map data in billing org">
+		<antcall target="insertCountryRevenueMap">
+			<param name="current.username" value="${billing.login}"/>
+			<param name="current.encPwd" value="${billing.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertSOBPmtMthdMapIntoBilling" depends="getBillingPassword" description="Upserts SOB Payment Method data in billing org">
+		<antcall target="insertSOBPaymentMethodMap">
+			<param name="current.username" value="${billing.login}"/>
+			<param name="current.encPwd" value="${billing.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertDivisionInformationIntoBilling" depends="getBillingPassword" description="Upserts Division Information data in billing org">
+		<antcall target="insertDivisionInformation">
+			<param name="current.username" value="${billing.login}"/>
+			<param name="current.encPwd" value="${billing.password.enc}"/>
+		</antcall>
+	</target>
+
+	
+
+	<target name="insertPaymentMethodInstructionIntoBilling" depends="getBillingPassword" description="Upserts Payment Method Instruction data in billing org">
+		<antcall target="insertPaymentMethodInstruction">
+			<param name="current.username" value="${billing.login}"/>
+			<param name="current.encPwd" value="${billing.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="insertAllIntoBilling"
+			depends="insertCntryRevMapIntoBilling,insertSOBPmtMthdMapIntoBilling,insertDivisionInformationIntoBilling,insertPaymentMethodInstructionIntoBilling"
+			description="Upserts all data in billing org"/>
+
+	<!-- This doesn't insert products -->
+	<target name="deleteAllO2C">
+		<deleteAllMacro entityName="CountryRevenueMap" username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+						dataMappingDir="${basebiz.data.mapping.dir}"/> 
+		<deleteAllMacro entityName="SOBPaymentMethodMap"  username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+						dataMappingDir="${basebiz.data.mapping.dir}"/>
+		<deleteAllMacro entityName="DivisionInformation" username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+						dataMappingDir="${basebiz.data.mapping.dir}"/>
+		<deleteAllMacro entityName="PaymentMethodInstruction" username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+						dataMappingDir="${basebiz.data.mapping.dir}"/>
+	</target>
+
+	<target name="deleteAllSpecialistForecast">
+		<deleteAllMacro entityName="SpecialistForecast" username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}"
+						dataMappingDir="${forecast.data.mapping.dir}"/> 
+	</target>
+
+	<target name="deleteAllSpecialistForecastLineItem">
+		<deleteAllMacro entityName="SpecialistForecastLineItem" username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}"
+						dataMappingDir="${forecast.data.mapping.dir}"/> 
+	</target>
+
+	<target name="deleteAllForecastConfigurations">
+		<deleteAllMacro entityName="ForecastConfigurations" username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}"
+						dataMappingDir="${forecast.data.mapping.dir}"/> 
+	</target>
+
+	<target name="deleteAllForecastHierarchyConfigurations">
+		<deleteAllMacro entityName="ForecastHierarchyConfigurations" username="${current.username}" encPwd="${current.encPwd}" ns="" dataDir="${forecast.data.dir}"
+						dataMappingDir="${forecast.data.mapping.dir}"/> 
+	</target>
+
+	<target name="deleteAllStoreConfigurations">
+		<deleteAllMacro entityName="StoreConfigurations" username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${basebiz.data.dir}"
+						dataMappingDir="${basebiz.data.mapping.dir}"/> 
+	</target>
+
+	<target name="deleteCompassMapDataSFDC" depends="getSfdcPassword">
+		<antcall target="deleteAllO2C">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="deleteAllDataInBilling" depends="getBillingPassword">
+		<antcall target="deleteAllO2C">
+			<param name="current.username" value="${billing.login}"/>
+			<param name="current.encPwd" value="${billing.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="deleteAllDataFromSpecialistForecast" depends="getSfdcPassword" description="Deletes Specialist Forecast data from 62 org">
+		<antcall target="deleteAllSpecialistForecast">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="deleteAllDataFromSpecialistForecastLineItem" depends="getSfdcPassword" description="Deletes Specialist Forecast Line Item data from 62 org">
+		<antcall target="deleteAllSpecialistForecastLineItem">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="deleteAllDataFromForecastConfigurations" depends="getSfdcPassword" description="Deletes Forecast Configurations custom settings data from 62 org">
+		<antcall target="deleteAllForecastConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="deleteAllDataFromForecastHierarchyConfigurations" depends="getSfdcPassword" description="Deletes Forecast Hierarchy Configurations from 62 org">
+		<antcall target="deleteAllForecastHierarchyConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="deleteAllDataFromStoreConfigurations" depends="getSfdcPassword" description="Deletes Store Configurations custom settings data from 62 org">
+		<antcall target="deleteAllStoreConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+	
+	<target name="deleteAllDataFromStoreConfigurationsFromQuote" depends="getQuotePassword" description="Deletes Store Configurations custom settings data from Quote DE org">
+		<antcall target="deleteAllStoreConfigurations">
+			<param name="current.username" value="${quote.login}"/>
+			<param name="current.encPwd" value="${quote.password.enc}"/>
+		</antcall>
+	</target>	
+
+	<target name="extractCountryRevenueMap">
+		<queryCustomObjMacro entityName="CountryRevenueMap"
+			fileName="CountryRevenueMap-extract"
+			fields="${basebizns}CountryISOCode__c, ${basebizns}CountryName__c,
+					${basebizns}RevenueOwner__c, ${basebizns}RevenueRegion__c,
+					${basebizns}PrimaryCurrency__c, ${basebizns}SupportedCurrencies__c,
+					${basebizns}VATNumberRequired__c, ${basebizns}Percent__c, ${basebizns}PricingRegion__c, ${basebizns}ExtIdentifier__c"
+			username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${data.dir}"/>
+	</target>
+
+	<target name="extractSOBPaymentMethodMap">
+		<queryCustomObjMacro entityName="SOBPaymentMethodMap"
+			fileName="SOBPaymentMethodMap-extract"
+			fields="${basebizns}Comments__c,
+			${basebizns}CreditCardType__c,
+			${basebizns}DefaultPaymentTerm__c,
+			${basebizns}ExtIdentifier__c,
+			${basebizns}PaymentMethod__c,
+			${basebizns}PaymentTerm__c,
+			${basebizns}RevenueOwner__c,
+			${basebizns}RevenueRegion__c,
+			${basebizns}SupportedCurrencies__c"
+			username="${current.username}"
+			encPwd="${current.encPwd}" ns="${basebizns}"
+			dataDir="${data.dir}"/>
+	</target>
+
+	<target name="extractDivisionInfo">
+		<queryCustomObjMacro entityName="DivisionInformation"
+			fileName="DivisionInformation-extract"
+			fields="Name,
+				${basebizns}EffectiveDate__c,
+			${basebizns}ExpirationDate__c,
+			${basebizns}RevenueOwner__c,
+			${basebizns}Country__c,
+			${basebizns}SoldFromName__c,
+			${basebizns}SoldFromStreet1__c,
+			${basebizns}SoldFromStreet2__c,
+			${basebizns}SoldFromCity__c,
+			${basebizns}SoldFromState__c,
+			${basebizns}SoldFromZip__c,
+			${basebizns}SoldFromCountry__c,
+			${basebizns}SoldFromPhone__c,
+			${basebizns}SoldFromFax__c,
+			${basebizns}Website__c,
+			${basebizns}HeaderLabel__c,
+			${basebizns}HeaderLabelType__c,
+			${basebizns}CreditMemoLabelType__c,
+			${basebizns}RegionalPhone__c,
+			${basebizns}DisplayCustomerVat__c,
+			${basebizns}DisplayTaxSummary__c,
+			${basebizns}SummaryTaxType__c,
+			${basebizns}ForeignTaxType__c,
+			${basebizns}ForeignExRateCurr__c,
+			${basebizns}DisplayTaxMessaging__c,
+			${basebizns}ExtIdentifier__c"
+			username="${current.username}"
+			encPwd="${current.encPwd}" ns="${basebizns}"
+			dataDir="${data.dir}"/>
+	</target>
+
+	<target name="extractPaymentMethodInstruction">
+		<queryCustomObjMacro entityName="PaymentMethodInstruction"
+			fileName="PaymentMethodInstruction-extract"
+			fields="${basebizns}EffectiveDate__c, 
+					${basebizns}ExpirationDate__c,
+					${basebizns}RevenueOwner__c, 
+					${basebizns}PaymentMethod__c,
+					${basebizns}InvoiceCurrency__c,
+					${basebizns}RemitToName__c,
+					${basebizns}RemitToStreet1__c,
+					${basebizns}RemitToStreet2__c,
+					${basebizns}RemitToCity__c,
+					${basebizns}RemitToState__c,
+					${basebizns}RemitToZip__c,
+					${basebizns}RemitToCountry__c,
+					${basebizns}BankName__c,
+					${basebizns}BankStreet1__c,
+					${basebizns}BankStreet2__c,
+					${basebizns}BankCity__c,
+					${basebizns}BankState__c,
+					${basebizns}BankZip__c,
+					${basebizns}BankCountry__c,
+					${basebizns}BankAcName__c,
+					${basebizns}BankAcNo__c,
+					${basebizns}BankSwiftCode__c,
+					${basebizns}BankAbaNo__c,
+					${basebizns}BankSortCode__c,
+					${basebizns}BankComment__c,
+					${basebizns}IBAN__c,
+					${basebizns}PaymentInstructions__c,
+					${basebizns}CheckMessaging__c,
+					${basebizns}TearSheet__c,
+					${basebizns}DeliveryPointBarCode__c,
+					${basebizns}Comments__c,
+					${basebizns}ExtIdentifier__c"
+			username="${current.username}" encPwd="${current.encPwd}" ns="${basebizns}" dataDir="${data.dir}"/>                                                  
+	</target>
+
+	<target name="extractForecastConfigurations">
+		<queryCustomObjMacro entityName="ForecastConfigurations"
+			fileName="ForecastConfigurations-extract"
+			fields="Name,
+			ConfigurationCategory__c,
+			ConfigurationValue__c,
+			IsActive__c,
+			Comment__c"
+			username="${current.username}"
+			encPwd="${current.encPwd}" ns=""
+			dataDir="${forecast.data.dir}"/>
+	</target>
+
+	<target name="extractForecastConfigurationsSFDC" depends="getSfdcPassword" description="Extracts Forecast Configuration custom settings data from 62 org">
+		<antcall target="extractForecastConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="extractStoreConfigurations">
+		<queryCustomObjMacro entityName="StoreConfigurations"
+			fileName="StoreConfigurations-extract"
+			fields="Name,
+			sfbase__ConfigurationCategory__c,
+			sfbase__ConfigurationValue__c,
+			sfbase__Operation__c,
+			sfbase__IsActive__c,
+			sfbase__Comment__c"
+			username="${current.username}"
+			encPwd="${current.encPwd}" ns="${basebizns}" 
+			dataDir="${basebiz.data.dir}"/>
+	</target>
+
+	<target name="extractStoreConfigurationsSFDC" depends="getSfdcPassword" description="Extracts Store Configuration custom settings data from 62 org">
+		<antcall target="extractStoreConfigurations">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="extractCountryRevenueMapSFDC" depends="getSfdcPassword">
+	  <antcall target="extractCountryRevenueMap">
+	    <param name="current.username" value="${sfdc.login}"/>
+	    <param name="current.encPwd" value="${sfdc.password.enc}"/>
+	  </antcall>
+	</target>
+
+	<target name="extractSOBPaymentMethodMapSFDC" depends="getSfdcPassword">
+		<antcall target="extractSOBPaymentMethodMap">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="extractCntryRevMapFromBaseBiz" depends="getBaseBizPassword">
+		<antcall target="extractCountryRevenueMap">
+			<param name="current.username" value="${basebiz.login}"/>
+			<param name="current.encPwd" value="${basebiz.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="extractSOBPmtMthdMapFromBaseBiz" depends="getBaseBizPassword">
+		<antcall target="extractSOBPaymentMethodMap">
+			<param name="current.username" value="${basebiz.login}"/>
+			<param name="current.encPwd" value="${basebiz.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="extractDivisionInfoSFDC" depends="getSfdcPassword">
+		<antcall target="extractDivisionInfo">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="extractPaymentMethodInstructionSFDC" depends="getSfdcPassword">
+		<antcall target="extractPaymentMethodInstruction">
+			<param name="current.username" value="${sfdc.login}"/>
+			<param name="current.encPwd" value="${sfdc.password.enc}"/>
+		</antcall>
+	</target>
+
+	<target name="getSfdcPassword" unless="sfdc.password.enc">
+		<baseEncryptPassword outputProperty="sfdc.password.enc">
+			<arg value="-e"/>
+			<arg value="${sfdc.password}"/>
+		</baseEncryptPassword>
+	</target>
+
+	<target name="getBaseBizPassword" unless="basebiz.password.enc">
+		<baseEncryptPassword outputProperty="basebiz.password.enc">
+			<arg value="-e"/>
+			<arg value="${basebiz.password}"/>
+		</baseEncryptPassword>
+	</target>
+	
+	<target name="getQuotePassword" unless="quote.password.enc">
+		<baseEncryptPassword outputProperty="quote.password.enc">
+			<arg value="-e"/>
+			<arg value="${quote.password}"/>
+		</baseEncryptPassword>
+	</target>	
+
+	<target name="getBillingPassword" unless="billing.password.enc">
+		<baseEncryptPassword outputProperty="billing.password.enc">
+			<arg value="-e"/>
+			<arg value="${billing.password}"/>
+		</baseEncryptPassword>
+	</target>
+
+	<target name="helpDataload" description="Show all the data loader targets">
+		<echo />
+		<echo message="Ant targets used for data loader:" />
+		<echo message="================================================" />
+		<echo message="upsertProductAccountingSFDC:			Upserts the product accounting data." />
+		<echo message="insertCntryRevMapIntoSfdc:			Upserts Country Revenue Map data in basebiz." />
+		<echo message="insertSOBPmtMthdMapIntoSfdc:			Upserts SOB Payment Method data in destination org." />
+		<echo message="insertDivisionInformationIntoSfdc:		Upserts Division Information data in destination org." />
+		<echo message="insertPaymentMethodInstructionIntoSfdc:		Upserts Payment Method Instruction data in destination org." />
+		<echo message="insertCompassMapDataSFDC:			Upserts all data in destination org." />
+		<echo message="insertForecastConfigurationsIntoSfdc:		Inserts Corporate Forecast Report custom settings data in 62 org." />
+		<echo message="insertSpecialistForecastIntoSfdc:		Inserts Specialist Forecast data in 62 org." />
+		<echo message="insertSpecialistForecastLineItemIntoSfdc:	Inserts Specialist Forecast Line Item data in 62 org." />
+		<echo message="insertForecastHierarchyConfigurationsIntoSfdc:	Inserts specialist forecast hierarchy Role-User Mapping data in 62 org." />
+		<echo message="deleteAllDataFromStoreConfigurations:		Deletes Store Configurations custom settings data from 62 org." />
+		<echo message="deleteAllDataFromStoreConfigurationsFromQuote:	Deletes Store Configurations custom settings data from Quote DE org." />
+		<echo message="deleteAllDataFromForecastConfigurations:		Deletes Forecast Configurations custom settings data from 62 org." />
+		<echo message="deleteAllDataFromForecastHierarchyConfigurations:Deletes Forecast Hierarchy Configurations data from 62 org." />
+		<echo message="deleteAllDataFromSpecialistForecast:		Deletes Specialist Forecast data from 62 org." />
+		<echo message="deleteAllDataFromSpecialistForecastLineItem:	Deletes Specialist Forecast Line Item data from 62 org." />
+		<echo message="extractForecastConfigurationsSFDC:		Extracts Forecast Configuration custom settings data from 62 org." />
+		<echo message="insertStoreConfigurationsIntoSfdc:		Inserts Store custom settings data in 62 org." />
+		<echo message="insertStoreConfigurationsIntoQuoteDE:		Inserts Store custom settings data in Quote DE org." />
+
+		<echo />
+		<echo />
+	</target>
+
+	<target name="helpForecast" description="Show usage information for Forecast module">
+		<echo />
+		<echo message="Ant targets used for Forecast Deployment:" />
+		<echo message="================================================" />
+		<echo message="deployForecastSFDC:				Loads components of Forecast 62 Org." />
+		<echo message="deployTestForecast:				Loads components of Forecast 62 Org from test branch and runs all the ftests." />
+		<echo message="loadForecast62OrgClasses:			Loads apex classes code in Org62 from Forecast SFDC dir." />
+		<echo message="loadForecast62OrgTriggers:			Loads apex triggers code in Org62 from Forecast SFDC dir." />
+		<echo message="loadTestForecastClasses:				Loads apex classes code in Org62 from test/forecast SFDC dir." />
+		<echo message="loadTestForecastTriggers:			Loads apex triggers code in Org62 from test/forecast SFDC dir." />
+		<echo message="runForecastTest:					Run ftest for Forecast Org62 apex classes from test/forecast branch." />
+		<echo message="insertForecastConfigurationsIntoSfdc:		Inserts Corporate Forecast Report custom settings data in 62 org." />
+		<echo message="insertSpecialistForecastIntoSfdc:		Inserts Specialist Forecast data in 62 org." />
+		<echo message="insertSpecialistForecastLineItemIntoSfdc:	Inserts Specialist Forecast Line Item data in 62 org." />
+		<echo message="insertForecastHierarchyConfigurationsIntoSfdc:	Inserts specialist forecast hierarchy Role-User Mapping data in 62 org." />		
+		<echo message="deleteAllDataFromForecastConfigurations:		Deletes Forecast Configurations custom settings data from 62 org." />
+		<echo message="deleteAllDataFromForecastHierarchyConfigurations:Deletes Forecast Hierarchy Configurations data from 62 org." />
+		<echo message="deleteAllDataFromSpecialistForecast:		Deletes Specialist Forecast data from 62 org." />
+		<echo message="deleteAllDataFromSpecialistForecastLineItem:	Deletes Specialist Forecast Line Item data from 62 org." />
+		<echo message="extractForecastConfigurationsSFDC:		Extracts Forecast Configuration custom settings data from 62 org." />
+		<echo />
+		<echo />
+	</target>
+
+	<target name="help" description="Show usage information">
+		<echo />
+		<echo message="Ant targets used for Appstore Deployment:" />
+		<echo message="================================================" />
+		<echo message="deployBasebizDE:          Loads components from BaseBiz DE Org." />
+		<echo message="deployBasebizSFDC:        Loads components of BaseBiz 62 Org." />
+		<echo message="deployQuoteDE:            Loads components from Quote DE Org." />
+		<echo message="deployQuoteSFDC:          Loads components of Quote 62 Org." />
+		<echo message="deployForecastSFDC:       Loads components of Forecast 62 Org." />
+		<echo message="deployWebstore:       	 Loads components of Webstore 62 Org." />
+		<echo message="deployBillingDE:          Loads components from Billing DE Org." />
+		<echo message="deployBillingSFDC:        Loads components of Billing 62 Org." />
+		<echo message="deployOmDE:				 Loads components from OM DE Org." />
+		<echo message="deployOmSFDC:             Loads components of OM 62 Org." />
+		<echo message="deployEntitlementSFDC:    Loads components of Entitlement 62 Org." />
+		<echo message="deployLicensingSFDC:      Loads components of Licensing SFDC org"/>
+		<echo/>
+		<echo message="All Test Targets:" />
+		<echo message="================================================================================================" />
+		<echo message="deployBasebizDETest:      Loads components from BaseBiz DE Org and runs all the ftests." />
+		<echo message="deployBasebizSFDCTest:    Loads components of BaseBiz 62 Org and runs all the ftests.." />
+		<echo message="deployQuoteDETest:        Loads components from Quote DE Org and runs all the ftests." />
+		<echo message="deployQuoteSFDCTest:      Loads components of Quote 62 Org and runs all the ftests." />
+		<echo message="deployTestQuote:      	 Loads components of Quote 62 Org from test branch and runs all the ftests." />
+		<echo message="deployTestForecast:       Loads components of Forecast 62 Org from test branch and runs all the ftests." />
+		<echo message="deployBillingDETest:      Loads components from Billing DE Org and runs all the ftests." />
+		<echo message="deployBillingSFDCTest:    Loads components of Billing 62 Org and runs all the ftests." />
+		<echo message="deployOmDETest:		 	 Loads components from OM DE Org and runs all the ftests." />
+		<echo message="deployOmSFDCTest:         Loads components of OM 62 Org and runs all the ftests." />
+		<echo message="deployEntitlementSFDCTest:Loads components of Entitlement 62 Org and runs all the ftests." />
+		<echo message="deployLicensingSFDCTests: Loads components of Licensing SFDC org"/>
+		<echo />
+		<echo />
+	</target>
+
+</project>

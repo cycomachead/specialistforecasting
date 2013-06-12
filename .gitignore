@@ -1,2 +1,5 @@
 .DS_Store
-tools/
+tools/*
+tools/build
+tools/ant
+tools/automation
