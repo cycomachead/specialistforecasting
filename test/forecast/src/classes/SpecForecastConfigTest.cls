@@ -36,30 +36,30 @@ public class SpecForecastConfigTest {
 
     // Test the data Retrieval from ForecastConfigurations custom settings
     private static testMethod void testRetrieveForecastConfigurations() {
-        Map<String, String> fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_ENTERPRISE);
+        Map<String, String> fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_ENTERPRISE);
         if (fConfig == null) {
             System.assert(false, 'Null Item Found, test failed');
         }
         System.assert(fConfig.get('ConfigurationValue').contains('AMER-FS,JP-FS,EMEA-FS,APAC-FS'));
-        System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
+        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
         System.assert(fConfig.get('IsActive') == 'true');
 
         try {
-            Set<String> valuesForEcommMember = RetrieveForecastConfigurations.getForecastConfigurations(TestForecastUtil.CAT_ECOMM_MEMBER);
+            Set<String> valuesForEcommMember = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestUtil.CAT_ECOMM_MEMBER);
             System.assert(false); // should have thrown exception
         } catch(RetrieveForecastConfigurations.ForecastConfigurationsException rfce) {
             System.assert(rfce.getMessage().contains('There is no category as '));
         }
 
 
-        Set<String> bUnits = RetrieveForecastConfigurations.getForecastConfigurationNames(TestForecastUtil.CAT_BUSINESS_UNIT);
+        Set<String> bUnits = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestUtil.CAT_BUSINESS_UNIT);
         System.assert(bUnits.contains('Enterprise'));
         System.assert(bUnits.contains('Commercial'));
         System.assert(bUnits.contains('Public Sector'));
         System.assert(bUnits.contains('Radian6'));
         System.assert(bUnits.contains('Data.com'));
 
-        Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(TestForecastUtil.CAT_GEO);
+        Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestUtil.CAT_GEO);
         System.assert(geos.contains('AMER-FS'));
         System.assert(geos.contains('JP-FS'));
         System.assert(geos.contains('EMEA-FS'));
@@ -71,15 +71,15 @@ public class SpecForecastConfigTest {
         System.assert(geos.contains('Data-Marketing'));
         System.assert(geos.contains('Data-Alliances'));
 
-        Set<String> validSubtypesNames = RetrieveForecastConfigurations.getForecastConfigurationNames(TestForecastUtil.CAT_VALID_SUBTYPES);
-        System.assert(validSubtypesNames.contains(TestForecastUtil.CAT_VALID_SUBTYPES_SALES));
-        System.assert(validSubtypesNames.contains(TestForecastUtil.CAT_VALID_SUBTYPES_OUTLOOK));
-        System.assert(validSubtypesNames.contains(TestForecastUtil.CAT_VALID_SUBTYPES_PLAN));
+        Set<String> validSubtypesNames = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestUtil.CAT_VALID_SUBTYPES);
+        System.assert(validSubtypesNames.contains(SpecForecastTestUtil.CAT_VALID_SUBTYPES_SALES));
+        System.assert(validSubtypesNames.contains(SpecForecastTestUtil.CAT_VALID_SUBTYPES_OUTLOOK));
+        System.assert(validSubtypesNames.contains(SpecForecastTestUtil.CAT_VALID_SUBTYPES_PLAN));
 
-        Set<String> validSubtypesValues = RetrieveForecastConfigurations.getForecastConfigurations(TestForecastUtil.CAT_VALID_SUBTYPES);
-        System.assert(validSubtypesValues.contains(TestForecastUtil.SUBTYPE_CLOSED + ',' + TestForecastUtil.SUBTYPE_COMMIT + ',' + TestForecastUtil.SUBTYPE_BEST_CASE + ',' + TestForecastUtil.SUBTYPE_PIPELINE));
-        System.assert(validSubtypesValues.contains(TestForecastUtil.SUBTYPE_OUTLOOK));
-        System.assert(validSubtypesValues.contains(TestForecastUtil.SUBTYPE_PLAN));
+        Set<String> validSubtypesValues = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestUtil.CAT_VALID_SUBTYPES);
+        System.assert(validSubtypesValues.contains(SpecForecastTestUtil.SUBTYPE_CLOSED + ',' + SpecForecastTestUtil.SUBTYPE_COMMIT + ',' + SpecForecastTestUtil.SUBTYPE_BEST_CASE + ',' + SpecForecastTestUtil.SUBTYPE_PIPELINE));
+        System.assert(validSubtypesValues.contains(SpecForecastTestUtil.SUBTYPE_OUTLOOK));
+        System.assert(validSubtypesValues.contains(SpecForecastTestUtil.SUBTYPE_PLAN));
 
     }
 
@@ -88,39 +88,39 @@ public class SpecForecastConfigTest {
 
         Map<String, String> fConfig;
         //Test Commercial Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_COMMERCIAL);
+        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_COMMERCIAL);
         if (fConfig == null) {
             System.assert(false, 'Null Item Found, test failed');
         }
 
-        System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
+        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
         System.assert(fConfig.get('IsActive') == 'true');
 
         //Test Public Sector Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_PUBLIC_SECTOR);
+        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_PUBLIC_SECTOR);
         System.assert(fConfig.get('ConfigurationValue').contains('AMER-PUBSEC'));
-        System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
+        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
         System.assert(fConfig.get('IsActive') == 'true');
 
         //Test Data.com Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_DATA_DOT_COM);
+        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_DATA_DOT_COM);
         
-        System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
+        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
         System.assert(fConfig.get('IsActive') == 'true');
 
         //Test Radian6 Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_RADIAN6);
+        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_RADIAN6);
         System.assert(fConfig.get('ConfigurationValue').contains('R6-COO'));
-        System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
+        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
         System.assert(fConfig.get('IsActive') == 'true');
 
         //Test Heroku Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(TestForecastUtil.BU_HEROKU);
+        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_HEROKU);
 
-        System.assert(fConfig.get('ConfigurationCategory').contains(TestForecastUtil.CAT_BUSINESS_UNIT));
+        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
         System.assert(fConfig.get('IsActive') == 'true');
 
-        Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(TestForecastUtil.CAT_GEO);
+        Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestUtil.CAT_GEO);
         System.assert(geos.contains('AMER/EMEA-CS'));
         System.assert(geos.contains('APAC-CS'));
         System.assert(geos.contains('JP-CS'));
