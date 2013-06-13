@@ -268,7 +268,7 @@ public with sharing class SpecialistForecastController extends
      *  
      * 
      */
-    public List<SpecialistForecastlineItemVO> getSpecialistforecastlineItemsData() {
+    public SpecialistForecastlineItemVO[] getSpecialistforecastlineItemsData() {
        Decimal closedAmount              = 0;
        Decimal commitAmount              = 0;
        Decimal bestCaseAmount            = 0;
@@ -363,7 +363,7 @@ public with sharing class SpecialistForecastController extends
 
            if (lineItem != null) {
                lineItem.quotaAmount = tempAmount ;
-               ownerlineItemsMap.put(OwnerId ,lineItem);
+               ownerlineItemsMap.put(OwnerId, lineItem);
            }
        }
        // ********************** consolidation End ***************************
@@ -498,15 +498,16 @@ public with sharing class SpecialistForecastController extends
                     splLine.MyBestcaseOverriden = false;
                     splLine.strLineItmId = '';
                 }
-                splFClineItems.add(splLine);
+                
+                    splFClineItems.add(splLine);
 
-                totcommitAmount           += splLine.commitAmount;
-                totclosedAmount           += splLine.closedAmount;
-                totbestCaseAmount         += splLine.bestCaseAmount;
-                totpipelineAmount         += splLine.pipelineAmount;
-                totQuotaAmount            += splLine.quotaAmount;
-                totbestCaseOverrideAmount += splLine.bestCaseOverrideAmount;
-                totcommitOvrrideAmount    += splLine.commitOverrideAmount;
+                    totcommitAmount           += splLine.commitAmount;
+                    totclosedAmount           += splLine.closedAmount;
+                    totbestCaseAmount         += splLine.bestCaseAmount;
+                    totpipelineAmount         += splLine.pipelineAmount;
+                    totQuotaAmount            += splLine.quotaAmount;
+                    totbestCaseOverrideAmount += splLine.bestCaseOverrideAmount;
+                    totcommitOvrrideAmount    += splLine.commitOverrideAmount;
 
                 } else if (mapUsers.size() > 0 && !haslineItemstoDisplay &&
                 mapUsers.containsKey(lineItemOwnerId)) {
@@ -550,7 +551,8 @@ public with sharing class SpecialistForecastController extends
                     lineItem.bestCaseOverrideAmount : bestCaseAmount);
                 pipelineAmount = (lineItem.PipelineAmount != null ?
                     lineItem.PipelineAmount : 0);
-                quotaAmount = (lineItem.quotaAmount != null?lineItem.quotaAmount:0);
+                quotaAmount = (lineItem.quotaAmount != null ? 
+                    lineItem.quotaAmount : 0);
                 // spline = getlineItemVO(true,false,(sfLI.ForecastOwner__c == UserInfo.getUserId()?true:false),
 
                 splLine.withoutLink   = true;
@@ -576,13 +578,13 @@ public with sharing class SpecialistForecastController extends
                 //add the total amounts to the list
                  splFClineItems.add(splLine);
 
-                 totcommitAmount   += commitAmount;
-                 totclosedAmount   += closedAmount;
-                 totbestCaseAmount += bestCaseAmount;
-                 totpipelineAmount += pipelineAmount;
-                 totQuotaAmount += quotaAmount;
+                 totcommitAmount           += commitAmount;
+                 totclosedAmount           += closedAmount;
+                 totbestCaseAmount         += bestCaseAmount;
+                 totpipelineAmount         += pipelineAmount;
+                 totQuotaAmount            += quotaAmount;
                  totbestCaseOverrideAmount += bestCaseOverrideAmount;
-                 totcommitOvrrideAmount += commitOvrrideAmount;
+                 totcommitOvrrideAmount    += commitOvrrideAmount;
 
        } else {
                 splLine.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
@@ -970,24 +972,16 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
                 ' Failed to update the Override Amount'));
             return null;
         }
-
-        /* FIXME: Remove before prod! */
-        System.debug(spovr + 'spc' + spc);
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
-            'Override Amount updated sucessfully'));
+            'Override Amount updated successfully'));
         return null;
     }
 
     /**
      *
      */
-    private boolean isSelfOverride(){
-        Boolean blnoverride = false;
-        if (UserInfo.getUserId() == lineItemOwnerId) {
-            blnoverride = true;
-        }
-
-        return blnoverride;
+    private boolean isSelfOverride() {
+        return UserInfo.getUserId() == lineItemOwnerId;
      }
 
      /**
@@ -1052,6 +1046,10 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
                                     AND FYMonth__c in :lstMonths
                                     AND OwnerId = :lineItemOwnerId
                                     AND ForecastStatus__c in :lststatus];
+    }
+    
+    private static Integer zeroIfNull(Integer inp) {
+        return inp == null ? 0 : inp;
     }
 
  }

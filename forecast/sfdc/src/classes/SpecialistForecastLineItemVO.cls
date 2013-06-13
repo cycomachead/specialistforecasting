@@ -131,13 +131,14 @@ public with sharing class SpecialistForecastLineItemVO {
      */
     Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
     Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
-        this.withoutLink = !(lineItemownerid != searchUser);
-        this.forOverride   = (searchUser != UserInfo.getUserId());
-        this.userName = mapUsers.get(lineItemownerid ).userName;
-        this.roleName = mapUsers.get(lineItemownerid ).RoleName;
-        this.userId   = mapUsers.get(lineItemownerid ).userId;
-        this.roleId   = mapUsers.get(lineItemownerid ).roleId;
-        this.quotaAmount            = (quotaamt == null ? 0 : quotaamt); //FIXME
+        this.withoutLink            = !(lineItemownerid != searchUser);
+        this.forOverride            = (searchUser != UserInfo.getUserId());
+        this.userName               = mapUsers.get(lineItemownerid).userName;
+        this.roleName               = mapUsers.get(lineItemownerid).RoleName;
+        this.userId                 = mapUsers.get(lineItemownerid).userId;
+        this.roleId                 = mapUsers.get(lineItemownerid).roleId;
+        this.quotaAmount            = quotaamt;
+            
         this.closedAmount           = 0;
         this.commitAmount           = 0;
         this.commitOverrideAmount   = 0;

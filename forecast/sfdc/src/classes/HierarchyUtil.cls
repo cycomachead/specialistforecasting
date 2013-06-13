@@ -126,7 +126,7 @@ public with sharing class HierarchyUtil {
             throw new SpecialistForecastException(PARENT_ID_NULL);
         }
 
-        allSubordinates = new User[]();
+        allSubordinates = new List<User>();
 
         // Get role to users mapping in a map with key as role id
         try {
@@ -177,11 +177,8 @@ public with sharing class HierarchyUtil {
         } catch (Exception ex) {
             throw new SpecialistForecastException(ROLE_ID_NULL);
         }
-        if (myUser.UserRoleId != null) {
-            return getMappedAllLevelSubordinatesByRole(myUser.UserRoleId);
-        } else {
-            return null;
-        }
+        
+        return getMappedAllLevelSubordinatesByRole(myUser.UserRoleId);
     }
 
     /**
