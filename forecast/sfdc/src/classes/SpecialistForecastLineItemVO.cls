@@ -70,16 +70,14 @@ public with sharing class SpecialistForecastLineItemVO {
 
 
 
-
+       /**
+        *   Returns a string "UserName (RoleName)" if available or '' if not.
+        */
        public String getUserRoleName() {
-            if(roleName != null && userName != null) {
-                return userName + '(' + roleName  + ')';
-            } else if (roleName != null && userName != null) {
-                return userName;
-            } else if (roleName != null && userName != null) {
-                return roleName;
+            if (roleName != null && userName != null) {
+                return userName + ' (' + roleName  + ')';
             }
-            else return '';
+            return '';
        }
 
        public boolean getCommitPreviousAmountMatch() {
@@ -102,7 +100,7 @@ public with sharing class SpecialistForecastLineItemVO {
       }
 
       public string  getprevVFDirectRepBestcaseAmount(){
-          List<String> args = new String[]{'0','number','###,###,##0.00'};
+          List<String> args = new String[] {'0','number','###,###,##0.00'};
           String sCurrency;
           if (prevDirectRepBestcaseAmount != null){
               prevDirectRepBestcaseAmount.setscale(2);
@@ -131,6 +129,7 @@ public with sharing class SpecialistForecastLineItemVO {
      */
     Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
     Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
+        
         this.withoutLink            = !(lineItemownerid != searchUser);
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemownerid).userName;

@@ -123,7 +123,7 @@ public with sharing class ForecastHelper {
         if (expression != null && expression.get('IsActive') == 'true') {
             return expression.get('ConfigurationValue');
         }
-        throw new RetrieveForecastConfigurations.ForecastConfigurationsException(
+        throw new SpecialistForecastException(
             'No active Cron Expression specified for Store Scheduler.');
     }
 

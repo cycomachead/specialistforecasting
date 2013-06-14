@@ -284,7 +284,7 @@
                 <apex:dataTable styleClass="topTable" id="forecastRows" border="1" value="{!SpecialistforecastLineItemsData}" var="forecast"  width="1100">
                      <apex:column style="{!IF(CONTAINS(forecast.userName,"Total"), 'background-color: #5C94BE;color:white;font-weight:bold;', '')}">
                          <apex:facet name="header">
-                          <apex:outputText value="User(Role)" />    
+                          <apex:outputText value="User (Role)" />    
                          </apex:facet>    
                          <apex:outputText rendered="{!(forecast.withoutLink)}"  style="white-space:nowrap;text-align: center;" value="{!forecast.UserRoleName}"/>
                          <apex:commandLink rendered="{!NOT(forecast.withoutLink)}" value="{!forecast.UserRoleName}" action="{!reportDrildownByUser_Role}"  >

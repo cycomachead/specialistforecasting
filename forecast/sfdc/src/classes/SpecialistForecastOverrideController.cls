@@ -34,13 +34,13 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class SpecialistForecastOverrideController {
 
-    public Decimal overrideAmount{get;set;}
-    public Decimal originalAmount{get;set;}
-    public Decimal originaloldAmount{get;set;}
-    public String overrideComment{get;set;}
+    public Decimal overrideAmount {get;set;}
+    public Decimal originalAmount {get;set;}
+    public Decimal originaloldAmount {get;set;}
+    public String overrideComment {get;set;}
     public String strRecordId {get;set;}
     public String strField {get;set;}
-    public boolean pageRefresh{get;set;}
+    public Boolean pageRefresh {get;set;}
     public String lineItemownerID {get;set;}
     public String strFY {get;set;}
     public String strFQ {get;set;}

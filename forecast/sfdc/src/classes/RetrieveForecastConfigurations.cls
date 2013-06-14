@@ -40,8 +40,6 @@ public with sharing class RetrieveForecastConfigurations {
     private static Map<String, Set<String>> forecastConfigNames = new
         Map<String, Set<String>>();
 
-    public with sharing class ForecastConfigurationsException extends Exception {}
-
     /**
      * This method will fetch forecast configurations custom settings
      * @return TODO
@@ -50,8 +48,7 @@ public with sharing class RetrieveForecastConfigurations {
         Map<String,String> retData = new Map<String,String>();
         ForecastConfigurations__c data = ForecastConfigurations__c.getInstance(name);
         if (data == null) {
-            // throw new ForecastConfigurationsException('No data found by name: ' + name);
-            return null;
+            throw new SpecialistForecastException('No data found by name: ' + name);
         }
         retData.put('Name', data.Name);
         retData.put('ConfigurationCategory', data.ConfigurationCategory__c);
@@ -63,12 +60,12 @@ public with sharing class RetrieveForecastConfigurations {
 
     /**
      *  This method will fetch the list of forecast configurations for a given
-     *  category FROM custom settings
+     *  category from custom settings
      *  @return TODO
      */
     public static Set<String> getForecastConfigurations(String category) {
         if (String.isEmpty(category)) {
-            throw new ForecastConfigurationsException('Empty cateogry supplied.');
+            throw new SpecialistForecastException('Empty category supplied.');
         }
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigs.size() == 0) {
@@ -87,7 +84,7 @@ public with sharing class RetrieveForecastConfigurations {
             }
         }
         if (!forecastConfigs.containsKey(category)) {
-            throw new ForecastConfigurationsException('There is no category as '
+            throw new SpecialistForecastException('There is no category as '
                 + category);
         }
         return forecastConfigs.get(category);
@@ -100,7 +97,7 @@ public with sharing class RetrieveForecastConfigurations {
      */
     public static Set<String> getForecastConfigurationNames(String category) {
         if(String.isEmpty(category)) {
-            throw new ForecastConfigurationsException('Empty cateogry supplied.');
+            throw new SpecialistForecastException('Empty category supplied.');
         }
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigNames.size() == 0) {
@@ -120,7 +117,7 @@ public with sharing class RetrieveForecastConfigurations {
                     }
         }
         if (!forecastConfigNames.containsKey(category)) {
-            throw new ForecastConfigurationsException('There is no category as '
+            throw new SpecialistForecastException('There is no category as '
                 + category);
         }
         return forecastConfigNames.get(category);
@@ -133,7 +130,7 @@ public with sharing class RetrieveForecastConfigurations {
      */
     public static boolean checkCategory(String userId, String category) {
         if (String.isEmpty(userId)) {
-            throw new ForecastConfigurationsException('Error: Invalid User ' +
+            throw new SpecialistForecastException('Error: Invalid User ' +
                 ' Id supplied.');
         }
 

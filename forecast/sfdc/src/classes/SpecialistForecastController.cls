@@ -265,27 +265,27 @@ public with sharing class SpecialistForecastController extends
 
 
     /**
-     *  
+     *  TODO: REFACTOR REFACTOR REFACTOR
      * 
      */
     public SpecialistForecastlineItemVO[] getSpecialistforecastlineItemsData() {
-       Decimal closedAmount              = 0;
-       Decimal commitAmount              = 0;
-       Decimal bestCaseAmount            = 0;
-       Decimal commitOvrrideAmount       = 0;
-       Decimal bestCaseOverrideAmount    = 0;
-       Decimal commitMgrOvrrideAmount    = 0;
-       Decimal bestCaseMgrOverrideAmount = 0;
-       Decimal pipelineAmount            = 0;
-       Decimal quotaAmount               = 0;
+       Decimal closedAmount                  = 0;
+       Decimal commitAmount                  = 0;
+       Decimal bestCaseAmount                = 0;
+       Decimal commitOvrrideAmount           = 0;
+       Decimal bestCaseOverrideAmount        = 0;
+       Decimal commitMgrOvrrideAmount        = 0;
+       Decimal bestCaseMgrOverrideAmount     = 0;
+       Decimal pipelineAmount                = 0;
+       Decimal quotaAmount                   = 0;
 
-       Decimal totclosedAmount           = 0;
-       Decimal totcommitAmount           = 0;
-       Decimal totbestCaseAmount         = 0;
-       Decimal totcommitOvrrideAmount    = 0;
-       Decimal totbestCaseOverrideAmount = 0;
-       Decimal totpipelineAmount         = 0;
-       Decimal totQuotaAmount            = 0;
+       Decimal totclosedAmount               = 0;
+       Decimal totcommitAmount               = 0;
+       Decimal totbestCaseAmount             = 0;
+       Decimal totcommitOvrrideAmount        = 0;
+       Decimal totbestCaseOverrideAmount     = 0;
+       Decimal totpipelineAmount             = 0;
+       Decimal totQuotaAmount                = 0;
 
        Decimal  subtotclosedAmount           = 0;
        Decimal  subtotcommitAmount           = 0;
@@ -303,7 +303,7 @@ public with sharing class SpecialistForecastController extends
 
        // map used for setting the user and role as key and
        //  SpecialistForecastlineItem as the value
-       Map<String,SpecialistForecastlineItemVO> mapuserRolelineItems = new
+       Map<String,SpecialistForecastlineItemVO> mapUserRolelineItems = new
            Map<String,SpecialistForecastlineItemVO>();
 
        splFClineItems = new List<SpecialistForecastlineItemVO>();
@@ -313,12 +313,7 @@ public with sharing class SpecialistForecastController extends
        mapSecondLeverUsersAndChild.clear();
        mapUsers.clear();
        this.getMappedUserInfoFROMRoleHierarchy(sfLI.ForecastOwner__c);
-       /* FIXME: Remove before prod! */
-       System.debug('mapUsers' + mapUsers);
-       /* FIXME: Remove before prod! */
-       System.debug(allTotaluserIds + 'allUsers');
-       /* FIXME: Remove before prod! */
-       System.debug(allTotaluserIds.size()+'allUsers');
+       
        SpecialistForecastlineItemVO splLine;
 
        Set<Id> ownerIdsforQuery = new Set<Id>();
@@ -326,8 +321,7 @@ public with sharing class SpecialistForecastController extends
        for(Id id : mapSecondLeverUsersAndChild.keyset()) {
            ownerIdsforQuery.addAll(mapSecondLeverUsersAndChild.get(id));
        }
-       /* FIXME: Remove before prod! */
-       System.debug(mapSecondLeverUsersAndChild + '#####@set' + ownerIdsforQuery);
+
        ownerIdsforQuery.add(sfLI.ForecastOwner__c);
 
        //set the query parameters
@@ -336,7 +330,7 @@ public with sharing class SpecialistForecastController extends
        queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(SelectedFQ));
        queryParam.setOwnerIds(ownerIdsforQuery);
 
-       //get the data FROM the table as a list
+       //get the data from the table as a list
        List<SpecialistForecastlineItem__c> listSplFCastlineItems =
            ForecastHelper.getSpecialistForecastLinesTable(queryParam );
 
@@ -380,22 +374,17 @@ public with sharing class SpecialistForecastController extends
                lineItem = ownerlineItemsMap.get(childLinesOwnerId);
                if (lineItem != null) {
                    haslineItemstoDisplay = true;
-                   closedAmount = (lineItem.ClosedAmount != null ?
-                       lineItem.ClosedAmount : 0);
+                   closedAmount = zeroIfNull(lineItem.closedAmount);
                    // if manager override amount exists then display mgroverrideamt
-                   commitAmount = (lineItem.CommitAmount != null ?
-                       lineItem.CommitAmount : 0);
+                   commitAmount = zeroIfNull(lineItem.commitAmount);
 
                    commitOvrrideAmount = (lineItem.mgrCommitOverrideAmount !=
                        null ? lineItem.mgrCommitOverrideAmount : commitAmount);
-                   bestCaseAmount = (lineItem.bestCaseAmount != null ?
-                           lineItem.bestCaseAmount : 0);
-                    bestCaseOverrideAmount = (lineItem.mgrBestCaseOverrideAmount
+                   bestCaseAmount = zeroIfNull(lineItem.bestCaseAmount);
+                   bestCaseOverrideAmount = (lineItem.mgrBestCaseOverrideAmount
                         != null ? lineItem.mgrBestCaseOverrideAmount : bestCaseAmount);
-                    pipelineAmount = (lineItem.PipelineAmount != null ?
-                        lineItem.PipelineAmount : 0);
-                    quotaAmount = (lineItem.QuotaAmount != null ?
-                        lineItem.quotaAmount : 0);
+                    pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
+                    quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
                     //lineItem.mgrCommitOverriden = true;
                     //add to subtotal amount variables
@@ -528,37 +517,30 @@ public with sharing class SpecialistForecastController extends
                 subtotQuotaAmount            = 0;
 
             } // end for
-            /* FIXME: Remove before prod! */
-            System.debug(splFClineItems + 'splFClineItems'); // FIXME
-            splLine = new SpecialistForecastlineItemVO();
 
             //create search user line items
             if (ownerlineItemsMap.containsKey(sfLI.ForecastOwner__c) &&
             ownerlineItemsMap.get(sfLI.ForecastOwner__c) != null) {
 
                 lineItem = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
-                closedAmount = (lineItem.closedAmount != null ?
-                    lineItem.closedAmount : 0);
-                commitAmount = (lineItem.commitAmount != null ?
-                    lineItem.commitAmount : 0);
-                bestCaseAmount = (lineItem.bestCaseAmount != null ?
-                    lineItem.bestCaseAmount : 0);
+                closedAmount = zeroIfNull(lineItem.closedAmount);
+                commitAmount = zeroIfNull(lineItem.commitAmount);
+                bestCaseAmount = zeroIfNull(lineItem.bestCaseAmount);
                 commitOvrrideAmount = (lineItem.CommitOverrideAmount != null &&
                     lineItem.CommitOverrideAmount > 0 ?
                     lineItem.CommitOverrideAmount : commitAmount);
                 bestCaseOverrideAmount = (lineItem.bestCaseOverrideAmount != null
                     && lineItem.bestcaseOverrideAmount > 0 ?
                     lineItem.bestCaseOverrideAmount : bestCaseAmount);
-                pipelineAmount = (lineItem.PipelineAmount != null ?
-                    lineItem.PipelineAmount : 0);
-                quotaAmount = (lineItem.quotaAmount != null ? 
-                    lineItem.quotaAmount : 0);
-                // spline = getlineItemVO(true,false,(sfLI.ForecastOwner__c == UserInfo.getUserId()?true:false),
+                pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
+                quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
                 splLine.withoutLink   = true;
                 splLine.reportingUser = false;
                 splLine.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
                     && SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
+                
+                // TODO FIXME THIS IS CAUSING NULL POINTER PROBLEMS
                 splLine.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
                 splLine.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
                 splLine.userId = mapUsers.get(sfLI.ForecastOwner__c).userId;
@@ -587,11 +569,11 @@ public with sharing class SpecialistForecastController extends
                  totcommitOvrrideAmount    += commitOvrrideAmount;
 
        } else {
-                splLine.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
-                    sfLI.ForecastOwner__c, mapUsers, quotaAmount);
-                splLine.forOverride = (SelectedFQ !=
-                    ForecastHelper.FISCAL_QUARTER_ALL ? splLine.forOverride : false);
-                splFClineItems.add(splLine);
+           splLine.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
+               sfLI.ForecastOwner__c, mapUsers, quotaAmount);
+           splLine.forOverride = (SelectedFQ !=
+               ForecastHelper.FISCAL_QUARTER_ALL ? splLine.forOverride : false);
+           splFClineItems.add(splLine);
        }
 
         // create total line items
@@ -622,6 +604,11 @@ public with sharing class SpecialistForecastController extends
     private void getMappedUserInfoFromRoleHierarchy(Id userId) {
 
         User usr = [SELECT Name, UserRoleId, UserRole.Name FROM User WHERE Id = :userId];
+        
+        if (usr.UserRoleID == null) {
+            throw new SpecialistForecastException('Unable to find required role'
+                + ' ID for user ' + usr.Name + '.\n\n' + usr);
+        }
 
         HierarchyUtil.RoleNodeWrapper rolwraps;
         try {
@@ -637,9 +624,6 @@ public with sharing class SpecialistForecastController extends
 
         if (lstchildUserNodes != null) {
             for (HierarchyUtil.RoleNodeWrapper rolewrapper : lstchildUserNodes) {
-                /* FIXME: Remove before prod! */
-                System.debug(rolewrapper.myroleName + '$roleid' +
-                     rolewrapper.myRoleId);
                 if (roleWrapper.myUsers != null
                 && roleWrapper.myUsers.size() == 1) {
                     alluserIds = new Set<Id>();
@@ -650,15 +634,12 @@ public with sharing class SpecialistForecastController extends
                     ruinfo.userName = rolewrapper.myUsers.get(0).Name;
                     mapUsers.put(rolewrapper.myUsers.get(0).Id,ruinfo);
                     /* Put the key with the child*/
-                    roleTraverse (rolewrapper );
-                    /* FIXME: Remove before prod! */
-                    System.debug('#####%set1' + alluserIds); // FIXME
+                    roleTraverse (rolewrapper);
+
                     alluserIds.add(rolewrapper.myUsers.get(0).Id);
                     allTotaluserIds.add(rolewrapper.myUsers.get(0).Id);
                     mapSecondLeverUsersAndChild.put(rolewrapper.myUsers.get(0).Id,alluserIds);
-                    /* FIXME: Remove before prod! */
-                    System.debug('#####@%setmapSecondLeverUsersAndChild' +
-                        mapSecondLeverUsersAndChild); // FIXME
+
                 }
                 // if manager and many users assigned to the role then get only mapped user
                 if (roleWrapper.myUsers != null && roleWrapper.myUsers.size() > 1
@@ -673,8 +654,7 @@ public with sharing class SpecialistForecastController extends
                     mapUsers.put(rolewrapper.myMappedUser.Id,ruinfo);
                     /* Put the key with the child*/
                     roleTraverse(rolewrapper);
-                    /* FIXME: Remove before prod! */
-                    System.debug('#####%set2' + alluserIds); // FIXME
+
                     alluserIds.add(rolewrapper.myMappedUser.Id);
                     allTotaluserIds.add(rolewrapper.myMappedUser.Id);
                     mapSecondLeverUsersAndChild.put(rolewrapper.myMappedUser.Id,
@@ -693,14 +673,11 @@ public with sharing class SpecialistForecastController extends
                         mapUsers.put(myusr.Id,ruinfo);
                         /* Put the key with the child*/
                         roleTraverse (rolewrapper);
-                        /* FIXME: Remove before prod! */
-System.debug('#####%set3' + alluserIds); // FIXME
+
                         alluserIds.add(myusr.Id);
                         allTotaluserIds.add(myusr.Id);
                         mapSecondLeverUsersAndChild.put(myusr.Id,alluserIds);
-                        /* FIXME: Remove before prod! */
-System.debug('#####@%setmapSecondLeverUsersAndChild' +
-                            mapSecondLeverUsersAndChild); // FIXME
+
                     }//end for
                 }//end if
             }//end for
@@ -727,9 +704,6 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
 
          if (rolewrapper.myChildNodes != null) {
              for (HierarchyUtil.RoleNodeWrapper rw : rolewrapper.myChildNodes){
-                 /* FIXME: Remove before prod! */
-                 System.debug(rw + '$$$$$$$$1' + rw.myroleName); //FIXME
-                 //if(rw.myMappedUser != null){
                  if (rw.myUsers != null && rw.myUsers.size() > 1 && rw.isLeafNode) {
                      for(user usr : rw.myUsers){
                          alluserIds.add(usr.Id);
@@ -780,29 +754,20 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
         for (SpecialistForecastlineItem__c sfl : listSplFCastlineItems) {
             currentOwnerId = sfl.ForecastOwner__c;
 
-            closedAmount = (sfl.OriginalClosedAmount__c != null ?
-                sfl.OriginalClosedAmount__c : 0);
-            commitAmount = (sfl.OriginalCommitAmount__c != null ?
-                sfl.OriginalCommitAmount__c : 0);
-            bestCaseAmount = (sfl.OriginalbestCaseAmount__c != null ?
-                sfl.OriginalbestCaseAmount__c : 0);
-            pipelineAmount = (sfl.OriginalPipelineAmount__c != null ?
-                sfl.OriginalPipelineAmount__c : 0);
-            /* FIXME: Remove before prod! */
-            System.debug('PipelineAmount##############' +
-                sfl.OriginalPipelineAmount__c); // FIXME
+            closedAmount   = zeroIfNull(sfl.OriginalClosedAmount__c);
+            commitAmount   = zeroIfNull(sfl.OriginalCommitAmount__c);
+            bestCaseAmount = zeroIfNull(sfl.OriginalbestCaseAmount__c);
+            pipelineAmount = zeroIfNull(sfl.OriginalPipelineAmount__c);
+
+            // FIXME: SOME_TYPE = override = sfl.SpecialistForecastOverride__r;
             commitOverrideAmount =
-                (sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c
-                != null ? sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c : 0);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c);
             bestCaseOverrideAmount =
-                (sfl.SpecialistForecastOverride__r.OwnOverridenBestcaseAmount__c
-                != null ? sfl.SpecialistForecastOverride__r.OwnOverridenBestcaseAmount__c : 0);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.OwnOverridenBestcaseAmount__c);
             commitMgrOvrrideAmount =
-                (sfl.SpecialistForecastOverride__r.ManagerOverridenCommitAmount__c
-                != null ? sfl.SpecialistForecastOverride__r.ManagerOverridenCommitAmount__c : 0);
-            bestCaseMgrOverrideAmount =
-                (sfl.SpecialistForecastOverride__r.ManagerOverridenBestcaseAmount__c
-                != null ? sfl.SpecialistForecastOverride__r.ManagerOverridenBestcaseAmount__c : 0);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.ManagerOverridenCommitAmount__c);
+            bestCaseMgrOverrideAmount = 
+                zeroIfNull(sfl.SpecialistForecastOverride__r.ManagerOverridenBestcaseAmount__c);
 
 
             splv = ownerlineItemsMap.get(currentOwnerId);
@@ -812,8 +777,8 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
 
             if (previousOwnerId != currentOwnerId) {
                  previousOwnerId = currentOwnerId;
-                 splv.closedAmount = closedAmount ;
-                 splv.commitAmount = commitAmount ;
+                 splv.closedAmount = closedAmount;
+                 splv.commitAmount = commitAmount;
                  splv.bestCaseAmount = bestCaseAmount;
                  splv.pipelineAmount = pipelineAmount;
                  splv.commitOverrideAmount = commitOverrideAmount;
@@ -843,13 +808,13 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
                      sfl.SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c;
 
             } else {
-                splv.closedAmount += closedAmount;
-                splv.commitAmount += commitAmount;
-                splv.bestCaseAmount += bestCaseAmount;
-                splv.pipelineAmount += pipelineAmount ;
-                splv.commitOverrideAmount += commitOverrideAmount;
-                splv.bestCaseOverrideAmount += bestCaseOverrideAmount;
-                splv.mgrCommitOverrideAmount += commitMgrOvrrideAmount;
+                splv.closedAmount              += closedAmount;
+                splv.commitAmount              += commitAmount;
+                splv.bestCaseAmount            += bestCaseAmount;
+                splv.pipelineAmount            += pipelineAmount;
+                splv.commitOverrideAmount      += commitOverrideAmount;
+                splv.bestCaseOverrideAmount    += bestCaseOverrideAmount;
+                splv.mgrCommitOverrideAmount   += commitMgrOvrrideAmount;
                 splv.mgrBestCaseOverrideAmount += bestCaseMgrOverrideAmount;
                 splv.MycommitOverriden =
                     (sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c
@@ -880,9 +845,7 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
             commitMgrOvrrideAmount = 0;
             commitOverrideAmount = 0;
             ownerlineItemsMap.put(currentOwnerId,splv);
-            /* FIXME: Remove before prod! */
-            System.debug(previousOwnerId + 'Current splv##############' + splv);
-            // FIXME
+            
         } //end for
 
         return ownerlineItemsMap;
@@ -906,16 +869,13 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
         allTotaluserIds.add(myusr.Id);
         mapSecondLeverUsersAndChild.put(myusr.Id,alluserIds);
 
-        /* FIXME: Remove before prod! */
-        System.debug('#####@%set' + mapSecondLeverUsersAndChild); // FIXME
+    }
 
-     }
-
-      /***************Specialist Forecast Override**********************/
-      /**
-       *
-       */
-      public pagereference saveOverride() {
+    /***************Specialist Forecast Override**********************/
+    /**
+     *
+     */
+    public pagereference saveOverride() {
 
         SpecialistForecastlineItem__c spc = new SpecialistForecastlineItem__c();
         SpecialistForecastOverride__c spovr = new SpecialistForecastOverride__c();
@@ -991,10 +951,10 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
          overrideAmount = null;
          originalAmount = 0;
          originaloldAmount = 0;
-         overrideComment='';
-         strRecordId='';
-         strField='';
-         lineItemOwnerId='';
+         overrideComment = '';
+         strRecordId = '';
+         strField = '';
+         lineItemOwnerId = '';
 
      }
    /***************Specialist Forecast Override End**********************/
@@ -1052,4 +1012,7 @@ System.debug('#####@%setmapSecondLeverUsersAndChild' +
         return inp == null ? 0 : inp;
     }
 
+    private static Decimal zeroIfNull(Decimal inp) {
+        return inp == null ? 0 : inp;
+    }
  }
