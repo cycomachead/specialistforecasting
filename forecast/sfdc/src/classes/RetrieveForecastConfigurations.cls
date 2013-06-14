@@ -138,29 +138,13 @@ public with sharing class RetrieveForecastConfigurations {
             return false;
         }
         String shortUserId = (userId.length() > 15) ? userId.substring(0, 15) : userId;
-        /* FIXME: Remove before prod! */
-        System.debug('userId = ' + userId + ' and shortUserId = ' + shortUserId);
-        Set<String> privilegedUsers = null;
 
-        try {
-            privilegedUsers = getForecastConfigurations(category);
-        } catch(Exception ex) {
-            /* FIXME: Remove before prod! */
-            System.debug('Exception while calling ' +
-                'RetrieveForecastConfigurations.getForecastConfigurations(category): '
-                    + ex.getMessage());
-        }
+        Set<String> privilegedUsers = getForecastConfigurations(category);
 
         if (privilegedUsers != null && privilegedUsers.contains(shortUserId) ||
         privilegedUsers.contains(userId)) {
-            // /* FIXME: Remove before prod! */
-            System.debug('Returning true for category = ' + category +
-                ' WHERE privilegedUsers.size() = ' + privilegedUsers.size());
             return true;
         }
-
-        // /* FIXME: Remove before prod! */
-        System.debug('Returning false for userId = ' + userId);
         return false;
     }
 
