@@ -604,10 +604,15 @@ public with sharing class SpecialistForecastController extends
     private void getMappedUserInfoFromRoleHierarchy(Id userId) {
 
         User usr = [SELECT Name, UserRoleId, UserRole.Name FROM User WHERE Id = :userId];
-        
+        try {
         if (usr.UserRoleID == null) {
             throw new SpecialistForecastException('Unable to find required role'
-                + ' ID for user ' + usr.Name + '.\n\n' + usr);
+                + ' ID for user ' + usr.Name + '.');
+        }
+        } catch (Exception ex) {
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.FATAL,'my error msg');
+            ApexPages.addMessage(myMsg);
+            
         }
 
         HierarchyUtil.RoleNodeWrapper rolwraps;

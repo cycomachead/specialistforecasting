@@ -105,7 +105,7 @@ public with sharing class SpecialistForecastLineItemVO {
           if (prevDirectRepBestcaseAmount != null){
               prevDirectRepBestcaseAmount.setscale(2);
               sCurrency = String.format(prevDirectRepBestcaseAmount.format(), args);
-              if( !sCurrency.contains('.' ) ) {
+              if (!sCurrency.contains('.')) {
                     sCurrency = sCurrency + '.00';
               }
 
@@ -133,9 +133,9 @@ public with sharing class SpecialistForecastLineItemVO {
         this.withoutLink            = !(lineItemownerid != searchUser);
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemownerid).userName;
-        this.roleName               = mapUsers.get(lineItemownerid).RoleName;
-        this.userId                 = mapUsers.get(lineItemownerid).userId;
-        this.roleId                 = mapUsers.get(lineItemownerid).roleId;
+        this.roleName               = mapUsers.get(lineItemownerid).roleName;
+        this.userId                 = mapUsers.get(lineItemownerid).userID;
+        this.roleId                 = mapUsers.get(lineItemownerid).roleID;
         this.quotaAmount            = quotaamt;
             
         this.closedAmount           = 0;
@@ -145,8 +145,8 @@ public with sharing class SpecialistForecastLineItemVO {
         this.bestCaseAmount         = 0;
         this.pipelineAmount         = 0;
         this.reportingUser          = false;
-        this.MycommitOverriden      = false;
-        this.MyBestcaseOverriden    = false;
+        this.myCommitOverriden      = false;
+        this.myBestcaseOverriden    = false;
         this.searchUser             = false;
     }
 
