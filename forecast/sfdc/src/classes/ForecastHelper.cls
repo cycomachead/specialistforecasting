@@ -94,8 +94,6 @@ public with sharing class ForecastHelper {
         RetrieveForecastConfigurations.getForecastConfigurationNames(
             ForecastHelper.CAT_STORE_BATCH_JOB);
         if (batchJobNames == null || batchJobNames.size() == 0) {
-            /* FIXME: Remove before prod! */
-            System.debug('No batch job entry found in forecast configurtaions.');
             return null;
         }
         batchJobs = new Map<String, String>();
@@ -105,8 +103,6 @@ public with sharing class ForecastHelper {
                 batchName);
             if (strBatches == null || strBatches.size() == 0
             || strBatches.get('IsActive') != 'true') {
-                /* FIXME: Remove before prod! */
-                System.debug('Skipping inactive entry for ' + batchName);
                 continue;
             }
             batchJobs.put(strBatches.get('Name'),
@@ -182,10 +178,6 @@ public with sharing class ForecastHelper {
         List<String> monthsInQrtr = getMonthsInQuarter(fQuarter);
         Set<String> monthsInQrtrSet = new Set<String>();
         monthsInQrtrSet.addAll(monthsInQrtr);
-
-
-        /* FIXME: Remove before prod! */
-        System.debug('monthsInQrtrSet = ' + monthsInQrtrSet);
 
         if (monthsInQrtrSet.contains('February')) {
             if (now.month() > 4 || now.month() == 1) {
@@ -278,20 +270,12 @@ public with sharing class ForecastHelper {
             // don't fire SOQL query for invalid id
             return null;
         }
-        /* FIXME: Remove before prod! */
-        System.debug('Firing SOQL Query to get user details for: ' + userId);
         User aUser = ([SELECT Id, Name, Username, Email, UserType, UserRoleId,
                 IsActive, Alias, Area__c FROM User WHERE Id = :userId]);
 
-        // User aUser = ([SELECT Id, Name, Username, Email, UserType, UserRoleId,
-        // IsActive, Alias, Area__c, sfbase__Classification__c,
-        // sfbase__CorporateDivision__c, sfbase__Market_Segment__c,
-        // sfbase__Region__c, sfbase__Subregion__c FROM User
-        // WHERE Id = :userId]);
-
         if (aUser == null) {
-            /* FIXME: Remove before prod! */
-            System.debug('No user found with the id: ' + userId);
+            throw new SpecialistForecastException('Unable to find user for user'
+                + ' id: ' + userID + '.');
         }
         return aUser;
     }
@@ -337,13 +321,6 @@ public with sharing class ForecastHelper {
                             Order By ForecastOwner__c
                       ];
 
-          /* FIXME: Remove before prod! */
-          System.debug('####months ' + queryParam.getMonthsInQrtr());
-          /* FIXME: Remove before prod! */
-          System.debug('####Year ' + queryParam.getFiscalYear());
-          /* FIXME: Remove before prod! */
-          System.debug('####uers ' + queryParam.getOwnerIds());
-
          return lineItemsData;
      }
 
@@ -375,11 +352,10 @@ public with sharing class ForecastHelper {
      * @return
      */
     public static Boolean checkFieldsSplForecastRepAccessibility() {
-        return !(!Schema.SObjectType.SpecialistForecast__c.isAccessible() ||
-            !Schema.SObjectType.SpecialistForecastLineItem__c.isAccessible() ||
-            !Schema.SObjectType.SpecialistForecastQuota__c.isAccessible() ||
-            !Schema.SObjectType.SpecialistForecastOverride__c.isAccessible());
-        // FIXME --Isn't this Logical AND?
+        return (Schema.SObjectType.SpecialistForecast__c.isAccessible() &&
+            Schema.SObjectType.SpecialistForecastLineItem__c.isAccessible() &&
+            Schema.SObjectType.SpecialistForecastQuota__c.isAccessible() &&
+            Schema.SObjectType.SpecialistForecastOverride__c.isAccessible());
     }
 
 
@@ -387,7 +363,7 @@ public with sharing class ForecastHelper {
      * This method is used to check access for the page exists for data sync
      * @return TODO
      */
-     public static boolean CheckForecastDataSyncAccessForCurrentUser(){
+     public static boolean CheckForecastDataSyncAccessForCurrentUser() {
         boolean hasAccess = true;
 
         Map<String, Schema.SObjectField> mForecast =
@@ -455,20 +431,20 @@ public with sharing class ForecastHelper {
      */
     public static String[] getSupportedFiscalYears() {
         if (supportedFY == null || supportedFY.size() < 3) {
-            Map<String, String> supportedFYs =
-            RetrieveForecastConfigurations.getForecastConfigurationsByName(
+            try {
+                Map<String, String> supportedFYs =
+                RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 CAT_SUPPORTED_FY);
-            if (supportedFYs != null && supportedFYs.size() > 0) {
                 supportedFY = supportedFYs.get('ConfigurationValue').split(',');
-            } else {
-                supportedFY = new String[] { getCurrentFiscalYear()};
+            } catch (Exception ex) {
+                supportedFY = new String[] { getCurrentFiscalYear() };
             }
         }
         return supportedFY;
     }
 
     /**
-     * @return {'Q1', 'Q2', 'Q3' 'Q4' }
+     * @return {'Q1', 'Q2', 'Q3', 'Q4' }
      */
     public static String[] getSupportedFiscalQuarters() {
         return ALL_FQ;

@@ -132,6 +132,7 @@
     </types>
     <types>
         <members>SpecialistForecastSubmitIcon</members>
+		<members>SpecialistForecastPage</members>
         <name>StaticResource</name>
     </types>
     <version>24.0</version>

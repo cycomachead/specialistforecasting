@@ -47,14 +47,6 @@ public with sharing class SpecialistForecastOverrideController {
 
     //Constructor
     public SpecialistForecastOverrideController () {
-        /* if(System.currentPageReference().getParameters().get('token')!=null)
-            {
-         String temp = EncodingUtil.base64Decode(System.currentPageReference().getParameters().get('token')).toString();
-
-         originalAmount = decimal.valueOf(temp);
-         //originalAmount = decimal.valueOf(System.currentPageReference().getParameters().get('token'));
-            }
-        */
         String temp = System.currentPageReference().getParameters().get('Amt');
 
         if (temp != null) {
