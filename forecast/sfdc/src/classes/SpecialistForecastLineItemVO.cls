@@ -99,10 +99,10 @@ public with sharing class SpecialistForecastLineItemVO {
           return sCurrency;
       }
 
-      public string  getprevVFDirectRepBestcaseAmount(){
+      public string  getprevVFDirectRepBestcaseAmount() {
           List<String> args = new String[] {'0','number','###,###,##0.00'};
           String sCurrency;
-          if (prevDirectRepBestcaseAmount != null){
+          if (prevDirectRepBestcaseAmount != null) {
               prevDirectRepBestcaseAmount.setscale(2);
               sCurrency = String.format(prevDirectRepBestcaseAmount.format(), args);
               if (!sCurrency.contains('.')) {
@@ -130,7 +130,7 @@ public with sharing class SpecialistForecastLineItemVO {
     Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
     Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
         
-        this.withoutLink            = !(lineItemownerid != searchUser);
+        this.withoutLink            = (lineItemownerid == searchUser);
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemownerid).userName;
         this.roleName               = mapUsers.get(lineItemownerid).roleName;

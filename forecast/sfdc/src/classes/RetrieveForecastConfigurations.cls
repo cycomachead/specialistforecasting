@@ -29,8 +29,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  * To retrieve forecast configurations
  *
- * @author auzzaman
- * @since 178.store
+ * @author Michael Ball
+ * @since
  */
 
 public with sharing class RetrieveForecastConfigurations {
@@ -39,17 +39,22 @@ public with sharing class RetrieveForecastConfigurations {
         Map<String, Set<String>>();
     private static Map<String, Set<String>> forecastConfigNames = new
         Map<String, Set<String>>();
+    
+    /** Can't get config data. */
+    private static Final String NO_DATA_CAT = 
+        'Unable to get forecast configurations for ';
 
     /**
-     * This method will fetch forecast configurations custom settings
-     * @return TODO
+     *  This method will fetch forecast configurations custom settings
+     *  @return A map of the settings data (KVP) used for forecasting
+     *  @throws SpecialistForecastException
      */
     public static Map<String, String> getForecastConfigurationsByName(String name) {
         Map<String,String> retData = new Map<String,String>();
         ForecastConfigurations__c data = ForecastConfigurations__c.getInstance(name);
         if (data == null) {
             throw new SpecialistForecastException('No data found by name: ' + name);
-        }
+        }    
         retData.put('Name', data.Name);
         retData.put('ConfigurationCategory', data.ConfigurationCategory__c);
         retData.put('ConfigurationValue', data.ConfigurationValue__c);
@@ -61,11 +66,12 @@ public with sharing class RetrieveForecastConfigurations {
     /**
      *  This method will fetch the list of forecast configurations for a given
      *  category from custom settings
-     *  @return TODO
+     *  @return Set<String> of all the different configuration options on the org
+     *  @throws SpecialistForecastException
      */
     public static Set<String> getForecastConfigurations(String category) {
         if (String.isEmpty(category)) {
-            throw new SpecialistForecastException('Empty category supplied.');
+            throw new SpecialistForecastException(NO_DATA_CAT + 'empty category');
         }
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigs.size() == 0) {
@@ -84,20 +90,20 @@ public with sharing class RetrieveForecastConfigurations {
             }
         }
         if (!forecastConfigs.containsKey(category)) {
-            throw new SpecialistForecastException('There is no category as '
-                + category);
+            throw new SpecialistForecastException(NO_DATA_CAT + category);
         }
         return forecastConfigs.get(category);
     }
 
     /**
      *  This method will fetch the list of forecast configurations for a given
-     *  category FROM custom settings
+     *  category from custom settings
      *  @return TODO
+     *  @throws SpecialistForecastException
      */
     public static Set<String> getForecastConfigurationNames(String category) {
         if(String.isEmpty(category)) {
-            throw new SpecialistForecastException('Empty category supplied.');
+            throw new SpecialistForecastException(NO_DATA_CAT + 'empty category');
         }
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigNames.size() == 0) {
@@ -117,8 +123,7 @@ public with sharing class RetrieveForecastConfigurations {
                     }
         }
         if (!forecastConfigNames.containsKey(category)) {
-            throw new SpecialistForecastException('There is no category as '
-                + category);
+            throw new SpecialistForecastException(NO_DATA_CAT + category);
         }
         return forecastConfigNames.get(category);
     }
@@ -129,19 +134,14 @@ public with sharing class RetrieveForecastConfigurations {
      * @return true IFF the supplied User is present in forecast configuration
      */
     public static boolean checkCategory(String userId, String category) {
-        if (String.isEmpty(userId)) {
-            throw new SpecialistForecastException('Error: Invalid User ' +
-                ' Id supplied.');
+        if (String.isEmpty(userId) || String.isEmpty(category)) {
+             return false;
         }
 
-        if (String.isEmpty(category)) {
-            return false;
-        }
-        String shortUserId = (userId.length() > 15) ? userId.substring(0, 15) : userId;
-
+        String shortID = (userId.length() > 15) ? userId.substring(0, 15) : userId;
         Set<String> privilegedUsers = getForecastConfigurations(category);
 
-        if (privilegedUsers != null && privilegedUsers.contains(shortUserId) ||
+        if (privilegedUsers != null && privilegedUsers.contains(shortID) ||
         privilegedUsers.contains(userId)) {
             return true;
         }

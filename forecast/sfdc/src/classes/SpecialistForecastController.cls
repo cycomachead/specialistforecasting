@@ -239,9 +239,8 @@ public with sharing class SpecialistForecastController extends
     public boolean getViewAccessToSyncButton() {
         boolean hasAccess = false;
         try {
-            hasAccess = ForecastHelper.CheckForecastDataSyncAccessForCurrentUser();
+            return ForecastHelper.CheckForecastDataSyncAccessForCurrentUser();
         } catch (Exception ex) {
-            //return false if any error FIXME
             return false;
         }
         return hasAccess;

@@ -105,9 +105,9 @@
       <!--************Drildownpopup End *****************-->
     
 
-     <apex:pageBlock rendered="true" title="Specialist Forecast"  id="pgBlock">
+     <apex:pageBlock rendered="true" title="Specialist Forecasts"  id="pgBlock">
           <apex:pageMessages />
-           <apex:pageBlockSection collapsible="false" title="Find a Forecast"  id="pgBlockSection1" >
+           <apex:pageBlockSection collapsible="true" title="Find a Forecast"  id="pgBlockSection1" >
              
                 <apex:outputPanel rendered="true" id="dataId3"  style="">
                     <apex:inputField style="font-weight:bold" value="{!sfLI.ForecastOwner__c}" id="txtUsr"  />
@@ -136,7 +136,7 @@
                 </apex:outputPanel>
                
                 <apex:outputPanel rendered="true" id="dataId6">
-                    <apex:outputText value="&nbsp;&nbsp;&nbsp;" />
+                    <apex:outputText value="" />
                           <apex:commandButton rendered="{!(canSubmit)}"  Id="SubmitReport" title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
                           <apex:commandButton rendered="{!(viewAccessToSyncButton)}"  Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
                      </apex:outputPanel>
@@ -144,7 +144,7 @@
            
             
             <apex:pageBlockSection collapsible="false" title="{!PreparedByUser}'s Forecast" columns="3" id="pgBlockSection2">
-                <apex:dataTable styleClass="topTable" id="forecastRows" border="1" value="{!SpecialistforecastLineItemsData}" var="forecast">
+                <apex:dataTable styleClass="topTable" rowClasses="dataRow" footClasses="sumRow" id="forecastRows" border="1" value="{!SpecialistforecastLineItemsData}" var="forecast">
                     <apex:column style="{!IF(CONTAINS(forecast.userName,"Total"), 'background-color: #5C94BE;color:white;font-weight:bold;', '')}">
                          <apex:facet name="header">User (Role)</apex:facet>    
                          <apex:outputText rendered="{!(forecast.withoutLink)}"  style="white-space:nowrap;text-align: center;" value="{!forecast.UserRoleName}"/>
@@ -159,17 +159,16 @@
                      
                      <apex:column style="{!IF(CONTAINS(forecast.userName,"Total"), 'background-color:#5C94BE;color:white;font-weight:bold;', '')}" >
                          <apex:facet name="header">Closed</apex:facet>  
-                        <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.closedAmount>0)}" value="${0, number,###,###,###,##0.00}">
-                               <apex:param value="{!forecast.closedAmount}" />
+                         <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.closedAmount>0)}" value="${0, number,###,###,###,##0.00}">
+                             <apex:param value="{!forecast.closedAmount}" />
                          </apex:outputText>
                          <apex:commandLink rendered="{!(forecast.searchUser && forecast.closedAmount>0)}"  action="{!showDrilDownPopup}" rerender="drldwnpopup" >
-                               <apex:outputText style="text-decoration: underline;float: right;" value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.closedAmount}"/>
+                             <apex:outputText style="text-decoration: underline;float: right;" value="${0, number,###,###,###,##0.00}">
+                                 <apex:param value="{!forecast.closedAmount}"/>
                              </apex:outputText>
-                              <apex:param name="lineowner1"  value="{!forecast.UserId}"  assignTo="{!lineItemownerID}"/>                                        
-                              <apex:param name="ovrType2"  value="Closed"  assignTo="{!strField}"/>
+                             <apex:param name="lineowner1"  value="{!forecast.UserId}"  assignTo="{!lineItemownerID}"/>                                        
+                             <apex:param name="ovrType2"  value="Closed"  assignTo="{!strField}"/>
                          </apex:commandLink>
-                        
                      </apex:column>
                     
                      <apex:column style="{!IF(CONTAINS(forecast.userName,"Total"), 'background-color:#5C94BE;color:white;font-weight:bold;', '')}">
@@ -231,7 +230,6 @@
                                         <apex:param name="lineowner"  value="{!forecast.UserId}"  assignTo="{!lineItemownerID}"/>                                        
                                         <apex:param name="ovrType"  value="bestcase"  assignTo="{!strField}"/>
                                  </apex:commandLink>
-                                 
                               </apex:outputPanel>
                          </span>
                      </apex:column>

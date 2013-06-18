@@ -52,7 +52,6 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 }
 
 .topTable th {
-    background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x scroll 0 bottom #FFFFFF;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F0FAFF', endColorstr='##B4E6FF'); /* for IE */
     background: -webkit-gradient(linear, left top, left bottom, from(#F0FAFF), to(#B4E6FF)); /* for webkit browsers */
     background: -moz-linear-gradient(top,  #F0FAFF,  #B4E6FF); /* for firefox 3.6+ */
