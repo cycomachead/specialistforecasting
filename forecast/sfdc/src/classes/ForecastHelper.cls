@@ -260,15 +260,14 @@ public with sharing class ForecastHelper {
         }
     }
 
-    /**
+    /** FIXME --- Area__c necessary?
      * @return TODO
      */
     public static User getDetailsByUserId(Id userId) {
         if (userId == null) {
-            // don't fire SOQL query for invalid id
             return null;
         }
-        User aUser = ([SELECT Id, Name, Username, Email, UserType, UserRoleId,
+        User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
                 IsActive, Alias, Area__c FROM User WHERE Id = :userId]);
 
         if (aUser == null) {
@@ -278,7 +277,7 @@ public with sharing class ForecastHelper {
         return aUser;
     }
 
-    /**
+    /** FIXME ... do I need a new object??
      * @return TODO
      */
     public static UserRole getRoleByUserId(Id userId) {
@@ -297,11 +296,11 @@ public with sharing class ForecastHelper {
     public static SpecialistForecastLineItem__c[] getSpecialistForecastLinesTable(
     ForecastReportQueryParam queryParam) {
 
-        List<SpecialistForecastLineItem__c> lineItemsData;
+        SpecialistForecastLineItem__c[] lineItemsData;
 
-        lineItemsData = [SELECT Id,ForecastOwner__c,FiscalYear__c,FYMonth__c,
-                            OriginalBestcaseAmount__c, OriginalClosedAmount__c,
-                            OriginalCommitAmount__c,OriginalPipelineAmount__c,
+        lineItemsData = [SELECT Id,ForecastOwner__c, FiscalYear__c, FYMonth__c,
+            OriginalBestcaseAmount__c, OriginalClosedAmount__c,
+            OriginalCommitAmount__c, OriginalPipelineAmount__c,
             SpecialistForecastOverride__r.OwnOverridenCommitAmount__c,
             SpecialistForecastOverride__r.ManagerOverridenCommitAmount__c,
             SpecialistForecastOverride__r.OwnOverridenBestcaseAmount__c,
@@ -310,10 +309,10 @@ public with sharing class ForecastHelper {
             SpecialistForecastOverride__r.ManagerOverrideBestcaseNotes__c,
             SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c,
             SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c,
-            SpecialistForecastOverride__c,SubmittedDate__c
+            SpecialistForecastOverride__c, SubmittedDate__c
                         FROM SpecialistForecastLineItem__c
-                        WHERE ExcludeFROMCalculation__c = false and
-                            FiscalYear__c = :queryParam.getFiscalYear()
+                        WHERE ExcludeFromCalculation__c = false 
+                            AND FiscalYear__c = :queryParam.getFiscalYear()
                             AND FYMonth__c IN : queryParam.getMonthsInQrtr()
                             AND ForecastOwner__c IN :queryParam.getOwnerIds()
                             Order By ForecastOwner__c
@@ -449,12 +448,10 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     *  @param FQUARTER is a fiscal quarter string, 'Q#'.
+     *  @param fQuarter is a fiscal quarter string, 'Q#'.
      *  @return a list of the months in the specified quarter.
      */
     public static String[] getMonthsInQuarter(String fQuarter) {
-        List<String> monthsInQrtr = new List<String>();
-
         if (orderedFiscalMonths[0] == null) {
             orderedFiscalMonths = MonthUtil.rotatedFrom(FY_START);
         } // make sure our list has valid data
@@ -463,6 +460,7 @@ public with sharing class ForecastHelper {
             return orderedFiscalMonths;
         }
 
+        String[] monthsInQrtr = new String[3];
         Integer qtr;
         try {
             qtr = Integer.valueOf(fQuarter.substring(1,2));
@@ -470,7 +468,6 @@ public with sharing class ForecastHelper {
             qtr = getFiscalQtr(System.today().month());
         }
         
-        // TODO: Does apex re-eval ending conditions with loop?
         for (Integer month = (qtr * 3) - 3; month < (qtr * 3); month += 1) {
             monthsInQrtr.add(orderedFiscalMonths[month]);
         }
@@ -499,7 +496,7 @@ public with sharing class ForecastHelper {
 
         return new String[] {
             (MonthUtil.getAll()[inpDate.month() - 1]),
-            ('FY' + getFYFROMYrAndMo(inpDate.year(), inpDate.month()))
+            ('FY' + getFYFromYrAndMo(inpDate.year(), inpDate.month()))
         };
     }
 
