@@ -34,8 +34,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class HierarchyUtil {
 
-    public with sharing class HierarchyUtilException extends Exception {}
-
     // map to hold roles with Id as the key
     private static Map<Id, UserRole>  roleUsersMap;
 
@@ -49,11 +47,11 @@ public with sharing class HierarchyUtil {
     private static Map<Id, Id>  forecastHierarchyConfigRoleUserMap;
     
     /** Standard error messages. */
-    private static Final String ROLE_ID_NULL = 
+    public static Final String ROLE_ID_NULL = 
         'No Role ID could be found for the current user.';
-    private static Final String USER_ID_NULL = 
+    public static Final String USER_ID_NULL = 
         'No User ID could be found for the current user.';
-    private static Final String PARENT_ID_NULL = 
+    public static Final String PARENT_ID_NULL = 
         'No Parent User could be found for the current user.';
     
 

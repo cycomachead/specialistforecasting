@@ -27,12 +27,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Controller to display and override Special AE Forecast
- *
- * @see SpecialistForecastException
- * @author Michael Ball
- * @since 
+ *  Basic Exception for Specialist Forecasting Unmanaged Package
+ *  @author Michael Ball
+ *  @since 
  */
 
-public with sharing class SpecialistForecastException extends
-        Exception {}
+public with sharing class SpecialistForecastException extends Exception {
+        
+}

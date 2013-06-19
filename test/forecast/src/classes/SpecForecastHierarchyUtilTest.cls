@@ -35,7 +35,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 public class SpecForecastHierarchyUtilTest {
 
-    public class HierarchyTestData{
+    public class HierarchyTestData {
         public Id roleId;
         public String roleName;
         public Id parentRoleId;
@@ -59,11 +59,11 @@ public class SpecForecastHierarchyUtilTest {
     public static Map<Id, HierarchyTestData> userTestDataMap = new Map<Id, HierarchyTestData>();
 
     public static Map<Id, Map<String,String>> testDataAsMap = new Map<Id, Map<String,String>>();
-
-
-    public static String ID_IS_NULL = 'Id is null';
-
-    //TODO: need remove the hard code id, so far just comment out the tests
+    
+    /** Standard error messages. */
+    private static Final String ROLE_ID_NULL   = HierarchyUtil.ROLE_ID_NULL;
+    private static Final String USER_ID_NULL   = HierarchyUtil.USER_ID_NULL;
+    private static Final String PARENT_ID_NULL = HierarchyUtil.PARENT_ID_NULL;
 
     static {
         //EVP WW Corporate Sales Hillary's level by role
@@ -100,7 +100,7 @@ public class SpecForecastHierarchyUtilTest {
         try{
             HierarchyUtil.RoleNodeWrapper roleNode = HierarchyUtil.getSubordinatesByRole(null);
         }catch (Exception e) {
-            System.assertEquals(ID_IS_NULL + ' 3', e.getMessage());
+            System.assertEquals(PARENT_ID_NULL, e.getMessage());
             return;
         }
     }
@@ -111,14 +111,11 @@ public class SpecForecastHierarchyUtilTest {
     Parameters : None
     Description: f-test utility that is used to do test when user id is passed as null
     */
-    //TODO Fix me before prod.
     private static testMethod void testGetHierarchyNegative2() {
-
-        try{
+        try {
             HierarchyUtil.RoleNodeWrapper roleNode = HierarchyUtil.getSubordinatesByUser(null);
-        }catch (Exception e) {
-            System.assertEquals(ID_IS_NULL + ' 2', e.getMessage());
-            return;
+        } catch (Exception e) {
+            System.assertEquals(USER_ID_NULL, e.getMessage());
         }
     }
 
@@ -170,12 +167,13 @@ public class SpecForecastHierarchyUtilTest {
         }
    }
 
-    private static void verifyTestResultsForMap(Map<String, String> actualResults, Map<String,String> expectedResults){
+    private static void verifyTestResultsForMap(Map<String, String> actualResults,
+    Map<String,String> expectedResults){
         System.assertEquals(expectedResults.size(),actualResults.size());
         System.assertEquals(expectedResults.keySet().size(),actualResults.keySet().size());
         //assert that the expected user name is the same as the actual user name
         for(String role : actualResults.keySet()){
             System.assertEquals(expectedResults.get(role),actualResults.get(role));
         }
-       }
+    }
 }

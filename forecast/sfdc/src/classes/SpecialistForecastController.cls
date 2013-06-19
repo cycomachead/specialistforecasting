@@ -38,8 +38,8 @@ public with sharing class SpecialistForecastController extends
 
     private Boolean isvalidated = true;
 
-    private Set<Id> alluserIds = new Set<Id>();
-    private Set<Id> allTotaluserIds = new Set<Id>();
+    private Set<Id> allUserIDs = new Set<Id>();
+    private Set<Id> allTotaluserIDs = new Set<Id>();
 
     private List<SelectOption> fiscalYears;
     private List<SelectOption> fiscalQuarters;
@@ -176,10 +176,8 @@ public with sharing class SpecialistForecastController extends
             this.getMappedUserInfoFromRoleHierarchy(UserInfo.getUserId());
             if (!allTotaluserIds.contains(sfLI.ForecastOwner__c)) {
                 isvalidated = false;
-                //TODO - Convert the error message to custom label
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                    ' You do not have privileges to view data for this user ?' +
-                    ' Not in Role hierarchy / Below user in role hierarchy'));
+                    'You do not have permission to view reports for this user.'));
                 return null;
             }
             isvalidated = true;
@@ -190,7 +188,7 @@ public with sharing class SpecialistForecastController extends
             }
         } catch (Exception ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                'Unexpected Report Error'));
+                'Unexpected Report Error: ' + ex.getMessage()));
         }
         return null;
     }
@@ -215,35 +213,33 @@ public with sharing class SpecialistForecastController extends
     public PageReference submitReport() {
         if (SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL) {
             String strMonth = ForecastHelper.getMonthsInQuarter(SelectedFQ).get(0);
-            SpecialistForecastlineItem__c splLI = new SpecialistForecastlineItem__c();
-            splLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
-            splLI.FiscalYear__c = SelectedFY ;
-            splLI.FYMonth__c = strMonth ;
-            splLI.submittedDate__c = System.now() ;
-            splLI.ExtIdentifier__c = sfLI.ForecastOwner__c + SelectedFY + strMonth;
-            upsert splLI ExtIdentifier__c;
+            SpecialistForecastlineItem__c sfLI = new SpecialistForecastlineItem__c();
+            sfLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
+            sfLI.FiscalYear__c = SelectedFY;
+            sfLI.FYMonth__c = strMonth; //This needs to be fixed. TODO
+            sfLI.submittedDate__c = System.now() ;
+            sfLI.ExtIdentifier__c = sfLI.ForecastOwner__c + SelectedFY + strMonth;
+            upsert sfLI ExtIdentifier__c;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
                 'Report Submitted successfully'));
        } else {
               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,
-                  'You cann\'t submit for quarter "All".' +
-                  'Please SELECT a different quarter to submit.'));
+                  'You can\'t submit for quarter "All".' +
+                  'Please select a different quarter to submit.'));
        }
-
-        return null;
+       
+       return null;
     }
 
     /**
      * Called from specialist forecast page to check if they have access to the button
      */
     public boolean getViewAccessToSyncButton() {
-        boolean hasAccess = false;
         try {
             return ForecastHelper.CheckForecastDataSyncAccessForCurrentUser();
         } catch (Exception ex) {
             return false;
         }
-        return hasAccess;
     }
 
     /**
@@ -261,7 +257,6 @@ public with sharing class SpecialistForecastController extends
 
         return null;
     }
-
 
     /**
      *  TODO: REFACTOR REFACTOR REFACTOR
@@ -299,7 +294,6 @@ public with sharing class SpecialistForecastController extends
             return null;
         }
 
-
         // map used for setting the user and role as key and
         //  SpecialistForecastlineItem as the value
         Map<String,SpecialistForecastlineItemVO> mapUserRolelineItems = new
@@ -313,7 +307,7 @@ public with sharing class SpecialistForecastController extends
         mapUsers.clear();
         this.getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
-        SpecialistForecastlineItemVO splLine = new SpecialistForecastlineItemVO();
+        SpecialistForecastlineItemVO sfLIne = new SpecialistForecastlineItemVO();
 
         Set<Id> ownerIdsforQuery = new Set<Id>();
 
@@ -364,7 +358,7 @@ public with sharing class SpecialistForecastController extends
         boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
         for (Id lineItemOwnerId : mapSecondLeverUsersAndChild.keySet()) {
-            splLine = new SpecialistForecastlineItemVO();
+            sfLIne = new SpecialistForecastlineItemVO();
             boolean mgrCommitOverride = false;
             boolean mgrBestCaseOverride = false;
 
@@ -438,61 +432,61 @@ public with sharing class SpecialistForecastController extends
                 mapUsers.containsKey(lineItemOwnerId) &&
                 lineItemOwnerId != sfLI.ForecastOwner__c) {
 
-                splLine.withoutLink = false;
-                splLine.reportingUser = false;
-                splLine.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
+                sfLIne.withoutLink = false;
+                sfLIne.reportingUser = false;
+                sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
                                        && SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
-                splLine.userName =  mapUsers.get(lineItemOwnerId).userName;
-                splLine.roleName = mapUsers.get(lineItemOwnerId).roleName;
-                splLine.userId =  mapUsers.get(lineItemOwnerId).userId;
-                splLine.roleId = mapUsers.get(lineItemOwnerId).roleId;
-                splLine.closedAmount = subtotclosedAmount;
-                splLine.commitAmount = subtotcommitAmount;
-                splLine.bestCaseAmount = subtotbestCaseAmount;
-                splLine.pipelineAmount = subtotpipelineAmount;
-                splLine.quotaAmount = subTotQuotaAmount;
+                sfLIne.userName =  mapUsers.get(lineItemOwnerId).userName;
+                sfLIne.roleName = mapUsers.get(lineItemOwnerId).roleName;
+                sfLIne.userId =  mapUsers.get(lineItemOwnerId).userId;
+                sfLIne.roleId = mapUsers.get(lineItemOwnerId).roleId;
+                sfLIne.closedAmount = subtotclosedAmount;
+                sfLIne.commitAmount = subtotcommitAmount;
+                sfLIne.bestCaseAmount = subtotbestCaseAmount;
+                sfLIne.pipelineAmount = subtotpipelineAmount;
+                sfLIne.quotaAmount = subTotQuotaAmount;
 
                 lineItem = ownerlineItemsMap.get(lineItemOwnerId);
                 if (lineItem != null) {
-                    splLine.commitOverrideAmount = (!lineItem.mgrCommitOverriden
+                    sfLIne.commitOverrideAmount = (!lineItem.mgrCommitOverriden
                                                     ? subtotcommitAmount : subtotcommitOvrrideAmount);
-                    splLine.bestCaseOverrideAmount = (!lineItem.mgrBestCaseOverriden
+                    sfLIne.bestCaseOverrideAmount = (!lineItem.mgrBestCaseOverriden
                                                       ? subtotbestCaseAmount : subtotbestCaseOverrideAmount);
-                    splLine.myCommitOverriden = (lineItem.mgrCommitOverriden);
-                    splLine.myBestcaseOverriden = (lineItem.mgrBestCaseOverriden);
-                    splLine.strLineItmId = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
-                    splLine.isSubmitted = (lineItem.isSubmitted || splLine.isSubmitted);
-                    splLine.submittedDate = lineItem.submittedDate;
-                    splLine.mgrCommitOverrideNotes = lineItem.mgrCommitOverrideNotes;
-                    splLine.mgrBestCaseOverrideNotes = lineItem.mgrBestCaseOverrideNotes;
-                    splLine.prevDirectRepCommitAmount = lineItem.prevDirectRepCommitAmount;
-                    splLine.prevDirectRepBestcaseAmount = lineItem.prevDirectRepBestcaseAmount;
+                    sfLIne.myCommitOverriden = (lineItem.mgrCommitOverriden);
+                    sfLIne.myBestcaseOverriden = (lineItem.mgrBestCaseOverriden);
+                    sfLIne.strLineItmId = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
+                    sfLIne.isSubmitted = (lineItem.isSubmitted || sfLIne.isSubmitted);
+                    sfLIne.submittedDate = lineItem.submittedDate;
+                    sfLIne.mgrCommitOverrideNotes = lineItem.mgrCommitOverrideNotes;
+                    sfLIne.mgrBestCaseOverrideNotes = lineItem.mgrBestCaseOverrideNotes;
+                    sfLIne.prevDirectRepCommitAmount = lineItem.prevDirectRepCommitAmount;
+                    sfLIne.prevDirectRepBestcaseAmount = lineItem.prevDirectRepBestcaseAmount;
 
                 } else {
-                    splLine.commitOverrideAmount = subtotcommitAmount;
-                    splLine.bestCaseOverrideAmount = subtotbestCaseAmount;
-                    splLine.MycommitOverriden = false;
-                    splLine.MyBestcaseOverriden = false;
-                    splLine.strLineItmId = '';
+                    sfLIne.commitOverrideAmount = subtotcommitAmount;
+                    sfLIne.bestCaseOverrideAmount = subtotbestCaseAmount;
+                    sfLIne.MycommitOverriden = false;
+                    sfLIne.MyBestcaseOverriden = false;
+                    sfLIne.strLineItmId = '';
                 }
 
-                splFClineItems.add(splLine);
+                splFClineItems.add(sfLIne);
 
-                totcommitAmount           += splLine.commitAmount;
-                totclosedAmount           += splLine.closedAmount;
-                totbestCaseAmount         += splLine.bestCaseAmount;
-                totpipelineAmount         += splLine.pipelineAmount;
-                totQuotaAmount            += splLine.quotaAmount;
-                totbestCaseOverrideAmount += splLine.bestCaseOverrideAmount;
-                totcommitOvrrideAmount    += splLine.commitOverrideAmount;
+                totcommitAmount           += sfLIne.commitAmount;
+                totclosedAmount           += sfLIne.closedAmount;
+                totbestCaseAmount         += sfLIne.bestCaseAmount;
+                totpipelineAmount         += sfLIne.pipelineAmount;
+                totQuotaAmount            += sfLIne.quotaAmount;
+                totbestCaseOverrideAmount += sfLIne.bestCaseOverrideAmount;
+                totcommitOvrrideAmount    += sfLIne.commitOverrideAmount;
 
             } else if (mapUsers.size() > 0 && !haslineItemstoDisplay &&
             mapUsers.containsKey(lineItemOwnerId)) {
-                splLine.createEmptySPlineItemforVFPage(lineItemOwnerId,
+                sfLIne.createEmptySPlineItemforVFPage(lineItemOwnerId,
                     sfLI.ForecastOwner__c,mapUsers,quotaAmount);
-                splLine.forOverride = (SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL
-                    ? splLine.forOverride : false);
-                splFClineItems.add(splLine);
+                sfLIne.forOverride = (SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL
+                    ? sfLIne.forOverride : false);
+                splFClineItems.add(sfLIne);
             } //end if
 
 
@@ -507,7 +501,7 @@ public with sharing class SpecialistForecastController extends
 
         } // end for
 
-        //create search user line items
+        // create search user line items
         if (ownerlineItemsMap.containsKey(sfLI.ForecastOwner__c) &&
             ownerlineItemsMap.get(sfLI.ForecastOwner__c) != null) {
 
@@ -524,29 +518,29 @@ public with sharing class SpecialistForecastController extends
             pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
             quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
-            splLine.withoutLink   = true;
-            splLine.reportingUser = false;
-            splLine.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
+            sfLIne.withoutLink   = true;
+            sfLIne.reportingUser = false;
+            sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
                                    && SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
 
-            splLine.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
-            splLine.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
-            splLine.userId = mapUsers.get(sfLI.ForecastOwner__c).userId;
-            splLine.roleId = mapUsers.get(sfLI.ForecastOwner__c).roleId;
-            splLine.closedAmount = closedAmount;
-            splLine.commitAmount = commitAmount;
-            splLine.bestCaseAmount = bestCaseAmount;
-            splLine.commitOverrideAmount = commitOvrrideAmount;
-            splLine.bestCaseOverrideAmount = bestCaseOverrideAmount;
-            splLine.pipelineAmount = pipelineAmount;
-            splLine.quotaAmount = quotaAmount;
-            splLine.MycommitOverriden = lineItem.MycommitOverriden;
-            splLine.MyBestcaseOverriden = lineItem.MyBestcaseOverriden;
-            splLine.strLineItmId = lineItem.strLineItmId;
-            splLine.searchUser = true;
+            sfLIne.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
+            sfLIne.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
+            sfLIne.userId = mapUsers.get(sfLI.ForecastOwner__c).userId;
+            sfLIne.roleId = mapUsers.get(sfLI.ForecastOwner__c).roleId;
+            sfLIne.closedAmount = closedAmount;
+            sfLIne.commitAmount = commitAmount;
+            sfLIne.bestCaseAmount = bestCaseAmount;
+            sfLIne.commitOverrideAmount = commitOvrrideAmount;
+            sfLIne.bestCaseOverrideAmount = bestCaseOverrideAmount;
+            sfLIne.pipelineAmount = pipelineAmount;
+            sfLIne.quotaAmount = quotaAmount;
+            sfLIne.MycommitOverriden = lineItem.MycommitOverriden;
+            sfLIne.MyBestcaseOverriden = lineItem.MyBestcaseOverriden;
+            sfLIne.strLineItmId = lineItem.strLineItmId;
+            sfLIne.searchUser = true;
 
             //add the total amounts to the list
-            splFClineItems.add(splLine);
+            splFClineItems.add(sfLIne);
 
             totcommitAmount           += commitAmount;
             totclosedAmount           += closedAmount;
@@ -557,48 +551,51 @@ public with sharing class SpecialistForecastController extends
             totcommitOvrrideAmount    += commitOvrrideAmount;
 
         } else {
-            splLine = new SpecialistForecastlineItemVO();
-            splLine.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
+            sfLIne = new SpecialistForecastlineItemVO();
+            sfLIne.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
-            splLine.forOverride = (SelectedFQ !=
-                ForecastHelper.FISCAL_QUARTER_ALL ? splLine.forOverride : false);
-            splFClineItems.add(splLine);
+            sfLIne.forOverride = (SelectedFQ !=
+                ForecastHelper.FISCAL_QUARTER_ALL ? sfLIne.forOverride : false);
+            splFClineItems.add(sfLIne);
         }
 
 
         // create total line items
-        splLine = new SpecialistForecastlineItemVO();
-        splLine.withoutLink = true;
-        splLine.reportingUser = true;
-        splLine.userName = ForecastHelper.GRAND_TOTAL;
-        splLine.closedAmount = totclosedAmount;
-        splLine.commitAmount = totcommitAmount;
-        splLine.bestCaseAmount = totbestCaseAmount;
-        splLine.commitOverrideAmount = totcommitOvrrideAmount ;
-        splLine.bestCaseOverrideAmount = totbestCaseOverrideAmount;
-        splLine.pipelineAmount = totpipelineAmount;
-        splLine.quotaAmount = totQuotaAmount;
+        sfLIne = new SpecialistForecastlineItemVO();
+        sfLIne.withoutLink = true;
+        sfLIne.reportingUser = true;
+        sfLIne.userName = ForecastHelper.GRAND_TOTAL;
+        sfLIne.closedAmount = totclosedAmount;
+        sfLIne.commitAmount = totcommitAmount;
+        sfLIne.bestCaseAmount = totbestCaseAmount;
+        sfLIne.commitOverrideAmount = totcommitOvrrideAmount ;
+        sfLIne.bestCaseOverrideAmount = totbestCaseOverrideAmount;
+        sfLIne.pipelineAmount = totpipelineAmount;
+        sfLIne.quotaAmount = totQuotaAmount;
 
         //add the total amounts Line to the list
-        splFClineItems.add(splLine);
+        splFClineItems.add(sfLIne);
 
         return splFClineItems;
     }
 
 
     /**
-     * Get all the users added into the  allUserIds and put the RoleInfo with
-     * UserId Key for each displayable user
-     *
+     *  Get all the users added into the  allUserIds and put the RoleInfo with
+     *  UserId Key for each displayable user
+     *  @param UserID is a SFDC ID
+     *  @throws SpecialistForecastException
      */
     private void getMappedUserInfoFromRoleHierarchy(Id userId) {
-
-        User usr = [SELECT Name, UserRoleId, UserRole.Name FROM User WHERE Id = :userId];
-
-        if (usr.UserRoleID == null) {
-            // FIXME inst. a new simple error page with a message.
+        User usr;
+        try {
+            usr = [SELECT Name, UserRoleId, UserRole.Name FROM User WHERE Id = :userId];
+            if (usr == null || usr.UserRoleID == null) {
+                throw new SpecialistForecastException();
+            }
+        } catch (Exception ex) {
             throw new SpecialistForecastException('Unable to find required role'
-                + ' ID for user ' + usr.Name + '.');
+                + ' ID for user ' + userID + '.');
         }
 
         HierarchyUtil.RoleNodeWrapper rolwraps;
@@ -683,10 +680,7 @@ public with sharing class SpecialistForecastController extends
         mapUsers.put(userId,ruinfo);
     }
 
-
-
      /**
-      *
       * Recursively traverse a given roleId
       *
       * @param rolewrapper user/role indicates the starting point of traversal
@@ -865,25 +859,23 @@ public with sharing class SpecialistForecastController extends
     /**
      *
      */
-    public pagereference saveOverride() {
+    public PageReference saveOverride() {
 
         SpecialistForecastlineItem__c spc = new SpecialistForecastlineItem__c();
         SpecialistForecastOverride__c spovr = new SpecialistForecastOverride__c();
         String external_Key;
         if (strField =='commit') {
-
             if (isSelfOverride()) {
                 spovr.OwnOverridenCommitAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overridecomment;
             } else {
                 spovr.ManagerOverridenCommitAmount__c = overrideAmount;
                 spovr.ManagerOverrideCommitNotes__c = overridecomment;
-
             }
             spovr.PreviousDirectRepCommitAmount__c = originaloldAmount;
         } else if (strField =='bestcase') {
 
-            if(isSelfOverride()){
+            if (isSelfOverride()) {
                 spovr.OwnOverridenBestCaseAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overrideComment;
             } else {
@@ -902,7 +894,7 @@ public with sharing class SpecialistForecastController extends
            Upsert spovr ExtIdentifier__c;
        } catch(System.DMLException ex) {
            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-               ' Failed to update the Override value'));
+               'Failed to update the Override value'));
            return null;
         }
 
@@ -919,7 +911,7 @@ public with sharing class SpecialistForecastController extends
             Upsert spc ExtIdentifier__c;
         } catch(System.DMLException ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                ' Failed to update the Override Amount'));
+                'Failed to update the Override Amount'));
             return null;
         }
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
@@ -945,33 +937,30 @@ public with sharing class SpecialistForecastController extends
          strRecordId = '';
          strField = '';
          lineItemOwnerId = '';
-
      }
-   /***************Specialist Forecast Override End**********************/
+     /*************** Specialist Forecast Override End **********************/
 
+     /*************** Specialist Forecast DrillDown **********************/
+     public List<SpecialistForecast__c> specialistforecastList{ get;set; }
 
-    /***************Specialist Forecast DrillDown**********************/
-    public List<SpecialistForecast__c> specialistforecastList{ get;set; }
+     public boolean displayDrilDownPopup {get; set;}
 
-    public boolean displayDrilDownPopup {get; set;}
+     /**
+      *
+      */
+     public void closeDrilDownPopup() {
+         displayDrilDownPopup = false;
+     }
 
-    /**
-     *
-     */
-    public void closeDrilDownPopup() {
-        displayDrilDownPopup = false;
-
-    }
-
-    /**
-     *
-     */
-    public void showDrilDownPopup() {
-        if (SelectedFQ != null && SelectedFY != null && lineItemOwnerId != null) {
-            this.getSpecialistForecastRecords();
-        }
-            displayDrilDownPopup = true;
-    }
+     /**
+      *
+      */
+     public void showDrilDownPopup() {
+         if (SelectedFQ != null && SelectedFY != null && lineItemOwnerId != null) {
+             this.getSpecialistForecastRecords();
+         }
+         displayDrilDownPopup = true;
+     }
 
     /**
      *
@@ -1005,4 +994,9 @@ public with sharing class SpecialistForecastController extends
     private static Decimal zeroIfNull(Decimal inp) {
         return inp == null ? 0 : inp;
     }
- }
+    
+    private static String zeroIfNull(String inp) {
+        return inp == null ? '' : inp;
+    }
+    
+}

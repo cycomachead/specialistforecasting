@@ -47,8 +47,8 @@ public class SpecForecastConfigTest {
         try {
             Set<String> valuesForEcommMember = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestUtil.CAT_ECOMM_MEMBER);
             System.assert(false); // should have thrown exception
-        } catch(RetrieveForecastConfigurations.ForecastConfigurationsException rfce) {
-            System.assert(rfce.getMessage().contains('There is no category as '));
+        } catch(SpecialistForecastException ex) {
+            System.assert(ex.getMessage().contains('There is no category as '));
         }
 
 

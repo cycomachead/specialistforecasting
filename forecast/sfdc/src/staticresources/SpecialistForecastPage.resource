@@ -20,7 +20,7 @@
 }*/
 
 .apexp .detailList .list .headerRow th {
-    border-bottom: 0 solid #CCCCCC;
+    border-bottom: 1px solid #000000;
     text-align: center;
     vertical-align: middle;
 }
@@ -31,11 +31,11 @@ body .pbBody table.list tr.dataRow th, body .pbBody table.list tr.dataRow td {
     vertical-align: middle;
 }
 
-body .bRelatedList .pbBody table.list, body .apexp .pbBody table.list {
+/*body .bRelatedList .pbBody table.list, body .apexp .pbBody table.list {
     border: 2px solid #D4DADC;
-    /* margin-bottom: -0.3em; */
+    /* margin-bottom: -0.3em;
 }
-
+*/
 body .bDetailBlock.bPageBlock .pbBody .labelCol, 
 body .bDetailBlock.bPageBlock .pbBody .dataCol, 
 body .bDetailBlock.bPageBlock .pbBody .data2Col, 
@@ -57,6 +57,7 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
     background: -moz-linear-gradient(top,  #F0FAFF,  #B4E6FF); /* for firefox 3.6+ */
     border-style: solid;
     border-width: 2px;
+    border-color: #AAAAAA;
     padding: .5em;
     text-align: center;
     font-size: 1.2em;
@@ -68,7 +69,7 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 
 .topTable tr td {
     border-style: solid;
-    border-width: 1px;
+    border-width: 2px;
     height: auto;
     width: auto;
     max-width: auto;

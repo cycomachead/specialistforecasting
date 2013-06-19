@@ -3,3 +3,4 @@ tools/*
 tools/build
 tools/ant
 tools/automation
+pull/*

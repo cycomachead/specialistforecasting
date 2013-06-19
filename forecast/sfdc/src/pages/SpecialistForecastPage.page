@@ -144,7 +144,7 @@
            
             
             <apex:pageBlockSection collapsible="false" title="{!PreparedByUser}'s Forecast" columns="3" id="pgBlockSection2">
-                <apex:dataTable styleClass="topTable" rowClasses="dataRow" footClasses="sumRow" id="forecastRows" border="1" value="{!SpecialistforecastLineItemsData}" var="forecast">
+                <apex:dataTable styleClass="topTable" rowClasses="dataRow" footerClass="sumRow" id="forecastRows" border="1" value="{!SpecialistforecastLineItemsData}" var="forecast">
                     <apex:column style="{!IF(CONTAINS(forecast.userName,"Total"), 'background-color: #5C94BE;color:white;font-weight:bold;', '')}">
                          <apex:facet name="header">User (Role)</apex:facet>    
                          <apex:outputText rendered="{!(forecast.withoutLink)}"  style="white-space:nowrap;text-align: center;" value="{!forecast.UserRoleName}"/>

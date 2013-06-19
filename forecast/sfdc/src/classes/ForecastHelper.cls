@@ -41,8 +41,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class ForecastHelper {
 
-    public with sharing class ForecastHelperException extends Exception {}
-
     public static final String CAT_STORE_BATCH_JOB = 'StoreBatchJob';
     public static final String CAT_SUPPORTED_DATA = 'SupportedData';
     public static final String CAT_SUPPORTED_FY = 'Supported Fiscal Years';
@@ -496,7 +494,7 @@ public with sharing class ForecastHelper {
      */
     public static String[] extractFYAndMonthFromDate(Date inpDate) {
         if (inpDate == null) {
-            throw new ForecastHelperException('Null date supplied.');
+            return new String[] { '', '' };
         }
 
         return new String[] {

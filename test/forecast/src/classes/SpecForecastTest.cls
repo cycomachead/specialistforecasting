@@ -74,7 +74,6 @@ public class SpecForecastTest {
     Description: f-test utility that is used to assert special forecast getSpecialistforecastLineItemsData with the user and entry data
     */
     private static testMethod void testGetSpecialistforecastLineItemsData() {
-
         //insert data if not exist
         User u = createOrGetUser();
 
@@ -144,15 +143,14 @@ public class SpecForecastTest {
          setUpPageRef('6000', specItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
 
          System.runAs(u) {
-                SpecialistForecastController specialistController = new SpecialistForecastController();
+             SpecialistForecastController specialistController = new SpecialistForecastController();
 
-                specialistController.selectedUserId = u.Id;
-                PageReference drillDownPage = specialistController.reportDrildownByUser_Role();
+             specialistController.selectedUserId = u.Id;
+             PageReference drillDownPage = specialistController.reportDrildownByUser_Role();
 
-                System.assert(drillDownPage == null);
+             System.assert(drillDownPage == null);
          }
-
-    }
+     }
 
     /*
     Method Name: testOverride
@@ -193,50 +191,49 @@ public class SpecForecastTest {
     Description: f-test utility that is used to assert special forecast getSpecialistForecastQuota with the user and entry data
     */
     private static testMethod void testGetSpecialistForecastQuota() {
-         //insert data if not exist
-          User u = createOrGetUser();
+        //insert data if not exist
+        User u = createOrGetUser();
 
-         SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c=6000,
-                                        FiscalYear__c='FY13',FYMonth__c='August',OwnerId=u.Id);
+        SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c=6000,
+             FiscalYear__c='FY13',FYMonth__c='August',OwnerId=u.Id);
 
-         insert specItem;
+        insert specItem;
 
-         setUpPageRef('6000', specItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
+        setUpPageRef('6000', specItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
 
-      // This code runs as the system user
+        // This code runs as the system user
 
-         System.runAs(u) {
-          // The following code runs as user 'u'
+        System.runAs(u) {
+            // The following code runs as user 'u'
 
-                 SpecialistForecastLineItem__c  sfLI = new SpecialistForecastLineItem__c();
-                 sfLI.ForecastOwner__c = UserInfo.getUserId();
-                 set<id> ownerIdsforQuery =new set<Id>();
+            SpecialistForecastLineItem__c  sfLI = new SpecialistForecastLineItem__c();
+            sfLI.ForecastOwner__c = UserInfo.getUserId();
+            Set<id> ownerIdsforQuery = new Set<Id>();
 
-                 ownerIdsforQuery.add(sfLI.ForecastOwner__c);
-                 //set the query parameters
-                ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
-                queryParam.setFiscalYear('FY13');
-                queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter('Q3'));
-                queryParam.setOwnerIds(ownerIdsforQuery);
+            ownerIdsforQuery.add(sfLI.ForecastOwner__c);
+            //set the query parameters
+            ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
+            queryParam.setFiscalYear('FY13');
+            queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter('Q3'));
+            queryParam.setOwnerIds(ownerIdsforQuery);
 
-                //get Quota information for all the users
-                AggregateResult[] listSplFCastQuotas=ForecastHelper.getSpecialistForecastQuota(queryParam );
+            //get Quota information for all the users
+            AggregateResult[] listSplFCastQuotas=ForecastHelper.getSpecialistForecastQuota(queryParam );
 
-                 for (Sobject so : listSplFCastQuotas)  {
-                           AggregateResult ar = (AggregateResult) so;
-                           Id OwnerId = (Id) ar.get('SpecialistForecastUser__c');
-                           Decimal tempAmount = (Decimal) ar.get('amnt');
-                           System.assert(tempAmount !=null);
-                 }
+            for (Sobject so : listSplFCastQuotas)  {
+                AggregateResult ar = (AggregateResult) so;
+                Id OwnerId = (Id) ar.get('SpecialistForecastUser__c');
+                Decimal tempAmount = (Decimal) ar.get('amnt');
+                System.assert(tempAmount !=null);
+            }
         }
     }
-
 
     /**
      * set up page reference object for testing
      */
     private static void setUpPageRef(String amt, Id recId, String field,
-        Id ownerId, String fq, String fy) {
+    Id ownerId, String fq, String fy) {
         PageReference pageRef = new PageReference('/apex/SpecialistForecastPage');
         pageRef.getParameters().put('Amt', amt);
         pageRef.getParameters().put('RecId', recId);
@@ -244,8 +241,7 @@ public class SpecForecastTest {
         pageRef.getParameters().put('ownerId', ownerId);
         pageRef.getParameters().put('fq', fq);
         pageRef.getParameters().put('fy', fy);
-
-      }
+    }
 
     private static User createOrGetUser() {
         User u = [SELECT Id FROM User WHERE UserName='srikanta.mohapatra@salesforce.com'];
@@ -253,10 +249,9 @@ public class SpecForecastTest {
             u = new User(Email='srikanta.mohapatra@salesforce.com', FirstName='Srikanta', LastName='Mohapatra', IsActive=true,
                 Username='srikanta.mohapatra@salesforce.com', Alias='sm', CommunityNickname='srmo', TimeZoneSidKey='America/Los_Angeles', LocaleSidKey='en_US', EmailEncodingKey='ISO-8859-1',
                 ProfileId='00e30000000brH1', LanguageLocaleKey='en_US');
-
-             insert u;
-             }
-             return u;
-      }
+            insert u;
+        }
+        return u;
+    }
 
 }

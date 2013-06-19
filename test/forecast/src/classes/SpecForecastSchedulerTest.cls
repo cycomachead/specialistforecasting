@@ -48,10 +48,9 @@ public class SpecForecastSchedulerTest {
             System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
 
             System.assert(true);
-        }catch(Exception e){
-            System.assert(false, 'Test failed, useful info is still TODO.');
+        } catch(Exception e) {
+            System.assert(false, 'Test failed. ' + e.getMessage());
         }
-
     }
 
     /*
@@ -68,9 +67,8 @@ public class SpecForecastSchedulerTest {
 
             System.assert(true);
         } catch (Exception e) {
-            System.assert(false);
+            System.assert(false, 'Test Failed. ' + e.getMessage());
         }
-
     }
 
 }

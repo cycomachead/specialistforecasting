@@ -34,8 +34,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public abstract with sharing class BaseSpecialistForecastController {
 
-	public with sharing class BaseSpecialistForecastControllerException extends Exception {}
-
 }
 
 

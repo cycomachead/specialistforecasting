@@ -34,8 +34,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class StoreBatchAdminController {
 
-    public with sharing class StoreBatchAdminControllerException extends Exception {}
-
     public String notificationMinute;
 
     public String getNotificationMinute() {
