@@ -262,7 +262,7 @@ public with sharing class ForecastHelper {
         return aUser;
     }
 
-    /** FIXME ... do I need a new object??
+    /**
      * @return TODO
      */
     public static UserRole getRoleByUserId(Id userId) {
@@ -392,7 +392,7 @@ public with sharing class ForecastHelper {
      * @return previous fiscal year (from current month) as a string 'FY##'.
      */
     public static String getLastFiscalYear() {
-        Integer yr = MonthUtil.getCurrentFY() - 1;
+        Integer yr = Math.mod(MonthUtil.getCurrentFY() - 1, 100);
         return 'FY' + (yr < 10 ? '0' : '') + yr;
     }
 
@@ -403,7 +403,7 @@ public with sharing class ForecastHelper {
      */
     public static String getPreviousFiscalYear(String fYear) {
         try {
-            Integer yr = Integer.valueOf(fYear.substring(2)) - 1;
+            Integer yr = Math.mod(Integer.valueOf(fYear.substring(2)) - 1, 100);
             return 'FY' + (yr < 10 ? '0' : '') + yr;
         } catch (Exception ex) {
             return 'ERROR';

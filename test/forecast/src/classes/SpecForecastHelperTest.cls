@@ -27,10 +27,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- *
- * Class Name : SpecForecastHelperTest
- * Description: Contains test cases to test utility methods for forecast
- * @since 178.store
+ *  Class Name : SpecForecastHelperTest
+ *  Description: Contains test cases to test utility methods for forecast
+ *  @author Michael Ball
+ *  @since
  */
 
 public class SpecForecastHelperTest {
@@ -81,14 +81,16 @@ public class SpecForecastHelperTest {
         previousFY = ForecastHelper.getPreviousFiscalYear('FY20');
         System.assertEquals('FY19', previousFY);
         previousFY = ForecastHelper.getPreviousFiscalYear('FY00');
-        System.assertEquals('FY-1', previousFY);
+        System.assertEquals('FY99', previousFY);
     }
     
     // MUST be updated every year!!
     // TODO Fix for testing with Data and without
     private static testMethod void testGetSupportedFiscalYears() {
         List<String> supportedFYs = ForecastHelper.getSupportedFiscalYears();
-        System.assertEquals('FY14', supportedFYs.get(0), 'supported is FY14');
+        Boolean deOrg = 'FY14' == supportedFYs.get(0);
+        Boolean aps1Test = 'FY13' == supportedFYs.get(0);
+        System.assert(deOrg || aps1Test, 'Failed supported FYs.');
         // System.assertEquals(supportedFYs.get(1), 'FY14', 'supported is FY14');
         // System.assertEquals(supportedFYs.get(2), 'FY15', 'supported is FY15');
 

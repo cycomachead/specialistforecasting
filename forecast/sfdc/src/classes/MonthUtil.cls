@@ -32,7 +32,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * @since
  */
 
-
 public with sharing class MonthUtil {
     
     /** Number of months in a year. */
@@ -166,7 +165,7 @@ public with sharing class MonthUtil {
      */
     public static String[] getOrderedFiscalMonths() {
         if (orderedFiscalMonths[0] == null) {
-            orderedFiscalMonths = MonthUtil.rotatedFrom(FY_START);
+            orderedFiscalMonths = rotatedFrom(FY_START);
         }
         return orderedFiscalMonths;
     }
@@ -215,8 +214,7 @@ public with sharing class MonthUtil {
         } else {
             adjust = (mon < FY_START) ? 0 : 1; 
         }
-        year = Math.mod(year, 100);
-        return year + adjust;
+        return Math.mod(year + adjust, 100);
     }
 
     /**

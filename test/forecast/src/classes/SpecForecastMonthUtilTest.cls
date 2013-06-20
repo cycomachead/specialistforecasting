@@ -103,10 +103,11 @@ public with sharing class SpecForecastMonthUtilTest {
         System.assertEquals(JUN, MonthUtil.getMonthName(6));
         System.assertEquals(DEC, MonthUtil.getMonthName(12));
         System.assertEquals(OCT, MonthUtil.getMonthName(10));
-        // Expect Error Results
+        // Expect Error Results and weird cases.
         System.assertEquals(-1, MonthUtil.getMonthNumber('WOOT!'));
         System.assertEquals(-1, MonthUtil.getMonthNumber(':D'));
-        System.assertEquals('', MonthUtil.getMonthName(1337));
+        System.assertEquals(MAY, MonthUtil.getMonthName(1337));
+        System.assertEquals(DEC, MonthUtil.getMonthName(0));
     }
 
     /** Test the abbrev method, both positive and negative tests. */
