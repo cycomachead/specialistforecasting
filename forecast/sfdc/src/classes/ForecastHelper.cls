@@ -384,16 +384,15 @@ public with sharing class ForecastHelper {
      * @return The current fiscal year as a string 'FY##'.
      */
     public static String getCurrentFiscalYear() {
-        Integer yr = MonthUtil.getCurrentFY();
-        return 'FY' + (yr < 10 ? '0' : '') + yr;
+        return 'FY' + MonthUtil.normalizeYr(MonthUtil.getCurrentFY());
     }
 
     /**
      * @return previous fiscal year (from current month) as a string 'FY##'.
      */
     public static String getLastFiscalYear() {
-        Integer yr = Math.mod(MonthUtil.getCurrentFY() - 1, 100);
-        return 'FY' + (yr < 10 ? '0' : '') + yr;
+        String yr = MonthUtil.normalizeYr(MonthUtil.getCurrentFY() - 1);
+        return 'FY' + yr;
     }
 
     /**
@@ -403,8 +402,8 @@ public with sharing class ForecastHelper {
      */
     public static String getPreviousFiscalYear(String fYear) {
         try {
-            Integer yr = Math.mod(Integer.valueOf(fYear.substring(2)) - 1, 100);
-            return 'FY' + (yr < 10 ? '0' : '') + yr;
+            Integer yr = Integer.valueOf(fYear.substring(2)) - 1;
+            return 'FY' + MonthUtil.normalizeYr(yr);
         } catch (Exception ex) {
             return 'ERROR';
         }

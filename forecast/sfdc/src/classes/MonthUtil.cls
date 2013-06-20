@@ -240,5 +240,22 @@ public with sharing class MonthUtil {
         Date now = System.today();
         return getFYFromYrAndMo(now.year(), now.month());
     }
+    
+    // TODO: TEST
+    /** Normalizes YEAR so that it returns an int in [0, 99] */
+    public static Integer normalizeYr(Integer year) {
+        if (year < 0) { //make it so mod is always pos and wraps around
+            return Math.mod(100 - Math.mod(year, 100), 100);
+        } else {
+            return Math.mod(year, 100);
+        }
+    }
+    
+    // TODO: TEST
+    /** Normalizes YEAR so that it returns a String in ['00', '99'] */
+    public static Integer normalizeYr(Integer year) {
+        year = normalizeYr(year);
+        return (year < 10 ? '0' : '') + year;
+    }
 }
 
