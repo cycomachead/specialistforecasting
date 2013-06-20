@@ -154,10 +154,9 @@
                          <apex:outputPanel rendered="{!(forecast.isSubmitted)}">
                             <apex:image title="submitted on {!forecast.SubmittedDate}" url="{!$Resource.SpecialistForecastSubmitIcon}" width="15" height="15"/> 
                          </apex:outputpanel>           
-                                   
                      </apex:column>
                      
-                     <apex:column style="{!IF(CONTAINS(forecast.userName,"Total"), 'background-color:#5C94BE;color:white;font-weight:bold;', '')}" >
+                     <apex:column styleClass="{!IF(CONTAINS(forecast.userName,"Total"), 'sumRow', 'dataRow')}">
                          <apex:facet name="header">Closed</apex:facet>  
                          <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.closedAmount>0)}" value="${0, number,###,###,###,##0.00}">
                              <apex:param value="{!forecast.closedAmount}" />

@@ -518,7 +518,7 @@ public with sharing class SpecialistForecastController extends
             pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
             quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
-            sfLIne.withoutLink   = true;
+            sfLIne.withoutLink   = false;
             sfLIne.reportingUser = false;
             sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
                                    && SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
