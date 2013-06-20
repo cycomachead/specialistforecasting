@@ -277,7 +277,7 @@ public with sharing class ForecastHelper {
         return aUser;
     }
 
-    /** FIXME ... do I need a new object??
+    /**
      * @return TODO
      */
     public static UserRole getRoleByUserId(Id userId) {
