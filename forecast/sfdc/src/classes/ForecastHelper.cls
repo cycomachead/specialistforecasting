@@ -29,13 +29,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  * Helper Class used for Forecast related functionalities
  *
- * TODO:
- * Refactor the entire class
- * Add support for FY starting at arbirary month (IP, needs completion)
- * There is a Fiscal_Year_Begins__c field!!! (PickList)
- * Move all the 'FY' + ... logic to a separate method?
- * Clean up exception handling.
- *
  * @author Michael Ball
  * @since
  */
@@ -76,14 +69,6 @@ public with sharing class ForecastHelper {
     private static final String[] ALL_FQ = new String[] {'Q1', 'Q2', 'Q3', 'Q4'};
     /** Runtime generated list of supported fiscal years. */
     private static String[] supportedFY;
-
-    /** Base year of 2000 for extracting short FY (20XX) */
-    private static final Integer BASE_YR = 2000;
-    /** The starting month for fiscal year calculations, based off SFDC! */
-    private static final Integer FY_START = 2;
-
-    /** A String[] of the fiscal months in order, 0 indexed. */
-    private static String[] orderedFiscalMonths = new String[12];
 
     /**************************************************************************/
 
@@ -360,7 +345,7 @@ public with sharing class ForecastHelper {
      * This method is used to check access for the page exists for data sync
      * @return TODO
      */
-     public static boolean CheckForecastDataSyncAccessForCurrentUser() {
+     public static Boolean checkForecastDataSyncAccessForCurrentUser() {
         boolean hasAccess = true;
 
         Map<String, Schema.SObjectField> mForecast =
@@ -383,7 +368,6 @@ public with sharing class ForecastHelper {
     }
     /**************************************************************************/
 
-
     /**************************************************************************/
     /**               FISCAL YEAR CALCUATION UTIL METHODS                    **/
     /**************************************************************************/
@@ -393,23 +377,23 @@ public with sharing class ForecastHelper {
      * @return current fiscal quarter as a string, 'Q#', based on system time.
      */
     public static String getCurrentQuarter() {
-        return 'Q' + getFiscalQtr(System.today().month());
+        return 'Q' + MonthUtil.getCurrentFiscalQtr();
     }
 
     /**
      * @return The current fiscal year as a string 'FY##'.
      */
     public static String getCurrentFiscalYear() {
-        Date now = System.today();
-        return 'FY' + getFYFromYrAndMo(now.year(), now.month());
+        Integer yr = MonthUtil.getCurrentFY();
+        return 'FY' + (yr < 10 ? '0' : '') + yr;
     }
 
     /**
      * @return previous fiscal year (from current month) as a string 'FY##'.
      */
     public static String getLastFiscalYear() {
-        Date now = System.today();
-        return 'FY' + getFYFromYrAndMo(now.year() - 1, now.month());
+        Integer yr = MonthUtil.getCurrentFY() - 1;
+        return 'FY' + (yr < 10 ? '0' : '') + yr;
     }
 
     /**
@@ -418,8 +402,30 @@ public with sharing class ForecastHelper {
      *  @return the two digit FY as a string in the format 'FY##'.
      */
     public static String getPreviousFiscalYear(String fYear) {
-        Integer nYear = Integer.valueOf(fYear.substring(2));
-        return 'FY' + (nYear - 1);
+        try {
+            Integer yr = Integer.valueOf(fYear.substring(2)) - 1;
+            return 'FY' + (yr < 10 ? '0' : '') + yr;
+        } catch (Exception ex) {
+            return 'ERROR';
+        }
+    }
+
+    /**
+     *  @param fQuarter is a fiscal quarter string, 'Q#'.
+     *  @return a list of the months in the specified quarter.
+     */
+    public static String[] getMonthsInQuarter(String fQuarter) {
+        if (fQuarter == 'All') {
+            return MonthUtil.getOrderedFiscalMonths();
+        }
+
+        Integer qtr;
+        try {
+            qtr = Integer.valueOf(fQuarter.substring(1,2));
+        } catch (Exception ex) {
+            qtr = MonthUtil.getCurrentFiscalQtr();
+        }
+        return MonthUtil.getMonthsInQtr(qtr);
     }
 
     /**
@@ -448,43 +454,6 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     *  @param fQuarter is a fiscal quarter string, 'Q#'.
-     *  @return a list of the months in the specified quarter.
-     */
-    public static String[] getMonthsInQuarter(String fQuarter) {
-        if (orderedFiscalMonths[0] == null) {
-            orderedFiscalMonths = MonthUtil.rotatedFrom(FY_START);
-        } // make sure our list has valid data
-
-        if (fQuarter == 'All') {
-            return orderedFiscalMonths;
-        }
-
-        String[] monthsInQrtr = new String[3];
-        Integer qtr;
-        try {
-            qtr = Integer.valueOf(fQuarter.substring(1,2));
-        } catch (Exception ex) {
-            qtr = getFiscalQtr(System.today().month());
-        }
-        
-        for (Integer month = (qtr * 3) - 3; month < (qtr * 3); month += 1) {
-            monthsInQrtr.add(orderedFiscalMonths[month]);
-        }
-        return monthsInQrtr;
-    }
-
-    /**
-     *  @return Months of the fiscal year, in order Q1, month 1 ... Q4, month 3.
-     */
-    public static String[] getOrderedFiscalMonths() {
-        if (orderedFiscalMonths[0] == null) {
-            orderedFiscalMonths = MonthUtil.rotatedFrom(FY_START);
-        }
-        return orderedFiscalMonths;
-    }
-
-    /**
      * Find the Month name and fiscal year FROM date
      * @param inpDate is an Apex date object
      * @return A String[] of { 'MONTH', 'FYX##' }
@@ -496,41 +465,8 @@ public with sharing class ForecastHelper {
 
         return new String[] {
             (MonthUtil.getAll()[inpDate.month() - 1]),
-            ('FY' + getFYFromYrAndMo(inpDate.year(), inpDate.month()))
+            ('FY' + MonthUtil.getFYFromYrAndMo(inpDate.year(), inpDate.month()))
         };
-    }
-
-    /**                    INTEGER BASED METHODS                             **/
-    /**
-     *  TODO: Add test method
-     *  Given a month, return the quarter it falls into.
-     *  @param FISCALMON is the fiscal month number expcted to be in [1, 12]
-     *  @return an integer in [1, 4],
-     */
-    private static Integer getQtrFromMonth(Integer fiscalMon) {
-        return (fiscalMon + 2) / 3;
-    }
-
-    /**
-     *  TODO: Add Test
-     *  NOTE: Based on a new FY starting in February (a la SFDC)
-     *  @param YEAR is an Integer expected to be greater than 2000
-     *  @param MONTH is an Integer expected to be in [1, 12]
-     *  @return a two digit (Integer) representation from a full year and Month.
-     *
-     */
-    private static Integer getFYFromYrAndMo(Integer year, Integer mon) {
-        return (year - BASE_YR) + (mon == 1 ? 0 : 1);
-    }
-
-    /**
-     *  Given a (non-adjusted) month it will return the fiscal quarter it is in
-     *  NOTE: Based on the FY_START variable, which is set at 2 for SFDC
-     *  @param MONTH is an integer in [1, 12] WHERE 1 represents Janurary
-     *  @return The fiscal quarter of the given month
-     */
-    public static Integer getFiscalQtr(Integer mon) {
-        return getQtrFromMonth(MonthUtil.getFiscalMonthNum(mon, FY_START));
     }
 
 }
