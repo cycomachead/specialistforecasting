@@ -67,8 +67,26 @@ public with sharing class SpecialistForecastException extends Exception {
         'Unable able for find a user for userID: ';
 
 
+    public SpecialistForecastException() {
+        super();
+    }
 
+    public SpecialistForecastException(String msg) {
+        super(msg);
+    }
 
+    public SpecialistForecastException(String msg, Boolean display) {
+        super(msg);
+        if (display) {
+            errorPage(msg);
+        }
+    }
+
+    private PageReference errorPage(String msg) {
+        ApexPages.addmessage(
+            new ApexPages.message(ApexPages.severity.ERROR, msg));
+        return null;
+    }
 
 
 
