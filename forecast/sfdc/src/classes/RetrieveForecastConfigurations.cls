@@ -40,11 +40,21 @@ public with sharing class RetrieveForecastConfigurations {
     private static Map<String, Set<String>> forecastConfigNames = new
         Map<String, Set<String>>();
     
-    /** Can't get config data. */
-    private static Final String NO_DATA_CAT = 
-        'Unable to get forecast configurations for ';
+    /** Error Messages and standard labels. */
+    private static Final String NO_DATA_CAT =
+        SpecialistForecastException.NO_DATA_CAT;
+    private static Final String EMPTY_CAT =
+        SpecialistForecastException.EMPTY_CAT;
+    private static final String CRON_SCHED_ERR =
+        SpecialistForecastException.CRON_SCHED_ERR;
+    private static final String  NO_DATA_NAME =
+        SpecialistForecastException.NO_DATA_NAME;
+    
+    private static final String NAME = ForecastHelper.NAME;
+    private static final String CONFIG_CAT = ForecastHelper.CONFIG_CAT;
     private static final String CONFIG_VAL = ForecastHelper.CONFIG_VAL;
     private static final String ACTIVE = ForecastHelper.ACTIVE;
+    private static final String COMMENT = ForecastHelper.COMMENT;
 
     /**
      *  This method will fetch forecast configurations custom settings
@@ -55,13 +65,13 @@ public with sharing class RetrieveForecastConfigurations {
         Map<String,String> retData = new Map<String,String>();
         ForecastConfigurations__c data = ForecastConfigurations__c.getInstance(name);
         if (data == null) {
-            throw new SpecialistForecastException('No data found by name: ' + name);
+            throw new SpecialistForecastException(NO_DATA_NAME + name);
         }    
-        retData.put('Name', data.Name);
-        retData.put('ConfigurationCategory', data.ConfigurationCategory__c);
+        retData.put(NAME, data.Name);
+        retData.put(CONFIG_CAT, data.ConfigurationCategory__c);
         retData.put(CONFIG_VAL, data.ConfigurationValue__c);
         retData.put(ACTIVE, String.valueOf(data.IsActive__c));
-        retData.put('Comment', data.Comment__c);
+        retData.put(COMMENT, data.Comment__c);
         return  retData;
     }
 
@@ -73,7 +83,7 @@ public with sharing class RetrieveForecastConfigurations {
      */
     public static Set<String> getForecastConfigurations(String category) {
         if (String.isEmpty(category)) {
-            throw new SpecialistForecastException(NO_DATA_CAT + 'empty category');
+            throw new SpecialistForecastException(EMPTY_CAT);
         }
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigs.size() == 0) {
@@ -105,7 +115,7 @@ public with sharing class RetrieveForecastConfigurations {
      */
     public static Set<String> getForecastConfigurationNames(String category) {
         if(String.isEmpty(category)) {
-            throw new SpecialistForecastException(NO_DATA_CAT + 'empty category');
+            throw new SpecialistForecastException(EMPTY_CAT);
         }
         
         // Initialize the custom settings, if it's not already initialized

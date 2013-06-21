@@ -55,8 +55,14 @@ public with sharing class ForecastHelper {
     public static final String VALUE_YES = 'yes';
     public static final String QTR_ALL = 'All';
     public static final String BATCH_RUN_DEF_DAY = 'Sunday';
+    
+    /** Config Settings Map keys */
+    public static final String NAME = 'Name';   
+    public static final String CONFIG_CAT = 'ConfigurationCategory';
     public static final String CONFIG_VAL = 'ConfigurationValue';
     public static final String ACTIVE = 'IsActive';
+    public static final String COMMENT = 'Comment'; 
+    
     
     
     /** TODO */
@@ -86,7 +92,7 @@ public with sharing class ForecastHelper {
             || strBatches.get(ACTIVE) != 'true') {
                 continue;
             }
-            batchJobs.put(strBatches.get('Name'), strBatches.get(CONFIG_VAL));
+            batchJobs.put(strBatches.get(NAME), strBatches.get(CONFIG_VAL));
         }
 
         return batchJobs;
@@ -256,9 +262,6 @@ public with sharing class ForecastHelper {
         User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
                 IsActive, Alias FROM User WHERE Id = :userId]);
 
-        // User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
-//                 IsActive, Alias, Area__c FROM User WHERE Id = :userId]);
-
         if (aUser == null) {
             throw new SpecialistForecastException('Unable to find user for user'
                 + ' id: ' + userID + '.');
@@ -334,8 +337,8 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     * A common FLS check for Company Specialist Forecasting
-     * @return
+     *  A common FLS check for Company Specialist Forecasting
+     *  @return
      */
     public static Boolean checkFieldsSplForecastRepAccessibility() {
         return (Schema.SObjectType.SpecialistForecast__c.isAccessible() &&
@@ -346,9 +349,9 @@ public with sharing class ForecastHelper {
 
 
      /**
-     * This method is used to check access for the page exists for data sync
-     * @return TODO
-     */
+      *  This method is used to check access for the page exists for data sync
+      *  @return TODO
+      */
      public static Boolean checkForecastDataSyncAccessForCurrentUser() {
         boolean hasAccess = true;
 
@@ -415,7 +418,6 @@ public with sharing class ForecastHelper {
     /**
      *  @param fQuarter is a fiscal quarter string, 'Q#'.
      *  @return a list of the months in the specified quarter.
-     *  @throws SpecialistForecastException
      */
     public static String[] getMonthsInQuarter(String fQuarter) {
         if (fQuarter == 'All') {
@@ -425,9 +427,7 @@ public with sharing class ForecastHelper {
         Integer qtr;
         try {
             qtr = Integer.valueOf(fQuarter.substring(1));
-            System.debug('####TEST###\n' + qtr);
         } catch (Exception ex) {
-            throw new SpecialistForecastException('Uh oh...');
             qtr = MonthUtil.getCurrentFiscalQtr();
         }
         return MonthUtil.getMonthsInQtr(qtr);

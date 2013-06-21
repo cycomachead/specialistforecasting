@@ -50,4 +50,19 @@ public with sharing class SpecialistForecastException extends Exception {
         'No active Cron Expression specified for Store Scheduler.';
     
     // Beginigging Fragments, meant to have something appended
+    public static final String NO_DATA_NAME = 'No data found by name: ';
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
