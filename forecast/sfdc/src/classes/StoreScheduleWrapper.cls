@@ -41,9 +41,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 global with sharing class StoreScheduleWrapper {
 
     global static void start(Integer minOfHour) {
-        /* FIXME: Remove before prod! */
-System.debug('Running StoreScheduleWrapper ' + System.now());
-        System.schedule('Store Scheduler for ' + minOfHour, '0 ' + minOfHour + ' ' + ForecastHelper.getCronExpression(), new StoreScheduler());
+        System.schedule('Store Scheduler for ' + minOfHour, '0 ' + minOfHour +
+            ' ' + ForecastHelper.getCronExpression(), new StoreScheduler());
     }
 
 }
