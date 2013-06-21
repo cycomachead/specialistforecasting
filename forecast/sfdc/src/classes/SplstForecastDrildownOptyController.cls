@@ -64,7 +64,7 @@ public with sharing class SplstForecastDrildownOptyController {
          }
     }
 
-    public void getSpecialistForecastRecords(String fy, String fq, Id ownerId, 
+    public void getSpecialistForecastRecords(String fy, String fq, Id ownerId,
     String[] lststatus) {
         //get months by quarter
         List<String> lstMonths = ForecastHelper.getMonthsInQuarter(fq);
