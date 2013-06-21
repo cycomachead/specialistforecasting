@@ -27,39 +27,41 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Scheduler to use for AppStore
+ *  Scheduler to use for AppStore
  *
- * To run it FROM developer console, use the below code snippet
- * String sch = '0 50 * * * ?';
- * System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
- * System.debug('\n\n ==> Done');
+ *  To run it FROM developer console, use the below code snippet
+ *  String sch = '0 50 * * * ?';
+ *  System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
+ *  System.debug('\n\n ==> Done');
  *
- * @author auzzaman
- * @since 180.store
+ *  @author auzzaman
+ *  @since 180.store
  */
 global with sharing class StoreScheduler implements Schedulable {
 
     global Integer BATCH_SIZE = 2000;
 
+    private static final String SF_BATCH     = ForecastHelper.SF_BATCH;
+    private static final String VALUE_YES    = ForecastHelper.VALUE_YES;
+    private static final String SUBMIT_BATCH = ForecastHelper.SUBMIT_BATCH;
+
     global void execute(SchedulableContext sc) {
         Map<String, String> jobs = ForecastHelper.getBatchJobs();
-        /* FIXME: Remove before prod! */
-        System.debug('jobs = ' + jobs);
-        if (jobs.containsKey(ForecastHelper.SF_BATCH) && jobs.get(ForecastHelper.SF_BATCH) == ForecastHelper.VALUE_YES) {
-            Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), BATCH_SIZE);
-            AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors FROM AsyncApexJob WHERE Id =: batchProcessId ];
-            /* FIXME: Remove before prod! */
-            System.debug('aaj for SpecialistForecastBatch = ' + aaj);
+
+        if (jobs.containsKey(SF_BATCH) && jobs.get(SF_BATCH) == VALUE_YES) {
+            Id batchProcessId = Database.executeBatch(
+                new SpecialistForecastBatch(), BATCH_SIZE);
+            AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed,
+                TotalJobItems, NumberOfErrors
+                    FROM AsyncApexJob WHERE Id = :batchProcessId];
         }
 
-        if(jobs.containsKey(ForecastHelper.SUBMIT_BATCH) && jobs.get(ForecastHelper.SUBMIT_BATCH) == ForecastHelper.VALUE_YES) {
-
-            if(system.now().format('EEEE')==ForecastHelper.getCronRunDay()){
-                Id batchProcessId = Database.executeBatch(new SpecialistForecastSubmitBatch(), BATCH_SIZE);
-                AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors FROM AsyncApexJob WHERE Id =: batchProcessId ];
-                /* FIXME: Remove before prod! */
-System.debug('aaj for SpecialistForecastSubmitBatch = ' + aaj);
-            }
+        if (jobs.containsKey(SUBMIT_BATCH) && jobs.get(SUBMIT_BATCH) == VALUE_YES
+        && system.now().format('EEEE') == ForecastHelper.getCronRunDay()) {
+            Id batchProcessId = Database.executeBatch(new SpecialistForecastSubmitBatch(), BATCH_SIZE);
+            AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed,
+                TotalJobItems, NumberOfErrors
+                    FROM AsyncApexJob WHERE Id = :batchProcessId];
         }
     }
 
