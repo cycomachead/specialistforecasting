@@ -244,12 +244,14 @@ public class SpecForecastTest {
     }
 
     private static User createOrGetUser() {
-        User u = [SELECT Id FROM User WHERE UserName='srikanta.mohapatra@salesforce.com'];
-        if (u == null) {
+        User u;
+        try {
+            u = [SELECT Id FROM User WHERE UserName='srikanta.mohapatra@salesforce.com']   ;
+        } catch (Exception ex) {
             u = new User(Email='srikanta.mohapatra@salesforce.com', FirstName='Srikanta', LastName='Mohapatra', IsActive=true,
                 Username='srikanta.mohapatra@salesforce.com', Alias='sm', CommunityNickname='srmo', TimeZoneSidKey='America/Los_Angeles', LocaleSidKey='en_US', EmailEncodingKey='ISO-8859-1',
                 ProfileId='00e30000000brH1', LanguageLocaleKey='en_US');
-            insert u;
+            // INSERT u;
         }
         return u;
     }

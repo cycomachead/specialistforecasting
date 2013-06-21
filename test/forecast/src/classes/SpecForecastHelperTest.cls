@@ -27,16 +27,17 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- *
- * Class Name : SpecForecastHelperTest
- * Description: Contains test cases to test utility methods for forecast
- * @since 178.store
+ *  Class Name : SpecForecastHelperTest
+ *  Description: Contains test cases to test utility methods for forecast
+ *  @author Michael Ball
+ *  @since
  */
 
 public class SpecForecastHelperTest {
 
     private static testMethod void testGetMonthsInQuarter() {
-        List<String> months = ForecastHelper.getMonthsInQuarter('Q1');
+        String[] months = ForecastHelper.getMonthsInQuarter('Q1');
+        System.debug('####TEST####\n' + months);
         System.assertEquals('February', months.get(0));
         System.assertEquals('March', months.get(1));
         System.assertEquals('April', months.get(2));
@@ -56,7 +57,8 @@ public class SpecForecastHelperTest {
 
     private static testMethod void testGetCurrentQuarter() {
         String curQrtr = ForecastHelper.getCurrentQuarter();
-        System.assert(curQrtr == 'Q1' || curQrtr == 'Q2' || curQrtr == 'Q3' || curQrtr == 'Q4');
+        System.assert(curQrtr == 'Q1' || curQrtr == 'Q2' || 
+            curQrtr == 'Q3' || curQrtr == 'Q4');
     }
 
     // update the assert of FY13 every year (1st February)
@@ -81,14 +83,21 @@ public class SpecForecastHelperTest {
         previousFY = ForecastHelper.getPreviousFiscalYear('FY20');
         System.assertEquals('FY19', previousFY);
         previousFY = ForecastHelper.getPreviousFiscalYear('FY00');
-        System.assertEquals('FY-1', previousFY);
+        System.assertEquals('FY99', previousFY);
+        //not expected, but these should work.
+        previousFY = ForecastHelper.getPreviousFiscalYear('FY100');
+        System.assertEquals('FY99', previousFY);
+        previousFY = ForecastHelper.getPreviousFiscalYear('FY103');
+        System.assertEquals('FY02', previousFY);
     }
     
     // MUST be updated every year!!
     // TODO Fix for testing with Data and without
     private static testMethod void testGetSupportedFiscalYears() {
         List<String> supportedFYs = ForecastHelper.getSupportedFiscalYears();
-        System.assertEquals('FY14', supportedFYs.get(0), 'supported is FY14');
+        Boolean deOrg = 'FY14' == supportedFYs.get(0);
+        Boolean aps1Test = 'FY13' == supportedFYs.get(0);
+        System.assert(deOrg || aps1Test, 'Failed supported FYs.');
         // System.assertEquals(supportedFYs.get(1), 'FY14', 'supported is FY14');
         // System.assertEquals(supportedFYs.get(2), 'FY15', 'supported is FY15');
 
@@ -102,6 +111,7 @@ public class SpecForecastHelperTest {
         System.assertEquals('Q4', supportedFQs.get(3));
     }
 
+    // TODO: Remove tests, add edge cases.
     private static testMethod void testExtractFYAndMonthFromDate() {
         Date myDate = Date.newInstance(2012, 1, 17);
         String[] monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
@@ -299,7 +309,8 @@ public class SpecForecastHelperTest {
         System.assertEquals('December', monthAndFiscalYear[0]);
         System.assertEquals('FY12', monthAndFiscalYear[1]);
     }
-
+    
+    // TODO: Is this necessary?
     private static testMethod void testApplyMonthsFromQuarter() {
         Date myDate = Date.newInstance(2012, 4, 17);
         Map<String, Boolean> showHideMap = new Map<String, Boolean>();

@@ -80,7 +80,7 @@ global with sharing class SpecialistForecastSubmitBatch implements
 
         } catch (DMLException e) {
              String email = ForecastHelper.getCronEmail();
-           if (email != ForecastHelper.DO_NOT_SEND_EMAIL) {
+           if (email != ForecastHelper.DONT_SEND_EMAIL) {
             sendErrorNotification('SpecialistForecastBatch Process Completed',
                 'Specialist Forecast submit Batch Process has completed', email);
            }
@@ -119,7 +119,7 @@ global with sharing class SpecialistForecastSubmitBatch implements
         System.debug('Finish SpecialistForecast Submit Batch ' + System.now());
         String email = ForecastHelper.getCronEmail();
 
-        if (email != ForecastHelper.DO_NOT_SEND_EMAIL) {
+        if (email != ForecastHelper.DONT_SEND_EMAIL) {
             sendErrorNotification('Specialist Forecast Submit date batch Process Completed',
                 'Specialist Forecast Submitted date to null Batch Process has completed', email);
         }

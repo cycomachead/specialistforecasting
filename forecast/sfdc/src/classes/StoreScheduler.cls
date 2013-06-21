@@ -45,14 +45,14 @@ global with sharing class StoreScheduler implements Schedulable {
         Map<String, String> jobs = ForecastHelper.getBatchJobs();
         /* FIXME: Remove before prod! */
         System.debug('jobs = ' + jobs);
-        if (jobs.containsKey(ForecastHelper.SPECIALIST_FORECAST_BATCH) && jobs.get(ForecastHelper.SPECIALIST_FORECAST_BATCH) == ForecastHelper.VALUE_YES) {
+        if (jobs.containsKey(ForecastHelper.SF_BATCH) && jobs.get(ForecastHelper.SF_BATCH) == ForecastHelper.VALUE_YES) {
             Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), BATCH_SIZE);
             AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors FROM AsyncApexJob WHERE Id =: batchProcessId ];
             /* FIXME: Remove before prod! */
             System.debug('aaj for SpecialistForecastBatch = ' + aaj);
         }
 
-        if(jobs.containsKey(ForecastHelper.SPECIALIST_FORECAST_SUBMIT_BATCH) && jobs.get(ForecastHelper.SPECIALIST_FORECAST_SUBMIT_BATCH) == ForecastHelper.VALUE_YES) {
+        if(jobs.containsKey(ForecastHelper.SUBMIT_BATCH) && jobs.get(ForecastHelper.SUBMIT_BATCH) == ForecastHelper.VALUE_YES) {
 
             if(system.now().format('EEEE')==ForecastHelper.getCronRunDay()){
                 Id batchProcessId = Database.executeBatch(new SpecialistForecastSubmitBatch(), BATCH_SIZE);
