@@ -34,4 +34,20 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 public with sharing class SpecialistForecastException extends Exception {
         
+    /** These are basic labels which are meant to be shared thoughout the \
+     *  SpecialistForecasting Package. If they are meant to be appended to,
+     *  then the label should end in a space, otherwise labels should be complete
+     *  sentences whereever possible, and should avoid overly technical terms.
+     *
+     *  For simiplicity, all these should be public static final String.
+     *  To use a label in another class in the SpecialistForecasting package do:
+     *  private static Final String NAME = SpecialistForecasting.NAME;
+     *  in the variables declaration section for each file. 
+     */
+        
+    // Complete sentences
+    public static final String CRON_SCHED_ERR = 
+        'No active Cron Expression specified for Store Scheduler.';
+    
+    // Beginigging Fragments, meant to have something appended
 }

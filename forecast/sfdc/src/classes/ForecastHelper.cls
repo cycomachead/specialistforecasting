@@ -58,9 +58,6 @@ public with sharing class ForecastHelper {
     public static final String CONFIG_VAL = 'ConfigurationValue';
     public static final String ACTIVE = 'IsActive';
     
-    //Error Labels, TODO: Move to exception class?
-    public static final String CRON_SCHED_ERR = 
-        'No active Cron Expression specified for Store Scheduler.';
     
     /** TODO */
     public static String rtName = null;
@@ -94,7 +91,11 @@ public with sharing class ForecastHelper {
 
         return batchJobs;
     }
-
+    
+    /**
+     *  @return SOMETHING
+     *  @throws SpecialistForecastException
+     */
     public static String getCronExpression() {
         Map<String, String> expression =
         RetrieveForecastConfigurations.getForecastConfigurationsByName(
@@ -102,7 +103,7 @@ public with sharing class ForecastHelper {
         if (expression != null && expression.get(ACTIVE) == 'true') {
             return expression.get(CONFIG_VAL);
         }
-        throw new SpecialistForecastException(CRON_SCHED_ERR);
+        throw new SpecialistForecastSubmitRun(CRON_SCHED_ERR);
     }
 
     public static String getCronEmail() {
@@ -244,8 +245,9 @@ public with sharing class ForecastHelper {
         }
     }
 
-    /** FIXME --- Area__c necessary?
-     * @return TODO
+    /**
+     *  @return TODO
+     *  @throws SpecialistForecastException
      */
     public static User getDetailsByUserId(Id userId) {
         if (userId == null) {
@@ -413,6 +415,7 @@ public with sharing class ForecastHelper {
     /**
      *  @param fQuarter is a fiscal quarter string, 'Q#'.
      *  @return a list of the months in the specified quarter.
+     *  @throws SpecialistForecastException
      */
     public static String[] getMonthsInQuarter(String fQuarter) {
         if (fQuarter == 'All') {

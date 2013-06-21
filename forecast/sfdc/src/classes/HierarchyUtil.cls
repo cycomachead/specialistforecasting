@@ -56,9 +56,10 @@ public with sharing class HierarchyUtil {
     
 
     /**
-     * public method to get all the subordinates
+     *  public method to get all the subordinates
      *
-     * @return TODO
+     *  @return TODO
+     *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getSubordinates(Id identifier, String type) {
         if (identifier == null) {
@@ -103,7 +104,10 @@ public with sharing class HierarchyUtil {
     }
 
     // FIXME role ID or user ID?
-    /* public method to get all the direct subordinates by userId */
+    /**
+     *  public method to get all the direct subordinates by userId 
+     *  @throws SpecialistForecastException
+     */
     public static RoleNodeWrapper getSubordinatesByUser(Id userId) {
         if (userId == null) {
             throw new SpecialistForecastException(USER_ID_NULL);
@@ -118,7 +122,10 @@ public with sharing class HierarchyUtil {
         return getSubordinatesByRole(myUser.UserRoleId);
     }
 
-    /* public method to get all the direct subordinates by role */
+    /** 
+     *  public method to get all the direct subordinates by role
+     *  @throws SpecialistForecastException
+     */
     public static RoleNodeWrapper getSubordinatesByRole(Id parentRoleId) {
         if (parentRoleId == null) {
             throw new SpecialistForecastException(PARENT_ID_NULL);
@@ -163,6 +170,7 @@ public with sharing class HierarchyUtil {
      *  TODO: Refactor, Better Exception Handling
      *  public method to get all the seven level subordinates by userId
      *  @return
+     *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getMappedAllLevelSubordinatesByUser(Id userId) {
         if (userId == null) {
@@ -182,6 +190,7 @@ public with sharing class HierarchyUtil {
     /**
      *  public method to get all the seven level subordinates by role
      *  @return
+     *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getMappedAllLevelSubordinatesByRole(
     Id parentRoleId) {
