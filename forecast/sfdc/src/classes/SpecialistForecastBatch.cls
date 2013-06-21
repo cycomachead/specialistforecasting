@@ -38,6 +38,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 global with sharing class SpecialistForecastBatch implements
     Database.Batchable<AggregateResult> {
 
+    private static final String DONT_SEND_EMAIL = ForecastHelper.DONT_SEND_EMAIL;
+
     global Map<String, AggregateResult[]> input {get; set;}
     global Map<String, SpecialistForecastLineItem__c> processedRecords {get; set;}
     public DateTime starttime = System.now();
@@ -48,8 +50,6 @@ global with sharing class SpecialistForecastBatch implements
      * @return TODO
      */
     global Iterable<AggregateResult> start(Database.BatchableContext context) {
-        /* FIXME: Remove before prod! */
-        System.debug('Start SpecialistForecastBatch ' + System.now());
         return new ForecastCollection();
     }
 
@@ -58,8 +58,13 @@ global with sharing class SpecialistForecastBatch implements
      * @param String subject
      * @param String formattedBody
      */
-    private static void sendErrorNotification(String subject,
+    private static void sendNotification(String subject,
     String formattedBody, String gackEmailIds) {
+
+        if (gackEmailIds == DONT_SEND_EMAIL) {
+            return;
+        }
+
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
         mail.setToAddresses(new String[]{gackEmailIds});
@@ -68,10 +73,7 @@ global with sharing class SpecialistForecastBatch implements
 
         try {
             Messaging.sendEmail(new Messaging.Email[] { mail });
-            // Messaging.sendSystemEmail(mail, 'do-not-reply@salesforce.com');
         } catch(System.Exception ex) {
-            /* FIXME: Remove before prod!! */
-            System.debug('Error in sendMail ' + ex.getMessage());
         }
     }
 
@@ -80,10 +82,6 @@ global with sharing class SpecialistForecastBatch implements
      * @return TODO
      */
     global void execute(Database.BatchableContext context, List<Sobject> items) {
-        /* FIXME: Remove before prod! */
-        System.debug('Running SpecialistForecastBatch ' + System.now());
-        /* FIXME: Remove before prod! */
-        System.debug('items.size() = ' + items.size());
         // upsert to SpecialistForecastLineItem  based on input map.
         List<SpecialistForecastLineItem__c> allLineItems = new
             List<SpecialistForecastLineItem__c>();
@@ -95,7 +93,7 @@ global with sharing class SpecialistForecastBatch implements
         String temp;
         String external_Key;
 
-        for (Sobject so : items)  {
+        for (SObject so : items)  {
             AggregateResult ar = (AggregateResult) so;
             // process the results
             external_Key = (String) ar.get('OwnerId') +
@@ -120,17 +118,15 @@ global with sharing class SpecialistForecastBatch implements
 
             if (temp == 'Closed Won' || temp == 'Closed' ) {
                 item.OriginalClosedAmount__c = tempAmount;
-            } else  if(temp == 'Commit') {
+            } else if(temp == 'Commit') {
                 item.OriginalCommitAmount__c = tempAmount;
-            } else  if(temp == 'Best Case') {
+            } else if(temp == 'Best Case') {
                 item.OriginalBestCaseAmount__c = tempAmount;
-            } else  if(temp == 'Pipeline') {
+            } else if (temp == 'Pipeline') {
                 item.OriginalPipelineAmount__c = tempAmount;
             }
 
             item.ExtIdentifier__c = external_Key;
-            /* FIXME: Remove before prod! */
-            System.debug(item + 'externalkey' + external_Key);
 
             processedRecords.put(external_Key,item);
             //check if
@@ -140,12 +136,6 @@ global with sharing class SpecialistForecastBatch implements
             }
         }
 
-
-        /* FIXME: Remove before prod! */
-        System.debug('1. processedRecords.size() = ' + processedRecords.size());
-        /* FIXME: Remove before prod! */
-        System.debug('2. allLineItems.size() = ' + allLineItems.size());
-
         // now upsert at one shot
         try {
             Schema.SObjectField fld = SpecialistForecastLineItem__c.Fields.ExtIdentifier__c;
@@ -153,36 +143,26 @@ global with sharing class SpecialistForecastBatch implements
 
         } catch(DMLException e) {
             String email = ForecastHelper.getCronEmail();
-            if(email != ForecastHelper.DONT_SEND_EMAIL) {
-                sendErrorNotification('Error in the Specialist Forecast Batch Process',
+            sendNotification('Error in the Specialist Forecast Batch Process',
                     'Specialist Forecast Batch Process not completed Successfully'
                         + e.getMessage(), email);
-            }
-            /* FIXME: Remove before prod! */
-            System.debug(e.getMessage());
         }
     }
 
     /**
-     *
-     * @return TODO
+     *  FIXME, need try/catch
+     *  @return TODO
      */
     global void finish(Database.BatchableContext context) {
-        /* FIXME: Remove before prod! */
-        System.debug('Finish SpecialistForecastBatch ' + System.now());
         updateSFLineItems();
         String email = ForecastHelper.getCronEmail();
-        User usr = [SELECT EMail FROM User WHERE Id=:UserInfo.getUserId() limit 1];
+        User usr = [SELECT EMail FROM User WHERE Id = :UserInfo.getUserId() limit 1];
         if (isRunningByUser) {
             email = usr.EMail;
         }
 
-
-        if (email != ForecastHelper.DONT_SEND_EMAIL) {
-            sendErrorNotification('SpecialistForecastBatch Process Completed',
+        sendNotification('SpecialistForecastBatch Process Completed',
                 'Specialist Forecast Batch Process has completed', email);
-        }
-
     }
 
     /*

@@ -35,39 +35,40 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 public with sharing class ForecastHelper {
 
     public static final String CAT_STORE_BATCH_JOB = 'StoreBatchJob';
-    public static final String CAT_SUPPORTED_DATA = 'SupportedData';
-    public static final String CAT_SUPPORTED_FY = 'Supported Fiscal Years';
+    public static final String CAT_SUPPORTED_DATA  = 'SupportedData';
+    public static final String CAT_SUPPORTED_FY    = 'Supported Fiscal Years';
 
+    /** Config Settings Map keys */
+    public static final String NAME       = 'Name';
+    public static final String CONFIG_CAT = 'ConfigurationCategory';
+    public static final String CONFIG_VAL = 'ConfigurationValue';
+    public static final String ACTIVE     = 'IsActive';
+    public static final String COMMENT    = 'Comment';
+
+    /** Column Headings and related uses. */
+    public static final String BEST_CASE   = 'Best Case';
+    public static final String CLOSED      = 'Closed';
+    public static final String CLOSED_WON  = 'Closed Won';
+    public static final String COMMIT      = 'Commit';
+    public static final String PIPELINE    = 'Pipeline';
     public static final String GRAND_TOTAL = 'Total';
-    public static final String SUBTYPE_CLOSED = 'Closed';
-    public static final String SUBTYPE_COMMIT = 'Commit';
-    public static final String SUBTYPE_BEST_CASE = 'Best Case';
-    public static final String SUBTYPE_PIPELINE = 'Pipeline';
 
     public static final String HIERARCHY_TYPE_ROLE = 'ROLE';
     public static final String HIERARCHY_TYPE_USER = 'USER';
+    public static final String DONT_SEND_EMAIL     = 'DoNotSendEmail';
+    public static final String VALUE_YES           = 'yes';
+    public static final String QTR_ALL             = 'All';
+    public static final String BATCH_RUN_DEF_DAY   = 'Sunday';
     public static final String SCHEDULER_FREQUENCY = 'SchedulerFrequency';
-    public static final String SF_BATCH = 'SpecialistForecastBatch';
+    public static final String SF_BATCH            = 'SpecialistForecastBatch';
+    public static final String BATCH_COMPLETED     = 'BatchCompletedEmail';
     public static final String SUBMIT_BATCH = 'SpecialistForecastSubmitBatch';
     public static final String SUBMIT_BATCH_RUN = 'SpecialistForecastSubmitRun';
-    public static final String BATCH_COMPLETED_EMAIL = 'BatchCompletedEmail';
-    public static final String DONT_SEND_EMAIL = 'DoNotSendEmail';
-    public static final String VALUE_YES = 'yes';
-    public static final String QTR_ALL = 'All';
-    public static final String BATCH_RUN_DEF_DAY = 'Sunday';
-    
-    /** Config Settings Map keys */
-    public static final String NAME = 'Name';   
-    public static final String CONFIG_CAT = 'ConfigurationCategory';
-    public static final String CONFIG_VAL = 'ConfigurationValue';
-    public static final String ACTIVE = 'IsActive';
-    public static final String COMMENT = 'Comment'; 
-    
+
     /** Error messages */
     private static final String CANT_FIND_USER =
             SpecialistForecastException.CANT_FIND_USER;
-    
-    
+
     /** TODO */
     public static String rtName = null;
     /** TODO */
@@ -91,7 +92,7 @@ public with sharing class ForecastHelper {
             Map<String, String> strBatches =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 batchName);
-            if (strBatches == null || strBatches.size() == 0 
+            if (strBatches == null || strBatches.size() == 0
             || strBatches.get(ACTIVE) != 'true') {
                 continue;
             }
@@ -100,7 +101,7 @@ public with sharing class ForecastHelper {
 
         return batchJobs;
     }
-    
+
     /**
      *  @return SOMETHING
      *  @throws SpecialistForecastException
@@ -118,7 +119,7 @@ public with sharing class ForecastHelper {
     public static String getCronEmail() {
         Map<String, String> email =
         RetrieveForecastConfigurations.getForecastConfigurationsByName(
-            ForecastHelper.BATCH_COMPLETED_EMAIL);
+            BATCH_COMPLETED);
         if (email != null && email.get(ACTIVE) == 'true' &&
         emailIsValid(email.get(CONFIG_VAL))) {
             return email.get(CONFIG_VAL);
@@ -305,7 +306,7 @@ public with sharing class ForecastHelper {
             SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c,
             SpecialistForecastOverride__c, SubmittedDate__c
                         FROM SpecialistForecastLineItem__c
-                        WHERE ExcludeFromCalculation__c = false 
+                        WHERE ExcludeFromCalculation__c = false
                             AND FiscalYear__c = :queryParam.getFiscalYear()
                             AND FYMonth__c IN : queryParam.getMonthsInQrtr()
                             AND ForecastOwner__c IN :queryParam.getOwnerIds()

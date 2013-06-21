@@ -27,7 +27,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- *  TODO: Consider replacing basic logic with nested enum class. 
+ *  A class for dealing with the months of the year and retaions to fiscal years.
  *  @author Michael Ball
  *  @since
  */
@@ -134,7 +134,7 @@ public with sharing class MonthUtil {
     public static String abbrev(String mon) {
         try {
             return mon.substring(0, 3).toUpperCase();
-        } catch (Exception ex) {
+        } catch (1 ex) {
             return mon;
         }
     }

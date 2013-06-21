@@ -29,11 +29,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *  Basic Exception for Specialist Forecasting Unmanaged Package
  *  @author Michael Ball
- *  @since 
+ *  @since
  */
 
 public with sharing class SpecialistForecastException extends Exception {
-        
+
     /** These are basic labels which are meant to be shared thoughout the \
      *  SpecialistForecasting Package. If they are meant to be appended to,
      *  then the label should end in a space, otherwise labels should be complete
@@ -42,40 +42,40 @@ public with sharing class SpecialistForecastException extends Exception {
      *  For simiplicity, all these should be public static final String.
      *  To use a label in another class in the SpecialistForecasting package do:
      *  private static Final String NAME = SpecialistForecasting.NAME;
-     *  in the variables declaration section for each file. 
+     *  in the variables declaration section for each file.
      */
-        
+
     // Complete sentences
-    public static final String CRON_SCHED_ERR = 
+    public static final String CRON_SCHED_ERR =
         'No active Cron Expression specified for Store Scheduler.';
-    public static Final String EMPTY_CAT = 
+    public static Final String EMPTY_CAT =
         'Cannot get forecast configurations for an empty category';
-    public static Final String ROLE_ID_NULL = 
+    public static Final String ROLE_ID_NULL =
         'A required User Role ID could be found.';
-    public static Final String USER_ID_NULL = 
+    public static Final String USER_ID_NULL =
         'A required User ID could not be found.';
-    public static Final String PARENT_ID_NULL = 
-        'A required Parent User ID could be found.'; 
-    
-    
-    
+    public static Final String PARENT_ID_NULL =
+        'A required Parent User ID could be found.';
+
+
+
     // Beginigging Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';
-    public static Final String NO_DATA_CAT = 
+    public static Final String NO_DATA_CAT =
         'Unable to get forecast configurations for ';
-    public static final String CANT_FIND_USER = 
+    public static final String CANT_FIND_USER =
         'Unable able for find a user for userID: ';
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
