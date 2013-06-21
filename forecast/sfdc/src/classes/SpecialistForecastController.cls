@@ -92,7 +92,7 @@ public with sharing class SpecialistForecastController extends
      */
     public boolean getCanSubmit() {
         return (this.sfLI.ForecastOwner__c == UserInfo.getUserId() &&
-            SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
+            SelectedFQ != ForecastHelper.QTR_ALL);
     }
 
     /**
@@ -131,8 +131,8 @@ public with sharing class SpecialistForecastController extends
     public List<SelectOption> getFiscalQuarters() {
         if (this.fiscalQuarters == null) {
             this.fiscalQuarters = new List<SelectOption>();
-            this.fiscalQuarters.add(new SelectOption(ForecastHelper.FISCAL_QUARTER_ALL,
-                ForecastHelper.FISCAL_QUARTER_ALL));
+            this.fiscalQuarters.add(new SelectOption(ForecastHelper.QTR_ALL,
+                ForecastHelper.QTR_ALL));
 
             List<String> fQuarters = ForecastHelper.getSupportedFiscalQuarters();
             for(String fQuarter : fQuarters) {
@@ -211,7 +211,7 @@ public with sharing class SpecialistForecastController extends
      * Called from submit button
      */
     public PageReference submitReport() {
-        if (SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL) {
+        if (SelectedFQ != ForecastHelper.QTR_ALL) {
             String strMonth = ForecastHelper.getMonthsInQuarter(SelectedFQ).get(0);
             SpecialistForecastlineItem__c sfLI = new SpecialistForecastlineItem__c();
             sfLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
@@ -435,7 +435,7 @@ public with sharing class SpecialistForecastController extends
                 sfLIne.withoutLink = false;
                 sfLIne.reportingUser = false;
                 sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
-                                       && SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
+                                       && SelectedFQ != ForecastHelper.QTR_ALL);
                 sfLIne.userName =  mapUsers.get(lineItemOwnerId).userName;
                 sfLIne.roleName = mapUsers.get(lineItemOwnerId).roleName;
                 sfLIne.userId =  mapUsers.get(lineItemOwnerId).userId;
@@ -484,7 +484,7 @@ public with sharing class SpecialistForecastController extends
             mapUsers.containsKey(lineItemOwnerId)) {
                 sfLIne.createEmptySPlineItemforVFPage(lineItemOwnerId,
                     sfLI.ForecastOwner__c,mapUsers,quotaAmount);
-                sfLIne.forOverride = (SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL
+                sfLIne.forOverride = (SelectedFQ != ForecastHelper.QTR_ALL
                     ? sfLIne.forOverride : false);
                 splFClineItems.add(sfLIne);
             } //end if
@@ -521,7 +521,7 @@ public with sharing class SpecialistForecastController extends
             sfLIne.withoutLink   = true;
             sfLIne.reportingUser = false;
             sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
-                                   && SelectedFQ != ForecastHelper.FISCAL_QUARTER_ALL);
+                                   && SelectedFQ != ForecastHelper.QTR_ALL);
 
             sfLIne.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
             sfLIne.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
@@ -555,7 +555,7 @@ public with sharing class SpecialistForecastController extends
             sfLIne.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
             sfLIne.forOverride = (SelectedFQ !=
-                ForecastHelper.FISCAL_QUARTER_ALL ? sfLIne.forOverride : false);
+                ForecastHelper.QTR_ALL ? sfLIne.forOverride : false);
             splFClineItems.add(sfLIne);
         }
 

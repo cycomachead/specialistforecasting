@@ -43,6 +43,8 @@ public with sharing class RetrieveForecastConfigurations {
     /** Can't get config data. */
     private static Final String NO_DATA_CAT = 
         'Unable to get forecast configurations for ';
+    private static final String CONFIG_VAL = ForecastHelper.CONFIG_VAL;
+    private static final String ACTIVE = ForecastHelper.ACTIVE;
 
     /**
      *  This method will fetch forecast configurations custom settings
@@ -57,8 +59,8 @@ public with sharing class RetrieveForecastConfigurations {
         }    
         retData.put('Name', data.Name);
         retData.put('ConfigurationCategory', data.ConfigurationCategory__c);
-        retData.put('ConfigurationValue', data.ConfigurationValue__c);
-        retData.put('IsActive', String.valueOf(data.IsActive__c));
+        retData.put(CONFIG_VAL, data.ConfigurationValue__c);
+        retData.put(ACTIVE, String.valueOf(data.IsActive__c));
         retData.put('Comment', data.Comment__c);
         return  retData;
     }
@@ -105,22 +107,22 @@ public with sharing class RetrieveForecastConfigurations {
         if(String.isEmpty(category)) {
             throw new SpecialistForecastException(NO_DATA_CAT + 'empty category');
         }
+        
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigNames.size() == 0) {
-            for (ForecastConfigurations__c configuration : ForecastConfigurations__c.getAll().values()) {
-                if (!configuration.IsActive__c) {
+            for (ForecastConfigurations__c config : ForecastConfigurations__c.getAll().values()) {
+                if (!config.IsActive__c) {
                     // don't add it in the list of valid configuration categories or values
-                } else if (forecastConfigNames.containsKey(configuration.ConfigurationCategory__c)) {
+                } else if (forecastConfigNames.containsKey(config.ConfigurationCategory__c)) {
                     Set<String> currentValues =
-                        forecastConfigNames.get(configuration.ConfigurationCategory__c);
-                    currentValues.add(configuration.Name);
+                        forecastConfigNames.get(config.ConfigurationCategory__c);
+                    currentValues.add(config.Name);
                 } else {
                     Set<String> newValues = new Set<String>();
-                    newValues.add(configuration.name);
-                    forecastConfigNames.put(configuration.ConfigurationCategory__c,
-                         newValues);
+                    newValues.add(config.name);
+                    forecastConfigNames.put(config.ConfigurationCategory__c, newValues);
                 }
-                    }
+            }
         }
         if (!forecastConfigNames.containsKey(category)) {
             throw new SpecialistForecastException(NO_DATA_CAT + category);

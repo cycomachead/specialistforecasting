@@ -47,20 +47,21 @@ public with sharing class ForecastHelper {
     public static final String HIERARCHY_TYPE_ROLE = 'ROLE';
     public static final String HIERARCHY_TYPE_USER = 'USER';
     public static final String SCHEDULER_FREQUENCY = 'SchedulerFrequency';
-    public static final String SPECIALIST_FORECAST_BATCH =
-        'SpecialistForecastBatch';
-    public static final String SPECIALIST_FORECAST_SUBMIT_BATCH =
-        'SpecialistForecastSubmitBatch';
+    public static final String SF_BATCH = 'SpecialistForecastBatch';
+    public static final String SUBMIT_BATCH = 'SpecialistForecastSubmitBatch';
+    public static final String SUBMIT_BATCH_RUN = 'SpecialistForecastSubmitRun';
     public static final String BATCH_COMPLETED_EMAIL = 'BatchCompletedEmail';
-    public static final String DO_NOT_SEND_EMAIL = 'DoNotSendEmail';
+    public static final String DONT_SEND_EMAIL = 'DoNotSendEmail';
     public static final String VALUE_YES = 'yes';
-    public static final String FISCAL_QUARTER_ALL = 'All';
-
-    public static final String SPECIALIST_FORECAST_BATCH_RUN_DAY =
-        'SpecialistForecastSubmitRun';
-    public static final String SPECIALIST_FORECAST_BATCH_RUN_DEFAULT_DAY =
-        'Sunday';
-
+    public static final String QTR_ALL = 'All';
+    public static final String BATCH_RUN_DEF_DAY = 'Sunday';
+    public static final String CONFIG_VAL = 'ConfigurationValue';
+    public static final String ACTIVE = 'IsActive';
+    
+    //Error Labels, TODO: Move to exception class?
+    public static final String CRON_SCHED_ERR = 
+        'No active Cron Expression specified for Store Scheduler.';
+    
     /** TODO */
     public static String rtName = null;
     /** TODO */
@@ -84,12 +85,11 @@ public with sharing class ForecastHelper {
             Map<String, String> strBatches =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 batchName);
-            if (strBatches == null || strBatches.size() == 0
-            || strBatches.get('IsActive') != 'true') {
+            if (strBatches == null || strBatches.size() == 0 
+            || strBatches.get(ACTIVE) != 'true') {
                 continue;
             }
-            batchJobs.put(strBatches.get('Name'),
-                strBatches.get('ConfigurationValue'));
+            batchJobs.put(strBatches.get('Name'), strBatches.get(CONFIG_VAL));
         }
 
         return batchJobs;
@@ -98,23 +98,22 @@ public with sharing class ForecastHelper {
     public static String getCronExpression() {
         Map<String, String> expression =
         RetrieveForecastConfigurations.getForecastConfigurationsByName(
-            ForecastHelper.SCHEDULER_FREQUENCY);
-        if (expression != null && expression.get('IsActive') == 'true') {
-            return expression.get('ConfigurationValue');
+            SCHEDULER_FREQUENCY);
+        if (expression != null && expression.get(ACTIVE) == 'true') {
+            return expression.get(CONFIG_VAL);
         }
-        throw new SpecialistForecastException(
-            'No active Cron Expression specified for Store Scheduler.');
+        throw new SpecialistForecastException(CRON_SCHED_ERR);
     }
 
     public static String getCronEmail() {
         Map<String, String> email =
         RetrieveForecastConfigurations.getForecastConfigurationsByName(
             ForecastHelper.BATCH_COMPLETED_EMAIL);
-        if (email != null && email.get('IsActive') == 'true' &&
-        emailIsValid(email.get('ConfigurationValue'))) {
-            return email.get('ConfigurationValue');
+        if (email != null && email.get(ACTIVE) == 'true' &&
+        emailIsValid(email.get(CONFIG_VAL))) {
+            return email.get(CONFIG_VAL);
         }
-        return DO_NOT_SEND_EMAIL;
+        return DONT_SEND_EMAIL;
     }
 
     /**
@@ -129,11 +128,11 @@ public with sharing class ForecastHelper {
     public static String getCronRunDay() {
         Map<String, String> runday =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
-                ForecastHelper.SPECIALIST_FORECAST_BATCH_RUN_DAY);
-        if (runday != null && runday.get('IsActive') == 'true' ) {
-            return runday.get('ConfigurationValue');
+                ForecastHelper.SUBMIT_BATCH_RUN);
+        if (runday != null && runday.get(ACTIVE) == 'true' ) {
+            return runday.get(CONFIG_VAL);
         }
-        return SPECIALIST_FORECAST_BATCH_RUN_DEFAULT_DAY;
+        return BATCH_RUN_DEF_DAY;
     }
 
 
@@ -253,7 +252,10 @@ public with sharing class ForecastHelper {
             return null;
         }
         User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
-                IsActive, Alias, Area__c FROM User WHERE Id = :userId]);
+                IsActive, Alias FROM User WHERE Id = :userId]);
+
+        // User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
+//                 IsActive, Alias, Area__c FROM User WHERE Id = :userId]);
 
         if (aUser == null) {
             throw new SpecialistForecastException('Unable to find user for user'
@@ -384,15 +386,14 @@ public with sharing class ForecastHelper {
      * @return The current fiscal year as a string 'FY##'.
      */
     public static String getCurrentFiscalYear() {
-        return 'FY' + MonthUtil.normalizeYr(MonthUtil.getCurrentFY());
+        return 'FY' + MonthUtil.normalizeYrToStr(MonthUtil.getCurrentFY());
     }
 
     /**
      * @return previous fiscal year (from current month) as a string 'FY##'.
      */
     public static String getLastFiscalYear() {
-        String yr = MonthUtil.normalizeYr(MonthUtil.getCurrentFY() - 1);
-        return 'FY' + yr;
+        return 'FY' + MonthUtil.normalizeYrToStr(MonthUtil.getCurrentFY() - 1);
     }
 
     /**
@@ -400,10 +401,10 @@ public with sharing class ForecastHelper {
      *  @param fYear is a fiscal year, "FY##"
      *  @return the two digit FY as a string in the format 'FY##'.
      */
-    public static String getPreviousFiscalYear(String fYear) {
+    public static String getPreviousFiscalYear(String yr) {
         try {
-            Integer yr = Integer.valueOf(fYear.substring(2)) - 1;
-            return 'FY' + MonthUtil.normalizeYr(yr);
+            return 'FY' + MonthUtil.normalizeYrToStr(
+                Integer.valueOf(yr.substring(2)) - 1);
         } catch (Exception ex) {
             return 'ERROR';
         }
@@ -420,16 +421,17 @@ public with sharing class ForecastHelper {
 
         Integer qtr;
         try {
-            qtr = Integer.valueOf(fQuarter.substring(1,2));
+            qtr = Integer.valueOf(fQuarter.substring(1));
+            System.debug('####TEST###\n' + qtr);
         } catch (Exception ex) {
+            throw new SpecialistForecastException('Uh oh...');
             qtr = MonthUtil.getCurrentFiscalQtr();
         }
         return MonthUtil.getMonthsInQtr(qtr);
     }
 
     /**
-     * FIXME: Refactor
-     * @return List of alll supported FY's as { 'FY##', ..., 'FY##' }
+     *  @return List of alll supported FY's as { 'FY##', ..., 'FY##' }
      */
     public static String[] getSupportedFiscalYears() {
         if (supportedFY == null || supportedFY.size() < 3) {
@@ -437,7 +439,7 @@ public with sharing class ForecastHelper {
                 Map<String, String> supportedFYs =
                 RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 CAT_SUPPORTED_FY);
-                supportedFY = supportedFYs.get('ConfigurationValue').split(',');
+                supportedFY = supportedFYs.get(CONFIG_VAL).split(',');
             } catch (Exception ex) {
                 supportedFY = new String[] { getCurrentFiscalYear() };
             }
@@ -446,26 +448,24 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     * @return {'Q1', 'Q2', 'Q3', 'Q4' }
+     *  @return {'Q1', 'Q2', 'Q3', 'Q4' }
      */
     public static String[] getSupportedFiscalQuarters() {
         return ALL_FQ;
     }
 
     /**
-     * Find the Month name and fiscal year FROM date
-     * @param inpDate is an Apex date object
-     * @return A String[] of { 'MONTH', 'FYX##' }
+     *  Find the Month name and fiscal year from a given date.
+     *  @param inpDate is an Apex date object
+     *  @return A String[] of { 'MONTH', 'FYX##' }
      */
     public static String[] extractFYAndMonthFromDate(Date inpDate) {
         if (inpDate == null) {
-            return new String[] { '', '' };
+            return extractFYAndMonthFromDate(System.today());
         }
 
-        return new String[] {
-            (MonthUtil.getAll()[inpDate.month() - 1]),
-            ('FY' + MonthUtil.getFYFromYrAndMo(inpDate.year(), inpDate.month()))
-        };
+        return new String[] { MonthUtil.getAll()[inpDate.month() - 1],
+                              'FY' + MonthUtil.getFYFromDate(inpDate) };
     }
 
 }

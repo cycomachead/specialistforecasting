@@ -42,7 +42,7 @@ public class SpecForecastConfigTest {
         }
         System.assert(fConfig.get('ConfigurationValue').contains('AMER-FS,JP-FS,EMEA-FS,APAC-FS'));
         System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
+        System.assert(fConfig.get(ForecastHelper.ACTIVE) == 'true');
 
         try {
             Set<String> valuesForEcommMember = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestUtil.CAT_ECOMM_MEMBER);
@@ -94,31 +94,31 @@ public class SpecForecastConfigTest {
         }
 
         System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
+        System.assert(fConfig.get(ForecastHelper.ACTIVE) == 'true');
 
         //Test Public Sector Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_PUBLIC_SECTOR);
         System.assert(fConfig.get('ConfigurationValue').contains('AMER-PUBSEC'));
         System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
+        System.assert(fConfig.get(ForecastHelper.ACTIVE) == 'true');
 
         //Test Data.com Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_DATA_DOT_COM);
         
         System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
+        System.assert(fConfig.get(ForecastHelper.ACTIVE) == 'true');
 
         //Test Radian6 Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_RADIAN6);
         System.assert(fConfig.get('ConfigurationValue').contains('R6-COO'));
         System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
+        System.assert(fConfig.get(ForecastHelper.ACTIVE) == 'true');
 
         //Test Heroku Geos
         fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestUtil.BU_HEROKU);
 
         System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestUtil.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
+        System.assert(fConfig.get(ForecastHelper.ACTIVE) == 'true');
 
         Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestUtil.CAT_GEO);
         System.assert(geos.contains('AMER/EMEA-CS'));
