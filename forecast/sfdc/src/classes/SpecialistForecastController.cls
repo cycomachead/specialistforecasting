@@ -36,16 +36,27 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 public with sharing class SpecialistForecastController extends
     BaseSpecialistForecastController {
 
-    private Boolean isvalidated = true;
+    private Boolean isValidated = true;
+
+    private static final String CLOSED      = ForecastHelper.CLOSED;
+    private static final String CLOSED_WON  = ForecastHelper.CLOSED_WON;
+    private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
+    private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
+    private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
+
+    private static final String USER_ID_NULL =
+            SpecialistForecastException.USER_ID_NULL;
+    private static final String ROLE_ID_NULL =
+            SpecialistForecastException.ROLE_ID_NULL;
 
     private Set<Id> allUserIDs = new Set<Id>();
     private Set<Id> allTotaluserIDs = new Set<Id>();
 
     private List<SelectOption> fiscalYears;
     private List<SelectOption> fiscalQuarters;
-    
+
     private List<SpecialistForecastlineItemVO> splFClineItems;
-    
+
     private Map<Id,set<Id>> mapSecondLeverUsersAndChild = new Map<Id,set<Id>>();
     private Map<Id,RoleUserInfoVO> mapUsers = new Map<Id,RoleUserInfoVO>();
 
@@ -56,7 +67,7 @@ public with sharing class SpecialistForecastController extends
     public Decimal originaloldAmount { get;set; }
 
     public SpecialistForecastlineItem__c sfLI;
-    
+
     public String overrideComment    { get;set; }
     public String strRecordId        { get;set; }
     public String strField           { get;set; }
@@ -82,8 +93,6 @@ public with sharing class SpecialistForecastController extends
         if (selectedFQ == null) {
             selectedFQ = ForecastHelper.getCurrentQuarter();
         }
-        // TODO This is probably best spot to setup FY start month.\
-        // Place query in SfLI class?
     }
 
     // Will need to be updated for month editing.
@@ -92,7 +101,7 @@ public with sharing class SpecialistForecastController extends
      */
     public boolean getCanSubmit() {
         return (this.sfLI.ForecastOwner__c == UserInfo.getUserId() &&
-            SelectedFQ != ForecastHelper.QTR_ALL);
+            selectedFQ != QTR_ALL);
     }
 
     /**
@@ -131,8 +140,7 @@ public with sharing class SpecialistForecastController extends
     public List<SelectOption> getFiscalQuarters() {
         if (this.fiscalQuarters == null) {
             this.fiscalQuarters = new List<SelectOption>();
-            this.fiscalQuarters.add(new SelectOption(ForecastHelper.QTR_ALL,
-                ForecastHelper.QTR_ALL));
+            this.fiscalQuarters.add(new SelectOption(QTR_ALL, QTR_ALL));
 
             List<String> fQuarters = ForecastHelper.getSupportedFiscalQuarters();
             for(String fQuarter : fQuarters) {
@@ -211,8 +219,8 @@ public with sharing class SpecialistForecastController extends
      * Called from submit button
      */
     public PageReference submitReport() {
-        if (SelectedFQ != ForecastHelper.QTR_ALL) {
-            String strMonth = ForecastHelper.getMonthsInQuarter(SelectedFQ).get(0);
+        if (selectedFQ != QTR_ALL) {
+            String strMonth = ForecastHelper.getMonthsInQuarter(selectedFQ).get(0);
             SpecialistForecastlineItem__c sfLI = new SpecialistForecastlineItem__c();
             sfLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
             sfLI.FiscalYear__c = SelectedFY;
@@ -227,7 +235,7 @@ public with sharing class SpecialistForecastController extends
                   'You can\'t submit for quarter "All".' +
                   'Please select a different quarter to submit.'));
        }
-       
+
        return null;
     }
 
@@ -320,7 +328,7 @@ public with sharing class SpecialistForecastController extends
         //set the query parameters
         ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
         queryParam.setFiscalYear(SelectedFY);
-        queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(SelectedFQ));
+        queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(selectedFQ));
         queryParam.setOwnerIds(ownerIdsforQuery);
 
         //get the data from the table as a list
@@ -435,7 +443,7 @@ public with sharing class SpecialistForecastController extends
                 sfLIne.withoutLink = false;
                 sfLIne.reportingUser = false;
                 sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
-                                       && SelectedFQ != ForecastHelper.QTR_ALL);
+                                       && selectedFQ != ForecastHelper.QTR_ALL);
                 sfLIne.userName =  mapUsers.get(lineItemOwnerId).userName;
                 sfLIne.roleName = mapUsers.get(lineItemOwnerId).roleName;
                 sfLIne.userId =  mapUsers.get(lineItemOwnerId).userId;
@@ -484,7 +492,7 @@ public with sharing class SpecialistForecastController extends
             mapUsers.containsKey(lineItemOwnerId)) {
                 sfLIne.createEmptySPlineItemforVFPage(lineItemOwnerId,
                     sfLI.ForecastOwner__c,mapUsers,quotaAmount);
-                sfLIne.forOverride = (SelectedFQ != ForecastHelper.QTR_ALL
+                sfLIne.forOverride = (selectedFQ != ForecastHelper.QTR_ALL
                     ? sfLIne.forOverride : false);
                 splFClineItems.add(sfLIne);
             } //end if
@@ -521,23 +529,23 @@ public with sharing class SpecialistForecastController extends
             sfLIne.withoutLink   = false;
             sfLIne.reportingUser = false;
             sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
-                                   && SelectedFQ != ForecastHelper.QTR_ALL);
+                                   && selectedFQ != QTR_ALL);
 
             sfLIne.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
             sfLIne.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
-            sfLIne.userId = mapUsers.get(sfLI.ForecastOwner__c).userId;
-            sfLIne.roleId = mapUsers.get(sfLI.ForecastOwner__c).roleId;
-            sfLIne.closedAmount = closedAmount;
-            sfLIne.commitAmount = commitAmount;
-            sfLIne.bestCaseAmount = bestCaseAmount;
-            sfLIne.commitOverrideAmount = commitOvrrideAmount;
+            sfLIne.userId   = mapUsers.get(sfLI.ForecastOwner__c).userId;
+            sfLIne.roleId   = mapUsers.get(sfLI.ForecastOwner__c).roleId;
+            sfLIne.closedAmount           = closedAmount;
+            sfLIne.commitAmount           = commitAmount;
+            sfLIne.bestCaseAmount         = bestCaseAmount;
+            sfLIne.commitOverrideAmount   = commitOvrrideAmount;
             sfLIne.bestCaseOverrideAmount = bestCaseOverrideAmount;
-            sfLIne.pipelineAmount = pipelineAmount;
-            sfLIne.quotaAmount = quotaAmount;
-            sfLIne.MycommitOverriden = lineItem.MycommitOverriden;
-            sfLIne.MyBestcaseOverriden = lineItem.MyBestcaseOverriden;
-            sfLIne.strLineItmId = lineItem.strLineItmId;
-            sfLIne.searchUser = true;
+            sfLIne.pipelineAmount         = pipelineAmount;
+            sfLIne.quotaAmount            = quotaAmount;
+            sfLIne.myCommitOverriden      = lineItem.MycommitOverriden;
+            sfLIne.myBestcaseOverriden    = lineItem.MyBestcaseOverriden;
+            sfLIne.strLineItmId           = lineItem.strLineItmId;
+            sfLIne.searchUser             = true;
 
             //add the total amounts to the list
             splFClineItems.add(sfLIne);
@@ -554,24 +562,23 @@ public with sharing class SpecialistForecastController extends
             sfLIne = new SpecialistForecastlineItemVO();
             sfLIne.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
-            sfLIne.forOverride = (SelectedFQ !=
-                ForecastHelper.QTR_ALL ? sfLIne.forOverride : false);
+            sfLIne.forOverride = (selectedFQ != QTR_ALL ? sfLIne.forOverride : false);
             splFClineItems.add(sfLIne);
         }
 
 
         // create total line items
         sfLIne = new SpecialistForecastlineItemVO();
-        sfLIne.withoutLink = true;
-        sfLIne.reportingUser = true;
-        sfLIne.userName = ForecastHelper.GRAND_TOTAL;
-        sfLIne.closedAmount = totclosedAmount;
-        sfLIne.commitAmount = totcommitAmount;
-        sfLIne.bestCaseAmount = totbestCaseAmount;
-        sfLIne.commitOverrideAmount = totcommitOvrrideAmount ;
+        sfLIne.withoutLink            = true;
+        sfLIne.reportingUser          = true;
+        sfLIne.userName               = GRAND_TOTAL;
+        sfLIne.closedAmount           = totclosedAmount;
+        sfLIne.commitAmount           = totcommitAmount;
+        sfLIne.bestCaseAmount         = totbestCaseAmount;
+        sfLIne.commitOverrideAmount   = totcommitOvrrideAmount ;
         sfLIne.bestCaseOverrideAmount = totbestCaseOverrideAmount;
-        sfLIne.pipelineAmount = totpipelineAmount;
-        sfLIne.quotaAmount = totQuotaAmount;
+        sfLIne.pipelineAmount         = totpipelineAmount;
+        sfLIne.quotaAmount            = totQuotaAmount;
 
         //add the total amounts Line to the list
         splFClineItems.add(sfLIne);
@@ -589,13 +596,13 @@ public with sharing class SpecialistForecastController extends
     private void getMappedUserInfoFromRoleHierarchy(Id userId) {
         User usr;
         try {
-            usr = [SELECT Name, UserRoleId, UserRole.Name FROM User WHERE Id = :userId];
+            usr = [SELECT Name, UserRoleId, UserRole.Name
+                    FROM User WHERE Id = :userId];
             if (usr == null || usr.UserRoleID == null) {
-                throw new SpecialistForecastException();
+                throw new SpecialistForecastException(USER_ID_NULL + userID + '.');
             }
         } catch (Exception ex) {
-            throw new SpecialistForecastException('Unable to find required role'
-                + ' ID for user ' + userID + '.');
+            throw new SpecialistForecastException(ROLE_ID_NULL + userID + '.');
         }
 
         HierarchyUtil.RoleNodeWrapper rolwraps;
@@ -634,11 +641,11 @@ public with sharing class SpecialistForecastController extends
                 && !roleWrapper.isLeafNode) {
                     alluserIds = new Set<Id>();
 
-                    ruinfo = new RoleUserInfoVO();
-                    ruinfo.roleId = rolewrapper.myRoleId;
-                    ruinfo.roleName = rolewrapper.myroleName;
-                    ruinfo.userId = rolewrapper.myMappedUser.Id;
-                    ruinfo.userName = rolewrapper.myMappedUser.Name;
+                    ruinfo            = new RoleUserInfoVO();
+                    ruinfo.roleId     = rolewrapper.myRoleId;
+                    ruinfo.roleName   = rolewrapper.myroleName;
+                    ruinfo.userId     = rolewrapper.myMappedUser.Id;
+                    ruinfo.userName   = rolewrapper.myMappedUser.Name;
                     mapUsers.put(rolewrapper.myMappedUser.Id,ruinfo);
                     /* Put the key with the child*/
                     roleTraverse(rolewrapper);
@@ -676,7 +683,7 @@ public with sharing class SpecialistForecastController extends
         ruinfo.roleId = usr.UserRoleId;
         ruinfo.roleName = usr.userrole.Name;
         ruinfo.userId = userId;
-        ruinfo.userName = usr.Name;
+        ruinfo.userName  = usr.Name;
         mapUsers.put(userId,ruinfo);
     }
 
@@ -813,8 +820,7 @@ public with sharing class SpecialistForecastController extends
                     (sfl.SpecialistForecastOverride__r.ManagerOverridenBestcaseAmount__c
                     != null ||splv.mgrBestCaseOverriden);
                 splv.submittedDate = (sfl.submitteddate__c != null ?
-                    sfl.submitteddate__c.format() :
-                    (splv.submittedDate != null ? splv.submittedDate : ''));
+                    sfl.submitteddate__c.format() : zeroIfNull(splv.submittedDate));
                 splv.isSubmitted = (sfl.Submitteddate__c != null ||
                     splv.isSubmitted);
                 splv.mgrCommitOverrideNotes = (splv.mgrCommitOverriden ?
@@ -864,7 +870,7 @@ public with sharing class SpecialistForecastController extends
         SpecialistForecastlineItem__c spc = new SpecialistForecastlineItem__c();
         SpecialistForecastOverride__c spovr = new SpecialistForecastOverride__c();
         String external_Key;
-        if (strField =='commit') {
+        if (strField == COMMIT_MSG) {
             if (isSelfOverride()) {
                 spovr.OwnOverridenCommitAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overridecomment;
@@ -885,8 +891,8 @@ public with sharing class SpecialistForecastController extends
            spovr.PreviousDirectRepBestcaseAmount__c = originaloldAmount;
        }
 
-       spovr.PeriodType__c = SelectedFQ;
-       external_Key = lineItemOwnerId + SelectedFY + SelectedFQ;
+       spovr.PeriodType__c = selectedFQ;
+       external_Key = lineItemOwnerId + SelectedFY + selectedFQ;
        spovr.ExtIdentifier__c = external_Key;
        spovr.OwnerId = lineItemOwnerId;
 
@@ -899,7 +905,7 @@ public with sharing class SpecialistForecastController extends
         }
 
         //upsert Line item
-        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(SelectedFQ);
+        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
 
         spc.ExtIdentifier__c = lineItemOwnerId + SelectedFY + lstMonths.get(0);
         spc.SpecialistForecastOverride__c = spovr.Id;
@@ -956,7 +962,7 @@ public with sharing class SpecialistForecastController extends
       *
       */
      public void showDrilDownPopup() {
-         if (SelectedFQ != null && SelectedFY != null && lineItemOwnerId != null) {
+         if (selectedFQ != null && selectedFY != null && lineItemOwnerId != null) {
              this.getSpecialistForecastRecords();
          }
          displayDrilDownPopup = true;
@@ -969,11 +975,11 @@ public with sharing class SpecialistForecastController extends
         List<String> lstStatus = new List<String>();
         lstStatus.add(strField);
 
-        if (strField == ForecastHelper.SUBTYPE_CLOSED) {
-            lstStatus.add('Closed Won');
+        if (strField == CLOSED) {
+            lstStatus.add(CLOSED_WON);
         }
 
-        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(SelectedFQ);
+        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
         //get months by quarter
 
         specialistforecastList = [SELECT Opportunity__C, Opportunity__r.Name,
@@ -994,9 +1000,9 @@ public with sharing class SpecialistForecastController extends
     private static Decimal zeroIfNull(Decimal inp) {
         return inp == null ? 0 : inp;
     }
-    
+
     private static String zeroIfNull(String inp) {
         return inp == null ? '' : inp;
     }
-    
+
 }

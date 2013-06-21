@@ -34,7 +34,7 @@ public with sharing class SplstForecastDrildownOptyController {
 
     public List<SpecialistForecast__c> specialistforecastList{get;set;}
 
-    private static final String CLOSED = ForecastHelper.CLOSED;
+    private static final String CLOSED     = ForecastHelper.CLOSED;
     private static final String CLOSED_WON = ForecastHelper.CLOSED_WON;
 
 

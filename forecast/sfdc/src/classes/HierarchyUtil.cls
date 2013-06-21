@@ -45,17 +45,17 @@ public with sharing class HierarchyUtil {
 
     //Map to hole the role and forecast hierarchy configurations
     private static Map<Id, Id>  forecastHierarchyConfigRoleUserMap;
-    
+
     /** Standard error messages. */
-    private static Final String ROLE_ID_NULL = 
+    private static Final String ROLE_ID_NULL =
         SpecialistForecastException.ROLE_ID_NULL;
-     private static Final String USER_ID_NULL = 
+     private static Final String USER_ID_NULL =
          SpecialistForecastException.USER_ID_NULL;
-    private static Final String PARENT_ID_NULL = 
+    private static Final String PARENT_ID_NULL =
         SpecialistForecastException.PARENT_ID_NULL;
-    private static Final String CANT_FIND_USER = 
+    private static Final String CANT_FIND_USER =
         SpecialistForecastException.CANT_FIND_USER;
-    
+
     /**
      *  public method to get all the subordinates
      *
@@ -106,7 +106,7 @@ public with sharing class HierarchyUtil {
 
     // FIXME role ID or user ID?
     /**
-     *  public method to get all the direct subordinates by userId 
+     *  public method to get all the direct subordinates by userId
      *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getSubordinatesByUser(Id userId) {
@@ -122,7 +122,7 @@ public with sharing class HierarchyUtil {
         return getSubordinatesByRole(myUser.UserRoleId);
     }
 
-    /** 
+    /**
      *  public method to get all the direct subordinates by role
      *  @throws SpecialistForecastException
      */
@@ -176,14 +176,14 @@ public with sharing class HierarchyUtil {
         if (userId == null) {
             throw new SpecialistForecastException(USER_ID_NULL);
         }
-        
+
         User myUser;
         try {
             myUser = [SELECT UserRoleId FROM User WHERE Id = :userId];
         } catch (Exception ex) {
             throw new SpecialistForecastException(ROLE_ID_NULL);
         }
-        
+
         return getMappedAllLevelSubordinatesByRole(myUser.UserRoleId);
     }
 
@@ -231,7 +231,8 @@ public with sharing class HierarchyUtil {
         // Get role to users mapping in a map with key as role id
         try {
             roleUsersMap = new Map<Id, UserRole>([SELECT Id, Name, parentRoleId,
-                (SELECT id, name FROM users WHERE isActive = true and AND = 'STANDARD')
+                (SELECT id, name
+                    FROM users WHERE isActive = true AND usertype = 'STANDARD')
                     FROM UserRole WHERE parentRoleId in :parentRoleIds]);
             //add the parent to the map as well to fetch the top parent
             //  information

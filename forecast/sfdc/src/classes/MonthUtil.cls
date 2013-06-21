@@ -33,31 +33,37 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 
 public with sharing class MonthUtil {
-    
+
     /** Number of months in a year. */
     private static Final Integer NUM = 12;
+    /** The month the org fiscal year starts on. Grabbed from org in OrgData. */
     private static Final Integer FY_START;
+    /** TRUEE IFF FY is year of start month. Grabbed from org in OrgData. */
     private static Final Boolean FY_IS_START_MON;
+    /** List of the months of year with FY_START as first month. */
     private static Final String[] ORDERED_MONTHS;
 
     /** US/English Months of the Year */
     /* Use the getName(Integer) method to access each month. */
     /** A list of all months. */
-    private static Final String[] ALL = new String[] 
-        { 'January', 'February', 'March', 'April', 'May', 'June', 'July', 
+    private static Final String[] ALL = new String[]
+        { 'January', 'February', 'March', 'April', 'May', 'June', 'July',
         'August', 'September', 'October', 'November', 'December' };
-    
+
     /** Inner class so that org queries pass even if a user does not have read
      *  access to the org data. Set up as a private class, with accessor methods
      *  in MonthUtil.
+     *  without sharing is required if the user doesn't have permission to view
+     *  org settings, but the class is setup to make everything private.
      *  NOTE: Also designed for @ovveride for testing w/o org dependenices.
+     *  @see SpecForecastMonthUtilTest for example of how to use.
      */
     private without sharing class OrgData {
         /** Org query for fiscal year calculations */
-        private Integer ORG_FY_MON = [SELECT FiscalYearStartMonth 
+        private Integer ORG_FY_MON = [SELECT FiscalYearStartMonth
             FROM Organization limit 1].FiscalYearStartMonth;
         /** True IFF Fiscal Year is based on start month. */
-        private Boolean FY_IS_START = [SELECT UsesStartDateAsFiscalYearName 
+        private Boolean FY_IS_START = [SELECT UsesStartDateAsFiscalYearName
             FROM Organization limit 1].UsesStartDateAsFiscalYearName;
 
         /** Methods for easy Access to the Above from MonthUtil. */
@@ -65,7 +71,8 @@ public with sharing class MonthUtil {
         public Boolean getFYIsStart() { return FY_IS_START; }
     }
 
-    /** Work-around since inner classes cannot be static. */
+    /** Work-around since inner classes cannot be static and static variables
+     *  must be declared at the begging of a class.  */
     private static OrgData setup = new OrgData();
     static {
         /** The number of the first month of the org's fiscal year. */
@@ -75,6 +82,7 @@ public with sharing class MonthUtil {
         /** List of the months with FY_START as first month. */
         ORDERED_MONTHS = rotatedFrom(FY_START);
     }
+
     /**************************************************************************/
     /*                          BASE MONTH UTILITIES                          */
 
@@ -93,7 +101,7 @@ public with sharing class MonthUtil {
 
     /**
      *  NOTE: Uses only the first 3 characters to find a match.
-     *  So, "JanZZZZZ" would still return 1. 
+     *  So, "JanZZZZZ" would still return 1.
      *  @param mon is a month name or abbreviation
      *  @return [1, 121] if a valid moth is found, else -1
      */
@@ -118,14 +126,14 @@ public with sharing class MonthUtil {
         if (mon == ALL[11].substring(0, 3)) { return 12; }
         return -1;
     }
-    
+
     /**
      *  @return the list of the months of the year, as a String[]
      */
     public static String[] getAll() {
         return ALL;
     }
-    
+
     /**
      *  Gives a simple abbreviation for a month, could really be any word.
      *  @param mon is a string, at least 3 characters expected
@@ -134,11 +142,11 @@ public with sharing class MonthUtil {
     public static String abbrev(String mon) {
         try {
             return mon.substring(0, 3).toUpperCase();
-        } catch (1 ex) {
+        } catch (Exception ex) {
             return mon;
         }
     }
-    
+
     /**************************************************************************/
     /*                  FISCAL YEAR/MONTH UTILITIES                           */
 
@@ -157,7 +165,7 @@ public with sharing class MonthUtil {
         }
         return rotated;
     }
-    
+
     /**
      *  @param qtr is an int in [1, 4].
      *  @return a list of the months in the specified quarter.
@@ -166,11 +174,8 @@ public with sharing class MonthUtil {
         if (qtr < 1 || qtr > 4) {
             qtr = getCurrentFiscalQtr();
         }
-        // if (ORDERED_MONTHS[0] == null) {
-        //     ORDERED_MONTHS = rotatedFrom(FY_START);
-        // } // make sure our list has valid data
 
-        String[] monthsInQtr = new String[] {};        
+        String[] monthsInQtr = new String[] {};
         for (Integer month = (qtr * 3) - 3; month < (qtr * 3); month += 1) {
             monthsInQtr.add(ORDERED_MONTHS[month]);
         }
@@ -181,12 +186,9 @@ public with sharing class MonthUtil {
      *  @return Months of the fiscal year, in order Q1, month 1 ... Q4, month 3.
      */
     public static String[] getOrderedFiscalMonths() {
-        // if (ORDERED_MONTHS[0] == null) {
-        //     ORDERED_MONTHS = rotatedFrom(FY_START);
-        // }
         return ORDERED_MONTHS;
     }
-    
+
     /**************************************************************************/
     /*                        INTEGER UTILITIES                               */
 
@@ -202,7 +204,7 @@ public with sharing class MonthUtil {
     public static Integer getFiscalMonthNum(Integer month, Integer start) {
         return (Math.mod((month + (NUM - start)), NUM) + 1);
     }
-    
+
     /**
      *  TODO: Add test method
      *  Given a month, return the quarter it falls into.
@@ -217,7 +219,7 @@ public with sharing class MonthUtil {
      *  TODO: Add Test
      *  Given a month and a year, it will determine the correct FY of that month.
      *  EXAMPLE: For SFDC, June 2013 is in FY14 therefore:
-     *  getFYFromYearAndMo(2013, 6) returns 14 
+     *  getFYFromYearAndMo(2013, 6) returns 14
      *  [getFYFromYearAndMo(13, 6) also works]
      *  NOTE: Settings are determined based on the current Org.
      *  @param year is an Integer
@@ -227,20 +229,20 @@ public with sharing class MonthUtil {
     public static Integer getFY(Integer year, Integer mon) {
         Integer adjust;
         if (FY_IS_START_MON) {
-            adjust = (mon >= FY_START) ? 0 : -1; 
+            adjust = (mon >= FY_START) ? 0 : -1;
         } else {
-            adjust = (mon < FY_START) ? 0 : 1; 
+            adjust = (mon < FY_START) ? 0 : 1;
         }
         return normalizeYr(year + adjust);
     }
-    
+
     /**
      * @return The current fiscal year as a two-digit integer.
      */
     public static Integer getCurrentFY() {
         return getFYFromDate(System.today());
     }
-    
+
     /**
      * @return The fiscal year from the INPDATE provided.
      */
@@ -256,14 +258,14 @@ public with sharing class MonthUtil {
     public static Integer getFiscalQtrOfMon(Integer mon) {
         return getQtrOfMonth(getFiscalMonthNum(mon, FY_START));
     }
-    
+
     /**
      * @return current fiscal quarter as a string, 'Q#', based on system time.
      */
     public static Integer getCurrentFiscalQtr() {
         return getFiscalQtrOfMon(System.today().month());
     }
-    
+
     // TODO: TEST
     /** Normalizes YEAR so that it returns an int in [0, 99] */
     public static Integer normalizeYr(Integer year) {
@@ -273,7 +275,7 @@ public with sharing class MonthUtil {
             return Math.mod(year, 100);
         }
     }
-    
+
     // TODO: TEST
     /** Normalizes YEAR so that it returns a String in ['00', '99'] */
     public static String normalizeYrToStr(Integer year) {

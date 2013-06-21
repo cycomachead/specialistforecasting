@@ -39,7 +39,7 @@ public with sharing class RetrieveForecastConfigurations {
         Map<String, Set<String>>();
     private static Map<String, Set<String>> forecastConfigNames = new
         Map<String, Set<String>>();
-    
+
     /** Error Messages and standard labels. */
     private static Final String NO_DATA_CAT =
         SpecialistForecastException.NO_DATA_CAT;
@@ -49,7 +49,7 @@ public with sharing class RetrieveForecastConfigurations {
         SpecialistForecastException.CRON_SCHED_ERR;
     private static final String  NO_DATA_NAME =
         SpecialistForecastException.NO_DATA_NAME;
-    
+
     private static final String NAME = ForecastHelper.NAME;
     private static final String CONFIG_CAT = ForecastHelper.CONFIG_CAT;
     private static final String CONFIG_VAL = ForecastHelper.CONFIG_VAL;
@@ -61,12 +61,13 @@ public with sharing class RetrieveForecastConfigurations {
      *  @return A map of the settings data (KVP) used for forecasting
      *  @throws SpecialistForecastException
      */
-    public static Map<String, String> getForecastConfigurationsByName(String name) {
+    public static Map<String, String> getForecastConfigurationsByName(String inpName) {
         Map<String,String> retData = new Map<String,String>();
-        ForecastConfigurations__c data = ForecastConfigurations__c.getInstance(name);
+        ForecastConfigurations__c data =
+            ForecastConfigurations__c.getInstance(inpname);
         if (data == null) {
-            throw new SpecialistForecastException(NO_DATA_NAME + name);
-        }    
+            throw new SpecialistForecastException(NO_DATA_NAME + inpName);
+        }
         retData.put(NAME, data.Name);
         retData.put(CONFIG_CAT, data.ConfigurationCategory__c);
         retData.put(CONFIG_VAL, data.ConfigurationValue__c);
@@ -117,7 +118,7 @@ public with sharing class RetrieveForecastConfigurations {
         if(String.isEmpty(category)) {
             throw new SpecialistForecastException(EMPTY_CAT);
         }
-        
+
         // Initialize the custom settings, if it's not already initialized
         if (forecastConfigNames.size() == 0) {
             for (ForecastConfigurations__c config : ForecastConfigurations__c.getAll().values()) {
