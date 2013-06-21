@@ -27,10 +27,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Controller to display and override Special AE Forecast
+ *  Controller to display and override Special AE Forecast
  *
- * @author auzzaman
- * @since 180.store
+ *  @author auzzaman
+ *  @since
  */
 public with sharing class StoreBatchAdminController {
 
@@ -55,8 +55,6 @@ public with sharing class StoreBatchAdminController {
     }
 
     public PageReference startScheduledJob() {
-        /* FIXME: Remove before prod! */
-System.debug('Inside startScheduledJob() = ' + jobName);
         Integer minOfHour = 0;
         try {
             minOfHour = Integer.valueOf(this.notificationMinute);
@@ -68,17 +66,14 @@ System.debug('Inside startScheduledJob() = ' + jobName);
             minOfHour = 0;
         }
         StoreScheduleWrapper.start(minOfHour);
-        /* FIXME: Remove before prod! */
-System.debug('Scheduled Store Batch Job for ' + minOfHour + '-th minute.');
         return null;
     }
-        //runs the batch job now to process report records
+
+    //runs the batch job now to process report records
     public PageReference startScheduledJobNow() {
         Integer  BATCH_SIZE = 400;
         Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), BATCH_SIZE);
 
-        /* FIXME: Remove before prod! */
-System.debug('Scheduled Store Batch Job for ' + batchProcessId);
         return null;
     }
 
