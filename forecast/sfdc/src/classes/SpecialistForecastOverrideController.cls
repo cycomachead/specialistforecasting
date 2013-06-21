@@ -45,7 +45,7 @@ public with sharing class SpecialistForecastOverrideController {
     public String strFY {get;set;}
     public String strFQ {get;set;}
 
-    //Constructor
+    // Constructor
     public SpecialistForecastOverrideController () {
         String temp = System.currentPageReference().getParameters().get('Amt');
 
@@ -55,7 +55,8 @@ public with sharing class SpecialistForecastOverrideController {
             try {
                   originalAmount = decimal.valueOf(temp);
             } catch (Exception ex) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,'Invalid Override Amount'));
+                ApexPages.addmessage(new ApexPages.message(
+                    ApexPages.severity.Error,'Invalid Override Amount'));
             }
         }
 
@@ -67,7 +68,6 @@ public with sharing class SpecialistForecastOverrideController {
             try {
                 originaloldAmount = decimal.valueOf(oldamt);
             } catch (Exception ex) {
-
             }
         }
 
@@ -94,43 +94,39 @@ public with sharing class SpecialistForecastOverrideController {
        }
     }
 
-     public pagereference saveOverride() {
+    public pagereference saveOverride() {
 
         SpecialistForecastLineItem__c spc = new SpecialistForecastLineItem__c();
         SpecialistForecastOverride__c spovr = new SpecialistForecastOverride__c();
         String external_Key;
         if (strField == 'mycommit') {
-
             if (isSelfOverride()) {
                 spovr.OwnOverridenCommitAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overridecomment;
             } else {
                 spovr.ManagerOverridenCommitAmount__c = overrideAmount;
                 spovr.ManagerOverrideCommitNotes__c = overridecomment;
-
             }
             spovr.PreviousDirectRepCommitAmount__c = originaloldAmount;
-        }else if(strField =='mybestcase'){
-
-             if(isSelfOverride()){
+        } else if (strField =='mybestcase') {
+            if (isSelfOverride()) {
                 spovr.OwnOverridenBestCaseAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overrideComment;
-            }else{
+            } else {
                 spovr.ManagerOverridenBestCaseAmount__c = overrideAmount;
                 spovr.ManagerOverrideBestcaseNotes__c = overrideComment;
-
             }
            spovr.PreviousDirectRepBestcaseAmount__c = originaloldAmount;
         }
+
         spovr.PeriodType__c = strFQ;
         external_Key = lineItemownerID + strFY + strFQ;
         spovr.ExtIdentifier__c = external_Key;
         spovr.OwnerId = lineItemownerID;
 
-        try{
+        try {
             Upsert spovr ExtIdentifier__c;
-         }catch(System.DMLException ex){
-
+         } catch(System.DMLException ex) {
              ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,' Failed to update the Override value'));
             return null;
         }
@@ -147,11 +143,13 @@ public with sharing class SpecialistForecastOverrideController {
         try {
             Upsert spc ExtIdentifier__c;
          } catch(System.DMLException ex) {
-             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,' Failed to update the Override Amount'));
+             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,
+                 'Failed to update the Override Amount'));
              return null;
         }
 
-        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Override Amount updated sucessfully'));
+        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
+            'Override Amount updated successfully'));
         return null;
      }
 
