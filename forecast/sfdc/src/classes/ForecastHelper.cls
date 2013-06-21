@@ -63,6 +63,9 @@ public with sharing class ForecastHelper {
     public static final String ACTIVE = 'IsActive';
     public static final String COMMENT = 'Comment'; 
     
+    /** Error messages */
+    private static final String CANT_FIND_USER =
+            SpecialistForecastException.CANT_FIND_USER;
     
     
     /** TODO */
@@ -109,7 +112,7 @@ public with sharing class ForecastHelper {
         if (expression != null && expression.get(ACTIVE) == 'true') {
             return expression.get(CONFIG_VAL);
         }
-        throw new SpecialistForecastSubmitRun(CRON_SCHED_ERR);
+        throw new SpecialistForecastException(CRON_SCHED_ERR);
     }
 
     public static String getCronEmail() {
@@ -263,8 +266,7 @@ public with sharing class ForecastHelper {
                 IsActive, Alias FROM User WHERE Id = :userId]);
 
         if (aUser == null) {
-            throw new SpecialistForecastException('Unable to find user for user'
-                + ' id: ' + userID + '.');
+            throw new SpecialistForecastException(CANT_FIND_USER + userID + '.');
         }
         return aUser;
     }
@@ -326,7 +328,7 @@ public with sharing class ForecastHelper {
                         FiscalYear__c,
                         sum(QuotaAmount__c) amnt
               FROM SpecialistForecastQuota__c
-                          WHERE FiscalYear__c = :queryParam.getFiscalYear()
+                        WHERE FiscalYear__c = :queryParam.getFiscalYear()
                         AND FYMonth__c IN : queryParam.getMonthsInQrtr()
                         AND SpecialistForecastuser__c IN :queryParam.getOwnerIds()
                         GROUP BY  SpecialistForecastuser__c,FiscalYear__c

@@ -48,10 +48,23 @@ public with sharing class SpecialistForecastException extends Exception {
     // Complete sentences
     public static final String CRON_SCHED_ERR = 
         'No active Cron Expression specified for Store Scheduler.';
+    public static Final String EMPTY_CAT = 
+        'Cannot get forecast configurations for an empty category';
+    public static Final String ROLE_ID_NULL = 
+        'A required User Role ID could be found.';
+    public static Final String USER_ID_NULL = 
+        'A required User ID could not be found.';
+    public static Final String PARENT_ID_NULL = 
+        'A required Parent User ID could be found.'; 
     
-    // Beginigging Fragments, meant to have something appended
+    
+    
+    // Beginigging Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';
-    
+    public static Final String NO_DATA_CAT = 
+        'Unable to get forecast configurations for ';
+    public static final String CANT_FIND_USER = 
+        'Unable able for find a user for userID: ';
     
     
     
