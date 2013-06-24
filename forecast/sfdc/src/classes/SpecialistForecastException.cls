@@ -65,22 +65,7 @@ public with sharing class SpecialistForecastException extends Exception {
         'Unable to get forecast configurations for ';
     public static final String CANT_FIND_USER =
         'Unable able for find a user for userID: ';
-
-
-    public SpecialistForecastException() {
-        super();
-    }
-
-    public SpecialistForecastException(String msg) {
-        super(msg);
-    }
-
-    public SpecialistForecastException(String msg, Boolean display) {
-        super(msg);
-        if (display) {
-            errorPage(msg);
-        }
-    }
+    public static final String FOR_ID = ' For ID: ';
 
     private PageReference errorPage(String msg) {
         ApexPages.addmessage(

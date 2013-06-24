@@ -29,12 +29,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *  Controller to display and override Special AE Forecast
  *
- *  @see BaseSpecialForecastController
  *  @author auzzaman,smohapatra
  *  @since 180.store
  */
-public with sharing class SpecialistForecastController extends
-    BaseSpecialistForecastController {
+public with sharing class SpecialistForecastController {
 
     private Boolean isValidated = true;
 
@@ -44,10 +42,14 @@ public with sharing class SpecialistForecastController extends
     private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
     private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
 
+    private static final String FOR_ID =
+            SpecialistForecastException.FOR_ID;
     private static final String USER_ID_NULL =
-            SpecialistForecastException.USER_ID_NULL;
+            SpecialistForecastException.USER_ID_NULL + FOR_ID;
     private static final String ROLE_ID_NULL =
-            SpecialistForecastException.ROLE_ID_NULL;
+            SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
+
+
 
     private Set<Id> allUserIDs = new Set<Id>();
     private Set<Id> allTotaluserIDs = new Set<Id>();
@@ -271,31 +273,31 @@ public with sharing class SpecialistForecastController extends
      *
      */
     public SpecialistForecastlineItemVO[] getSpecialistforecastlineItemsData() {
-        Decimal closedAmount                  = 0;
-        Decimal commitAmount                  = 0;
-        Decimal bestCaseAmount                = 0;
-        Decimal commitOvrrideAmount           = 0;
-        Decimal bestCaseOverrideAmount        = 0;
-        Decimal commitMgrOvrrideAmount        = 0;
-        Decimal bestCaseMgrOverrideAmount     = 0;
-        Decimal pipelineAmount                = 0;
-        Decimal quotaAmount                   = 0;
+        Decimal closedAmount                 = 0;
+        Decimal commitAmount                 = 0;
+        Decimal bestCaseAmount               = 0;
+        Decimal commitOvrrideAmount          = 0;
+        Decimal bestCaseOverrideAmount       = 0;
+        Decimal commitMgrOvrrideAmount       = 0;
+        Decimal bestCaseMgrOverrideAmount    = 0;
+        Decimal pipelineAmount               = 0;
+        Decimal quotaAmount                  = 0;
 
-        Decimal totclosedAmount               = 0;
-        Decimal totcommitAmount               = 0;
-        Decimal totbestCaseAmount             = 0;
-        Decimal totcommitOvrrideAmount        = 0;
-        Decimal totbestCaseOverrideAmount     = 0;
-        Decimal totpipelineAmount             = 0;
-        Decimal totQuotaAmount                = 0;
+        Decimal totclosedAmount              = 0;
+        Decimal totcommitAmount              = 0;
+        Decimal totbestCaseAmount            = 0;
+        Decimal totcommitOvrrideAmount       = 0;
+        Decimal totbestCaseOverrideAmount    = 0;
+        Decimal totpipelineAmount            = 0;
+        Decimal totQuotaAmount               = 0;
 
-        Decimal  subtotclosedAmount           = 0;
-        Decimal  subtotcommitAmount           = 0;
-        Decimal  subtotbestCaseAmount         = 0;
-        Decimal  subtotcommitOvrrideAmount    = 0;
-        Decimal  subtotbestCaseOverrideAmount = 0;
-        Decimal  subtotpipelineAmount         = 0;
-        Decimal  subtotQuotaAmount            = 0;
+        Decimal subtotclosedAmount           = 0;
+        Decimal subtotcommitAmount           = 0;
+        Decimal subtotbestCaseAmount         = 0;
+        Decimal subtotcommitOvrrideAmount    = 0;
+        Decimal subtotbestCaseOverrideAmount = 0;
+        Decimal subtotpipelineAmount         = 0;
+        Decimal subtotQuotaAmount            = 0;
 
         if (!isValidated ||
         !ForecastHelper.checkFieldsSplForecastRepAccessibility()) {
@@ -603,6 +605,7 @@ public with sharing class SpecialistForecastController extends
             }
         } catch (Exception ex) {
             throw new SpecialistForecastException(ROLE_ID_NULL + userID + '.');
+            return;
         }
 
         HierarchyUtil.RoleNodeWrapper rolwraps;
@@ -697,7 +700,7 @@ public with sharing class SpecialistForecastController extends
          if (rolewrapper.myChildNodes != null) {
              for (HierarchyUtil.RoleNodeWrapper rw : rolewrapper.myChildNodes){
                  if (rw.myUsers != null && rw.myUsers.size() > 1 && rw.isLeafNode) {
-                     for(user usr : rw.myUsers){
+                     for(User usr : rw.myUsers){
                          alluserIds.add(usr.Id);
                          allTotaluserIds.add(usr.Id);
                      }

@@ -1,5 +1,5 @@
 <apex:page showHeader="true" cache="false" tabStyle="SpecialistForecastTab__tab" id="pg"  controller="SpecialistForecastController" title="Specialist Forecast">
-    <apex:stylesheet value="{!$Resource.SpecialistForecastPage}" />
+    <apex:stylesheet value="{!$Resource.SpecialistForecastCSS}" />
   
     <apex:form id="spforecastForm"> 
         <apex:actionfunction name="callMethod" action="{!viewSpecialistReport}"/>
