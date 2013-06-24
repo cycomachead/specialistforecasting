@@ -71,8 +71,8 @@
 	<visibleLines>3</visibleLines>
     </fields>
     <fields>
-	<fullName>OwnOverridenBestCaseAmount__c</fullName>
-	<label>Own Overriden Bestcase Amount</label>
+	<fullName>OwnOverriddenBestCaseAmount__c</fullName>
+	<label>Own Overridden Bestcase Amount</label>
 	<precision>16</precision>
 	<scale>2</scale>
 	<type>Currency</type>
@@ -80,8 +80,8 @@
 	<description>Own Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
     <fields>
-	<fullName>OwnOverridenCommitAmount__c</fullName>
-	<label>Own Overriden Commit Amount</label>
+	<fullName>OwnOverriddenCommitAmount__c</fullName>
+	<label>Own Overridden Commit Amount</label>
 	<precision>16</precision>
 	<scale>2</scale>
 	<type>Currency</type>
@@ -89,8 +89,8 @@
 	<description>Own Overridden Commit forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
     <fields>
-	<fullName>ManagerOverridenCommitAmount__c</fullName>
-	<label>Manager Overriden Commit Amount</label>
+	<fullName>ManagerOverriddenCommitAmount__c</fullName>
+	<label>Manager Overridden Commit Amount</label>
 	<precision>16</precision>
 	<scale>2</scale>
 	<type>Currency</type>
@@ -98,8 +98,8 @@
 	<description>Manager Overridden Commit forecasted opportunity  total amount for cloud-specific 	products</description>
     </fields>
     <fields>
-	<fullName>ManagerOverridenBestCaseAmount__c</fullName>
-	<label>Manager Overriden Bestcase Amount</label>
+	<fullName>ManagerOverriddenBestCaseAmount__c</fullName>
+	<label>Manager Overridden Bestcase Amount</label>
 	<precision>16</precision>
 	<scale>2</scale>
 	<type>Currency</type>
@@ -143,10 +143,10 @@
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
- 	<columns>OwnOverridenBestCaseAmount__c</columns>
-	<columns>OwnOverridenCommitAmount__c</columns>
-	<columns>ManagerOverridenBestCaseAmount__c</columns>
-	<columns>ManagerOverridenCommitAmount__c</columns>
+ 	<columns>OwnOverriddenBestCaseAmount__c</columns>
+	<columns>OwnOverriddenCommitAmount__c</columns>
+	<columns>ManagerOverriddenBestCaseAmount__c</columns>
+	<columns>ManagerOverriddenCommitAmount__c</columns>
 	<columns>PeriodType__c</columns>
        <filterScope>Everything</filterScope>
         <label>All</label>

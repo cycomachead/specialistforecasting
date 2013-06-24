@@ -181,18 +181,18 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>MyBestcaseOverriden__c</fullName>
+        <fullName>MyBestcaseOverridden__c</fullName>
         <externalId>false</externalId>
-        <label>My Bestcase Overriden?</label>
+        <label>My Best case Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
 	<defaultValue>true</defaultValue>
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>MyCommitOverriden__c</fullName>
+        <fullName>MyCommitOverridden__c</fullName>
         <externalId>false</externalId>
-        <label>My Commit Overriden?</label>
+        <label>My Commit Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
 	<defaultValue>true</defaultValue>
@@ -246,7 +246,7 @@
         <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
-    
+
     <fields>
         <fullName>SpecialistForecastOverride__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -376,5 +376,5 @@
         </picklistValues>
     </recordTypes>
     <searchLayouts/>
-    
+
 </CustomObject>

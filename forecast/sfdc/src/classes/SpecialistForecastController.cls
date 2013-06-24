@@ -30,7 +30,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  Controller to display and override Special AE Forecast
  *
  *  @author auzzaman,smohapatra
- *  @since 180.store
+ *  @since
  */
 public with sharing class SpecialistForecastController {
 
@@ -48,8 +48,6 @@ public with sharing class SpecialistForecastController {
             SpecialistForecastException.USER_ID_NULL + FOR_ID;
     private static final String ROLE_ID_NULL =
             SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
-
-
 
     private Set<Id> allUserIDs = new Set<Id>();
     private Set<Id> allTotaluserIDs = new Set<Id>();
@@ -86,14 +84,19 @@ public with sharing class SpecialistForecastController {
      *  Constructs a new Specialist Forecast Controller Class
      */
     public SpecialistForecastController() {
-        this.sfLI = new SpecialistForecastlineItem__c();
-        this.sfLI.ForecastOwner__c = UserInfo.getUserId();
-        PreparedbyUser = UserInfo.getName();
-        if (selectedFY == null) {
-            selectedFY = ForecastHelper.getCurrentFiscalYear();
-        }
-        if (selectedFQ == null) {
-            selectedFQ = ForecastHelper.getCurrentQuarter();
+        try {
+            this.sfLI = new SpecialistForecastlineItem__c();
+            this.sfLI.ForecastOwner__c = UserInfo.getUserId();
+            PreparedbyUser = UserInfo.getName();
+            if (selectedFY == null) {
+                selectedFY = ForecastHelper.getCurrentFiscalYear();
+            }
+            if (selectedFQ == null) {
+                selectedFQ = ForecastHelper.getCurrentQuarter();
+            }
+        } catch (Exception ex) {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
+                'Unexpected Report Error: ' + ex.getMessage()));
         }
     }
 
@@ -163,7 +166,7 @@ public with sharing class SpecialistForecastController {
      * @return
      */
     public String getPreparedByUser() {
-          return PreparedByUser;
+          return preparedByUser;
     }
 
 
@@ -389,13 +392,13 @@ public with sharing class SpecialistForecastController {
                     pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
                     quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
-                    //lineItem.mgrCommitOverriden = true;
+                    //lineItem.mgrCommitOverridden = true;
                     //add to subtotal amount variables
                     if (commitOvrrideAmount > 0 && commitOvrrideAmount != commitAmount
                         && childLinesOwnerId != lineItemOwnerId) {
                         commitAmount = commitOvrrideAmount;
                     }
-                    subtotcommitAmount += (lineItem.mycommitOverriden
+                    subtotcommitAmount += (lineItem.mycommitOverridden
                                            ? lineItem.commitOverrideAmount : commitAmount);
                     subtotclosedAmount += closedAmount;
 
@@ -404,7 +407,7 @@ public with sharing class SpecialistForecastController {
                         bestCaseAmount = bestCaseOverrideAmount;
                     }
 
-                    subtotbestCaseAmount += (lineItem.MyBestcaseOverriden ?
+                    subtotbestCaseAmount += (lineItem.MyBestcaseOverridden ?
                                              lineItem.bestCaseOverrideAmount : bestCaseAmount);
                     subtotpipelineAmount += pipelineAmount;
                     subtotQuotaAmount    += quotaAmount;
@@ -458,12 +461,12 @@ public with sharing class SpecialistForecastController {
 
                 lineItem = ownerlineItemsMap.get(lineItemOwnerId);
                 if (lineItem != null) {
-                    sfLIne.commitOverrideAmount = (!lineItem.mgrCommitOverriden
+                    sfLIne.commitOverrideAmount = (!lineItem.mgrCommitOverridden
                                                     ? subtotcommitAmount : subtotcommitOvrrideAmount);
-                    sfLIne.bestCaseOverrideAmount = (!lineItem.mgrBestCaseOverriden
+                    sfLIne.bestCaseOverrideAmount = (!lineItem.mgrBestCaseOverridden
                                                       ? subtotbestCaseAmount : subtotbestCaseOverrideAmount);
-                    sfLIne.myCommitOverriden = (lineItem.mgrCommitOverriden);
-                    sfLIne.myBestcaseOverriden = (lineItem.mgrBestCaseOverriden);
+                    sfLIne.myCommitOverridden = (lineItem.mgrCommitOverridden);
+                    sfLIne.myBestcaseOverridden = (lineItem.mgrBestCaseOverridden);
                     sfLIne.strLineItmId = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
                     sfLIne.isSubmitted = (lineItem.isSubmitted || sfLIne.isSubmitted);
                     sfLIne.submittedDate = lineItem.submittedDate;
@@ -475,8 +478,8 @@ public with sharing class SpecialistForecastController {
                 } else {
                     sfLIne.commitOverrideAmount = subtotcommitAmount;
                     sfLIne.bestCaseOverrideAmount = subtotbestCaseAmount;
-                    sfLIne.MycommitOverriden = false;
-                    sfLIne.MyBestcaseOverriden = false;
+                    sfLIne.MycommitOverridden = false;
+                    sfLIne.MyBestcaseOverridden = false;
                     sfLIne.strLineItmId = '';
                 }
 
@@ -544,8 +547,8 @@ public with sharing class SpecialistForecastController {
             sfLIne.bestCaseOverrideAmount = bestCaseOverrideAmount;
             sfLIne.pipelineAmount         = pipelineAmount;
             sfLIne.quotaAmount            = quotaAmount;
-            sfLIne.myCommitOverriden      = lineItem.MycommitOverriden;
-            sfLIne.myBestcaseOverriden    = lineItem.MyBestcaseOverriden;
+            sfLIne.myCommitOverridden      = lineItem.MycommitOverridden;
+            sfLIne.myBestcaseOverridden    = lineItem.MyBestcaseOverridden;
             sfLIne.strLineItmId           = lineItem.strLineItmId;
             sfLIne.searchUser             = true;
 
@@ -755,13 +758,13 @@ public with sharing class SpecialistForecastController {
             pipelineAmount = zeroIfNull(sfl.OriginalPipelineAmount__c);
 
             commitOverrideAmount =
-                zeroIfNull(sfl.SpecialistForecastOverride__r.ownOverridenCommitAmount__c);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.ownOverriddenCommitAmount__c);
             bestCaseOverrideAmount =
-                zeroIfNull(sfl.SpecialistForecastOverride__r.ownOverridenBestcaseAmount__c);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.ownOverriddenBestcaseAmount__c);
             commitMgrOvrrideAmount =
-                zeroIfNull(sfl.SpecialistForecastOverride__r.managerOverridenCommitAmount__c);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenCommitAmount__c);
             bestCaseMgrOverrideAmount =
-                zeroIfNull(sfl.SpecialistForecastOverride__r.managerOverridenBestcaseAmount__c);
+                zeroIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenBestcaseAmount__c);
 
 
             splv = ownerlineItemsMap.get(currentOwnerId);
@@ -784,14 +787,14 @@ public with sharing class SpecialistForecastController {
                      (splv.submittedDate != null ? splv.submittedDate : ''));
                  splv.isSubmitted = (sfl.Submitteddate__c != null || splv.isSubmitted);
 
-                 splv.MycommitOverriden =
-                     sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c != null;
-                 splv.MyBestcaseOverriden =
-                     sfl.SpecialistForecastOverride__r.OwnOverridenBestcaseAmount__c != null;
-                 splv.mgrCommitOverriden =
-                     sfl.SpecialistForecastOverride__r.ManagerOverridenCommitAmount__c != null;
-                 splv.mgrBestCaseOverriden =
-                     sfl.SpecialistForecastOverride__r.ManagerOverridenBestcaseAmount__c != null;
+                 splv.MycommitOverridden =
+                     sfl.SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c != null;
+                 splv.MyBestcaseOverridden =
+                     sfl.SpecialistForecastOverride__r.OwnOverriddenBestcaseAmount__c != null;
+                 splv.mgrCommitOverridden =
+                     sfl.SpecialistForecastOverride__r.ManagerOverriddenCommitAmount__c != null;
+                 splv.mgrBestCaseOverridden =
+                     sfl.SpecialistForecastOverride__r.ManagerOverriddenBestcaseAmount__c != null;
                  splv.mgrCommitOverrideNotes =
                      sfl.SpecialistForecastOverride__r.ManagerOverrideCommitNotes__c;
                  splv.mgrBestCaseOverrideNotes =
@@ -810,29 +813,29 @@ public with sharing class SpecialistForecastController {
                 splv.bestCaseOverrideAmount    += bestCaseOverrideAmount;
                 splv.mgrCommitOverrideAmount   += commitMgrOvrrideAmount;
                 splv.mgrBestCaseOverrideAmount += bestCaseMgrOverrideAmount;
-                splv.MycommitOverriden =
-                    (sfl.SpecialistForecastOverride__r.OwnOverridenCommitAmount__c
-                    != null || splv.MycommitOverriden);
-                splv.MyBestcaseOverriden =
-                    (sfl.SpecialistForecastOverride__r.OwnOverridenBestcaseAmount__c
-                    != null || splv.MyBestcaseOverriden);
-                splv.mgrCommitOverriden =
-                    (sfl.SpecialistForecastOverride__r.ManagerOverridenCommitAmount__c
-                    != null ||splv.mgrCommitOverriden);
-                splv.mgrBestCaseOverriden =
-                    (sfl.SpecialistForecastOverride__r.ManagerOverridenBestcaseAmount__c
-                    != null ||splv.mgrBestCaseOverriden);
+                splv.MycommitOverridden =
+                    (sfl.SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c
+                    != null || splv.MycommitOverridden);
+                splv.MyBestcaseOverridden =
+                    (sfl.SpecialistForecastOverride__r.OwnOverriddenBestcaseAmount__c
+                    != null || splv.MyBestcaseOverridden);
+                splv.mgrCommitOverridden =
+                    (sfl.SpecialistForecastOverride__r.ManagerOverriddenCommitAmount__c
+                    != null ||splv.mgrCommitOverridden);
+                splv.mgrBestCaseOverridden =
+                    (sfl.SpecialistForecastOverride__r.ManagerOverriddenBestcaseAmount__c
+                    != null ||splv.mgrBestCaseOverridden);
                 splv.submittedDate = (sfl.submitteddate__c != null ?
                     sfl.submitteddate__c.format() : zeroIfNull(splv.submittedDate));
                 splv.isSubmitted = (sfl.Submitteddate__c != null ||
                     splv.isSubmitted);
-                splv.mgrCommitOverrideNotes = (splv.mgrCommitOverriden ?
+                splv.mgrCommitOverrideNotes = (splv.mgrCommitOverridden ?
                     sfl.SpecialistForecastOverride__r.ManagerOverrideCommitNotes__c : '');
-                splv.mgrBestCaseOverrideNotes = (splv.mgrBestCaseOverriden ?
+                splv.mgrBestCaseOverrideNotes = (splv.mgrBestCaseOverridden ?
                     sfl.SpecialistForecastOverride__r.ManagerOverrideBestcaseNotes__c : '');
-                splv.prevDirectRepCommitAmount = (splv.mgrCommitOverriden ?
+                splv.prevDirectRepCommitAmount = (splv.mgrCommitOverridden ?
                     sfl.SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c : 0);
-                splv.prevDirectRepBestcaseAmount = (splv.mgrBestCaseOverriden ?
+                splv.prevDirectRepBestcaseAmount = (splv.mgrBestCaseOverridden ?
                     sfl.SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c : 0);
             } //end if
             commitMgrOvrrideAmount = 0;
@@ -875,20 +878,20 @@ public with sharing class SpecialistForecastController {
         String external_Key;
         if (strField == COMMIT_MSG) {
             if (isSelfOverride()) {
-                spovr.OwnOverridenCommitAmount__c = overrideAmount;
+                spovr.OwnOverriddenCommitAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overridecomment;
             } else {
-                spovr.ManagerOverridenCommitAmount__c = overrideAmount;
+                spovr.ManagerOverriddenCommitAmount__c = overrideAmount;
                 spovr.ManagerOverrideCommitNotes__c = overridecomment;
             }
             spovr.PreviousDirectRepCommitAmount__c = originaloldAmount;
         } else if (strField =='bestcase') {
 
             if (isSelfOverride()) {
-                spovr.OwnOverridenBestCaseAmount__c = overrideAmount;
+                spovr.OwnOverriddenBestCaseAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overrideComment;
             } else {
-                spovr.ManagerOverridenBestCaseAmount__c = overrideAmount;
+                spovr.ManagerOverriddenBestCaseAmount__c = overrideAmount;
                 spovr.ManagerOverrideBestcaseNotes__c = overrideComment;
             }
            spovr.PreviousDirectRepBestcaseAmount__c = originaloldAmount;

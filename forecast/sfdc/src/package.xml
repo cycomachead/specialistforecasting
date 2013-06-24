@@ -75,8 +75,8 @@
         <members>SpecialistForecastLineItem__c.OriginalCommitAmount__c</members>
         <members>SpecialistForecastLineItem__c.OriginalBestCaseAmount__c</members>
         <members>SpecialistForecastLineItem__c.OriginalPipelineAmount__c</members>
-        <members>SpecialistForecastLineItem__c.MyBestcaseOverriden__c</members>
-        <members>SpecialistForecastLineItem__c.MyCommitOverriden__c</members>
+        <members>SpecialistForecastLineItem__c.MyBestcaseOverridden__c</members>
+        <members>SpecialistForecastLineItem__c.MyCommitOverridden__c</members>
         <members>SpecialistForecastLineItem__c.SpecialistForecastOverride__c</members>
         <members>SpecialistForecastLineItem__c.ExcludeFromCalculation__c</members>
         <members>SpecialistForecastLineItem__c.ExtIdentifier__c</members>
@@ -84,10 +84,10 @@
         <members>SpecialistForecastOverride__c.OwnOverrideNotes__c</members>
         <members>SpecialistForecastOverride__c.ManagerOverrideCommitNotes__c</members>
         <members>SpecialistForecastOverride__c.ManagerOverrideBestCaseNotes__c</members>
-        <members>SpecialistForecastOverride__c.OwnOverridenBestCaseAmount__c</members>
-        <members>SpecialistForecastOverride__c.OwnOverridenCommitAmount__c</members>
-        <members>SpecialistForecastOverride__c.ManagerOverridenBestCaseAmount__c</members>
-        <members>SpecialistForecastOverride__c.ManagerOverridenCommitAmount__c</members>
+        <members>SpecialistForecastOverride__c.OwnOverriddenBestCaseAmount__c</members>
+        <members>SpecialistForecastOverride__c.OwnOverriddenCommitAmount__c</members>
+        <members>SpecialistForecastOverride__c.ManagerOverriddenBestCaseAmount__c</members>
+        <members>SpecialistForecastOverride__c.ManagerOverriddenCommitAmount__c</members>
         <members>SpecialistForecastOverride__c.PreviousDirectRepCommitAmount__c</members>
         <members>SpecialistForecastOverride__c.PreviousDirectRepBestcaseAmount__c</members>
         <members>SpecialistForecastOverride__c.PeriodType__c</members>

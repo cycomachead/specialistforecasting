@@ -101,19 +101,19 @@ public with sharing class SpecialistForecastOverrideController {
         String external_Key;
         if (strField == 'mycommit') {
             if (isSelfOverride()) {
-                spovr.OwnOverridenCommitAmount__c = overrideAmount;
+                spovr.OwnOverriddenCommitAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overridecomment;
             } else {
-                spovr.ManagerOverridenCommitAmount__c = overrideAmount;
+                spovr.ManagerOverriddenCommitAmount__c = overrideAmount;
                 spovr.ManagerOverrideCommitNotes__c = overridecomment;
             }
             spovr.PreviousDirectRepCommitAmount__c = originaloldAmount;
         } else if (strField =='mybestcase') {
             if (isSelfOverride()) {
-                spovr.OwnOverridenBestCaseAmount__c = overrideAmount;
+                spovr.OwnOverriddenBestCaseAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overrideComment;
             } else {
-                spovr.ManagerOverridenBestCaseAmount__c = overrideAmount;
+                spovr.ManagerOverriddenBestCaseAmount__c = overrideAmount;
                 spovr.ManagerOverrideBestcaseNotes__c = overrideComment;
             }
            spovr.PreviousDirectRepBestcaseAmount__c = originaloldAmount;

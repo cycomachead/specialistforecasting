@@ -38,13 +38,13 @@ public with sharing class SpecialistForecastLineItemVO {
        public Boolean  withoutLink                 { get;set; }
        public Boolean  reportingUser               { get;set; }
        public Boolean  forOverride                 { get;set; }
-       public Boolean  myCommitOverriden           { get;set; }
-       public Boolean  myBestcaseOverriden         { get;set; }
-       public Boolean  mgrCommitOverriden          { get;set; }
-       public Boolean  mgrBestcaseOverriden        { get;set; }
+       public Boolean  myCommitOverridden           { get;set; }
+       public Boolean  myBestcaseOverridden         { get;set; }
+       public Boolean  mgrCommitOverridden          { get;set; }
+       public Boolean  mgrBestcaseOverridden        { get;set; }
        public Boolean  isSubmitted                 { get;set; }
-       public Boolean  isCommitOverriden           { get;set; }
-       public Boolean  isBestcaseOverriden         { get;set; }
+       public Boolean  isCommitOverridden           { get;set; }
+       public Boolean  isBestcaseOverridden         { get;set; }
        public Boolean  searchUser                  { get;set; }
        
        public Decimal  closedAmount                { get;set; }
@@ -145,8 +145,8 @@ public with sharing class SpecialistForecastLineItemVO {
         this.bestCaseAmount         = 0;
         this.pipelineAmount         = 0;
         this.reportingUser          = false;
-        this.myCommitOverriden      = false;
-        this.myBestcaseOverriden    = false;
+        this.myCommitOverridden      = false;
+        this.myBestcaseOverridden    = false;
         this.searchUser             = false;
     }
 

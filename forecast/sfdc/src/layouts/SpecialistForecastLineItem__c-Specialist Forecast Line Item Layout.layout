@@ -65,11 +65,11 @@
             </layoutItems>
         <layoutItems>
                 <behavior>Edit</behavior>
-                <field>MyCommitOverriden__c</field>
+                <field>MyCommitOverridden__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>MyBestCaseOverriden__c</field>
+                <field>MyBestCaseOverridden__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
