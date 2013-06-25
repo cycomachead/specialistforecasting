@@ -87,7 +87,7 @@ public with sharing class SpecialistForecastController {
         try {
             this.sfLI = new SpecialistForecastlineItem__c();
             this.sfLI.ForecastOwner__c = UserInfo.getUserId();
-            PreparedbyUser = UserInfo.getName();
+            preparedbyUser = UserInfo.getName();
             if (selectedFY == null) {
                 selectedFY = ForecastHelper.getCurrentFiscalYear();
             }
@@ -138,9 +138,8 @@ public with sharing class SpecialistForecastController {
         }
     }
 
-
     /**
-     * @return the list of fiscal quaters as a SelectOption[]
+     *  @return the list of fiscal quaters as a SelectOption[]
      */
     public List<SelectOption> getFiscalQuarters() {
         if (this.fiscalQuarters == null) {
@@ -156,14 +155,14 @@ public with sharing class SpecialistForecastController {
     }
 
     /**
-     * @return
+     *  @return
      */
      public SpecialistForecastlineItem__c getSfLI() {
         return this.sfLI;
     }
 
     /**
-     * @return
+     *  @return
      */
     public String getPreparedByUser() {
           return preparedByUser;
@@ -216,7 +215,6 @@ public with sharing class SpecialistForecastController {
 
             sfLI.ForecastOwner__c = SelectedUserId;
         }
-
         return null;
     }
 
@@ -240,7 +238,6 @@ public with sharing class SpecialistForecastController {
                   'You can\'t submit for quarter "All".' +
                   'Please select a different quarter to submit.'));
        }
-
        return null;
     }
 
@@ -249,7 +246,7 @@ public with sharing class SpecialistForecastController {
      */
     public boolean getViewAccessToSyncButton() {
         try {
-            return ForecastHelper.CheckForecastDataSyncAccessForCurrentUser();
+            return ForecastHelper.checkForecastDataSyncAccessForCurrentUser();
         } catch (Exception ex) {
             return false;
         }
@@ -259,7 +256,7 @@ public with sharing class SpecialistForecastController {
      * Called from specialist forecast page Refresh Now  Button to get the
      * latest data from SpecialistForecast Object to SpecialistForecast lineItem
      */
-    public PageReference  refreshSpecialistForecastDataNow() {
+    public PageReference refreshSpecialistForecastDataNow() {
         Integer  BATCH_SIZE = 500;
         SpecialistForecastBatch spfBatch = new SpecialistForecastBatch();
         spfBatch.isRunningByUser = true;
@@ -267,7 +264,6 @@ public with sharing class SpecialistForecastController {
         Id batchProcessId = Database.executeBatch(spfBatch, BATCH_SIZE);
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
             'Data refresh request submitted successfully'));
-
         return null;
     }
 
@@ -276,6 +272,24 @@ public with sharing class SpecialistForecastController {
      *
      */
     public SpecialistForecastlineItemVO[] getSpecialistforecastlineItemsData() {
+        try { // Background check to make sure that we have the necessary data.
+            User usr;
+            if (sfLI.ForecastOwner__c != null) {
+                usr = [SELECT Id, UserRoleId FROM User
+                    WHERE Id = :sfLI.ForecastOwner__c limit 1];
+            }
+            if (sfLI.ForecastOwner__c == null || usr == null ||
+            usr.UserRoleId == null) {
+                String uid = (usr.Id == null) ? 'unknown.' : (usr.Id + '.');
+                throw new SpecialistForecastException(ROLE_ID_NULL + uid);
+            }
+        } catch (Exception ex) {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
+                'Unexpected Error: ' + ex.getMessage()));
+            return null; // kill the method to prevent later exceptions
+        }
+
+
         Decimal closedAmount                 = 0;
         Decimal commitAmount                 = 0;
         Decimal bestCaseAmount               = 0;
@@ -308,7 +322,7 @@ public with sharing class SpecialistForecastController {
         }
 
         // map used for setting the user and role as key and
-        //  SpecialistForecastlineItem as the value
+        // SpecialistForecastlineItem as the value
         Map<String,SpecialistForecastlineItemVO> mapUserRolelineItems = new
         Map<String,SpecialistForecastlineItemVO>();
 
@@ -318,7 +332,7 @@ public with sharing class SpecialistForecastController {
         //get the searchuser and all level reporting users
         mapSecondLeverUsersAndChild.clear();
         mapUsers.clear();
-        this.getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
+        getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
         SpecialistForecastlineItemVO sfLIne = new SpecialistForecastlineItemVO();
 
@@ -332,7 +346,7 @@ public with sharing class SpecialistForecastController {
 
         //set the query parameters
         ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
-        queryParam.setFiscalYear(SelectedFY);
+        queryParam.setFiscalYear(selectedFY);
         queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(selectedFQ));
         queryParam.setOwnerIds(ownerIdsforQuery);
 
@@ -357,7 +371,7 @@ public with sharing class SpecialistForecastController {
         ownerlineItemsMap = aggregatelineItemsByOwner(listSplFCastlineItems);
         for (Sobject so : listSplFCastQuotas) {
             AggregateResult ar = (AggregateResult) so;
-            Id OwnerId = (Id) ar.get('SpecialistForecastUser__c');
+            Id ownerId = (Id) ar.get('SpecialistForecastUser__c');
             Decimal tempAmount = (Decimal) ar.get('amnt');
             lineItem = ownerlineItemsMap.get(OwnerId);
 
@@ -385,10 +399,10 @@ public with sharing class SpecialistForecastController {
                     commitAmount = zeroIfNull(lineItem.commitAmount);
 
                     commitOvrrideAmount = (lineItem.mgrCommitOverrideAmount !=
-                                           null ? lineItem.mgrCommitOverrideAmount : commitAmount);
+                        null ? lineItem.mgrCommitOverrideAmount : commitAmount);
                     bestCaseAmount = zeroIfNull(lineItem.bestCaseAmount);
                     bestCaseOverrideAmount = (lineItem.mgrBestCaseOverrideAmount
-                                              != null ? lineItem.mgrBestCaseOverrideAmount : bestCaseAmount);
+                        != null ? lineItem.mgrBestCaseOverrideAmount : bestCaseAmount);
                     pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
                     quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
@@ -399,7 +413,7 @@ public with sharing class SpecialistForecastController {
                         commitAmount = commitOvrrideAmount;
                     }
                     subtotcommitAmount += (lineItem.mycommitOverridden
-                                           ? lineItem.commitOverrideAmount : commitAmount);
+                        ? lineItem.commitOverrideAmount : commitAmount);
                     subtotclosedAmount += closedAmount;
 
                     if (bestCaseOverrideAmount != bestCaseAmount &&
@@ -408,27 +422,27 @@ public with sharing class SpecialistForecastController {
                     }
 
                     subtotbestCaseAmount += (lineItem.MyBestcaseOverridden ?
-                                             lineItem.bestCaseOverrideAmount : bestCaseAmount);
+                        lineItem.bestCaseOverrideAmount : bestCaseAmount);
                     subtotpipelineAmount += pipelineAmount;
                     subtotQuotaAmount    += quotaAmount;
 
                     // manager overrides the value then diplay only that amount no calculation else aggregation of amount will be displayed for the user
                     if (!mgrCommitOverride && childLinesOwnerId != lineItemOwnerId) {
-                        subtotcommitOvrrideAmount += (commitOvrrideAmount
-                                                      <= 0 ? commitAmount : commitOvrrideAmount);
+                        subtotcommitOvrrideAmount += (commitOvrrideAmount <= 0
+                            ? commitAmount : commitOvrrideAmount);
                     } else {
                         mgrCommitOverride = true;
-                        subtotcommitOvrrideAmount = (commitOvrrideAmount
-                                                     <= 0 ? commitAmount : commitOvrrideAmount);
+                        subtotcommitOvrrideAmount = (commitOvrrideAmount <= 0
+                            ? commitAmount : commitOvrrideAmount);
                     }
 
                     if (!mgrBestCaseOverride && childLinesOwnerId != lineItemOwnerId) {
                         subtotbestCaseOverrideAmount += (bestCaseOverrideAmount
-                                                         <= 0 ? bestCaseAmount : bestCaseOverrideAmount);
+                            <= 0 ? bestCaseAmount : bestCaseOverrideAmount);
                     } else {
                         mgrBestCaseOverride = true;
                         subtotbestCaseOverrideAmount = (bestCaseOverrideAmount
-                                                        <= 0 ? bestCaseAmount : bestCaseOverrideAmount);
+                            <= 0 ? bestCaseAmount : bestCaseOverrideAmount);
                     }
                 }
                 closedAmount           = 0;
@@ -462,9 +476,9 @@ public with sharing class SpecialistForecastController {
                 lineItem = ownerlineItemsMap.get(lineItemOwnerId);
                 if (lineItem != null) {
                     sfLIne.commitOverrideAmount = (!lineItem.mgrCommitOverridden
-                                                    ? subtotcommitAmount : subtotcommitOvrrideAmount);
+                        ? subtotcommitAmount : subtotcommitOvrrideAmount);
                     sfLIne.bestCaseOverrideAmount = (!lineItem.mgrBestCaseOverridden
-                                                      ? subtotbestCaseAmount : subtotbestCaseOverrideAmount);
+                        ? subtotbestCaseAmount : subtotbestCaseOverrideAmount);
                     sfLIne.myCommitOverridden = (lineItem.mgrCommitOverridden);
                     sfLIne.myBestcaseOverridden = (lineItem.mgrBestCaseOverridden);
                     sfLIne.strLineItmId = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
@@ -547,8 +561,8 @@ public with sharing class SpecialistForecastController {
             sfLIne.bestCaseOverrideAmount = bestCaseOverrideAmount;
             sfLIne.pipelineAmount         = pipelineAmount;
             sfLIne.quotaAmount            = quotaAmount;
-            sfLIne.myCommitOverridden      = lineItem.MycommitOverridden;
-            sfLIne.myBestcaseOverridden    = lineItem.MyBestcaseOverridden;
+            sfLIne.myCommitOverridden     = lineItem.MycommitOverridden;
+            sfLIne.myBestcaseOverridden   = lineItem.MyBestcaseOverridden;
             sfLIne.strLineItmId           = lineItem.strLineItmId;
             sfLIne.searchUser             = true;
 
@@ -604,11 +618,10 @@ public with sharing class SpecialistForecastController {
             usr = [SELECT Name, UserRoleId, UserRole.Name
                     FROM User WHERE Id = :userId];
             if (usr == null || usr.UserRoleID == null) {
-                throw new SpecialistForecastException(USER_ID_NULL + userID + '.');
+                throw new SpecialistForecastException();
             }
         } catch (Exception ex) {
             throw new SpecialistForecastException(ROLE_ID_NULL + userID + '.');
-            return;
         }
 
         HierarchyUtil.RoleNodeWrapper rolwraps;
@@ -783,8 +796,7 @@ public with sharing class SpecialistForecastController {
                  splv.mgrCommitOverrideAmount = commitMgrOvrrideAmount;
                  splv.mgrBestCaseOverrideAmount = bestCaseMgrOverrideAmount;
                  splv.submittedDate = (sfl.submitteddate__c != null ?
-                     sfl.submitteddate__c.format() :
-                     (splv.submittedDate != null ? splv.submittedDate : ''));
+                     sfl.submitteddate__c.format() : zeroIfNull(splv.submittedDate));
                  splv.isSubmitted = (sfl.Submitteddate__c != null || splv.isSubmitted);
 
                  splv.MycommitOverridden =

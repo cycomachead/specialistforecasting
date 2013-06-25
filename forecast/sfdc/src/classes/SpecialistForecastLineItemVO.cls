@@ -46,7 +46,7 @@ public with sharing class SpecialistForecastLineItemVO {
        public Boolean  isCommitOverridden           { get;set; }
        public Boolean  isBestcaseOverridden         { get;set; }
        public Boolean  searchUser                  { get;set; }
-       
+
        public Decimal  closedAmount                { get;set; }
        public Decimal  commitAmount                { get;set; }
        public Decimal  bestCaseAmount              { get;set; }
@@ -58,7 +58,7 @@ public with sharing class SpecialistForecastLineItemVO {
        public Decimal  prevDirectRepBestcaseAmount { get;set; }
        public Decimal  quotaAmount                 { get;set; }
        public Decimal  pipelineAmount              { get;set; }
-       
+
        public String   roleName                    { get;set; }
        public String   userName                    { get;set; }
        public String   roleId                      { get;set; }
@@ -99,37 +99,33 @@ public with sharing class SpecialistForecastLineItemVO {
           return sCurrency;
       }
 
-      public string  getprevVFDirectRepBestcaseAmount() {
+      public String getprevVFDirectRepBestcaseAmount() {
           List<String> args = new String[] {'0','number','###,###,##0.00'};
           String sCurrency;
           if (prevDirectRepBestcaseAmount != null) {
               prevDirectRepBestcaseAmount.setscale(2);
               sCurrency = String.format(prevDirectRepBestcaseAmount.format(), args);
               if (!sCurrency.contains('.')) {
-                    sCurrency = sCurrency + '.00';
+                  sCurrency = sCurrency + '.00';
               }
+          }
+          return sCurrency;
+      }
 
-
-           }
-            return sCurrency;
-       }
-
-       public boolean getbestcasePreviousAmountMatch() {
-           return (searchUser != null || !searchUser) && 
-               prevDirectRepBestcaseAmount != null && bestCaseAmount != null
-               && prevDirectRepbestCaseAmount != bestCaseAmount;
-       }
-
+      public boolean getbestcasePreviousAmountMatch() {
+          return (searchUser != null || !searchUser) &&
+              prevDirectRepBestcaseAmount != null && bestCaseAmount != null
+                  && prevDirectRepbestCaseAmount != bestCaseAmount;
+      }
 
     /**
+     *  Create  displayble virtual LineItem for the VF page
      *
-     * Create  displayble virtual LineItem for the VF page
-     *
-     * @param LineItem and User Map
+     *  @param LineItem and User Map
      */
     Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
     Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
-        
+
         this.withoutLink            = (lineItemownerid == searchUser);
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemownerid).userName;
@@ -137,7 +133,7 @@ public with sharing class SpecialistForecastLineItemVO {
         this.userId                 = mapUsers.get(lineItemownerid).userID;
         this.roleId                 = mapUsers.get(lineItemownerid).roleID;
         this.quotaAmount            = quotaamt;
-            
+
         this.closedAmount           = 0;
         this.commitAmount           = 0;
         this.commitOverrideAmount   = 0;
@@ -145,11 +141,9 @@ public with sharing class SpecialistForecastLineItemVO {
         this.bestCaseAmount         = 0;
         this.pipelineAmount         = 0;
         this.reportingUser          = false;
-        this.myCommitOverridden      = false;
-        this.myBestcaseOverridden    = false;
+        this.myCommitOverridden     = false;
+        this.myBestcaseOverridden   = false;
         this.searchUser             = false;
     }
-
-
 
 }
