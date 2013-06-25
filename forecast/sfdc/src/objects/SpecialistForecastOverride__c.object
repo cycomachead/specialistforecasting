@@ -44,93 +44,93 @@
     </actionOverrides>
 
     <nameField>
-	<displayFormat>SFO-{00000000}</displayFormat>
-	<label>Specialist Forecast Override</label>
-	<type>AutoNumber</type>
+    <displayFormat>SFO-{00000000}</displayFormat>
+    <label>Specialist Forecast Override</label>
+    <type>AutoNumber</type>
     </nameField>
 
      <fields>
-	<fullName>OwnOverrideNotes__c</fullName>
-	<label>Own Override Notes</label>
-	<length>32768</length>
-	<type>LongTextArea</type>
-	<visibleLines>3</visibleLines>
+    <fullName>OwnOverrideNotes__c</fullName>
+    <label>Own Override Notes</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
     </fields>
     <fields>
-	<fullName>ManagerOverrideCommitNotes__c</fullName>
-	<label>Manager Override Commit  Notes</label>
-	<length>32768</length>
-	<type>LongTextArea</type>
-	<visibleLines>3</visibleLines>
+    <fullName>ManagerOverrideCommitNotes__c</fullName>
+    <label>Manager Override Commit  Notes</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
     </fields>
     <fields>
-	<fullName>ManagerOverrideBestCaseNotes__c</fullName>
-	<label>Manager Override best case Notes</label>
-	<length>32768</length>
-	<type>LongTextArea</type>
-	<visibleLines>3</visibleLines>
+    <fullName>ManagerOverrideBestCaseNotes__c</fullName>
+    <label>Manager Override best case Notes</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
     </fields>
     <fields>
-	<fullName>OwnOverriddenBestCaseAmount__c</fullName>
-	<label>Own Overridden Bestcase Amount</label>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-	<description>Own Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+    <fullName>OwnOverriddenBestCaseAmount__c</fullName>
+    <label>Own Overridden Bestcase Amount</label>
+    <precision>16</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+    <trackHistory>true</trackHistory>
+    <description>Own Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
     <fields>
-	<fullName>OwnOverriddenCommitAmount__c</fullName>
-	<label>Own Overridden Commit Amount</label>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-	<description>Own Overridden Commit forecasted opportunity  total amount for cloud-specific products</description>
+    <fullName>OwnOverriddenCommitAmount__c</fullName>
+    <label>Own Overridden Commit Amount</label>
+    <precision>16</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+    <trackHistory>true</trackHistory>
+    <description>Own Overridden Commit forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
     <fields>
-	<fullName>ManagerOverriddenCommitAmount__c</fullName>
-	<label>Manager Overridden Commit Amount</label>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-	<description>Manager Overridden Commit forecasted opportunity  total amount for cloud-specific 	products</description>
+    <fullName>ManagerOverriddenCommitAmount__c</fullName>
+    <label>Manager Overridden Commit Amount</label>
+    <precision>16</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+    <trackHistory>true</trackHistory>
+    <description>Manager Overridden Commit forecasted opportunity  total amount for cloud-specific     products</description>
     </fields>
     <fields>
-	<fullName>ManagerOverriddenBestCaseAmount__c</fullName>
-	<label>Manager Overridden Bestcase Amount</label>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-	<description>Manager Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+    <fullName>ManagerOverriddenBestCaseAmount__c</fullName>
+    <label>Manager Overridden Bestcase Amount</label>
+    <precision>16</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+    <trackHistory>true</trackHistory>
+    <description>Manager Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
     <fields>
-	<fullName>PreviousDirectRepCommitAmount__c</fullName>
-	<label>Previous Commit Amount</label>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-	<description>Old Direct Report Commit forecasted opportunity  total amount for cloud-specific products</description>
+    <fullName>PreviousDirectRepCommitAmount__c</fullName>
+    <label>Previous Commit Amount</label>
+    <precision>16</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+    <trackHistory>true</trackHistory>
+    <description>Old Direct Report Commit forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
     <fields>
-    	<fullName>PreviousDirectRepBestcaseAmount__c</fullName>
-    	<label>Previous Bestcase Amount</label>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-    	<description>Old Direct Report Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+        <fullName>PreviousDirectRepBestcaseAmount__c</fullName>
+        <label>Previous Bestcase Amount</label>
+    <precision>16</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+    <trackHistory>true</trackHistory>
+        <description>Old Direct Report Bestcase forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
    <fields>
-	<fullName>PeriodType__c</fullName>
-	<label>Period Type</label>
+    <fullName>PeriodType__c</fullName>
+    <label>Period Type</label>
         <length>20</length>
-	<type>Text</type>
-	<trackHistory>false</trackHistory>
-	<description>PeriodType (values Could be Month Name(June, July etc..)  or Q1,Q2, etc depending upon the values</description>
+    <type>Text</type>
+    <trackHistory>false</trackHistory>
+    <description>PeriodType (values Could be Month Name(June, July etc..)  or Q1,Q2, etc depending upon the values</description>
     </fields>
      <fields>
         <fullName>ExtIdentifier__c</fullName>
@@ -143,11 +143,11 @@
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
- 	<columns>OwnOverriddenBestCaseAmount__c</columns>
-	<columns>OwnOverriddenCommitAmount__c</columns>
-	<columns>ManagerOverriddenBestCaseAmount__c</columns>
-	<columns>ManagerOverriddenCommitAmount__c</columns>
-	<columns>PeriodType__c</columns>
+     <columns>OwnOverriddenBestCaseAmount__c</columns>
+    <columns>OwnOverriddenCommitAmount__c</columns>
+    <columns>ManagerOverriddenBestCaseAmount__c</columns>
+    <columns>ManagerOverriddenCommitAmount__c</columns>
+    <columns>PeriodType__c</columns>
        <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

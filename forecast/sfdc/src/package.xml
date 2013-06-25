@@ -58,8 +58,6 @@
         <members>SpecialistForecast__c.ForecastStatus__c</members>
         <members>SpecialistForecast__c.ForecastStage__c</members>
         <members>SpecialistForecast__c.ForecastAmount__c</members>
-        <members>SpecialistForecast__c.PlatformNamedAccount__c</members>
-        <members>SpecialistForecast__c.ServiceCloudNamedAccount__c</members>
         <members>SpecialistForecast__c.ExcludeFromCalculation__c</members>
         <members>SpecialistForecast__c.ForecastNotes__c</members>
         <members>SpecialistForecast__c.ExtIdentifier__c</members>

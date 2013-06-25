@@ -329,7 +329,7 @@ public with sharing class SpecialistForecastController {
         splFClineItems = new List<SpecialistForecastlineItemVO>();
 
         List<HierarchyUtil.RoleNodeWrapper> lstRoles;
-        //get the searchuser and all level reporting users
+        // get the searchuser and all level reporting users
         mapSecondLeverUsersAndChild.clear();
         mapUsers.clear();
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
@@ -344,17 +344,17 @@ public with sharing class SpecialistForecastController {
 
         ownerIdsforQuery.add(sfLI.ForecastOwner__c);
 
-        //set the query parameters
+        // set the query parameters
         ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
         queryParam.setFiscalYear(selectedFY);
         queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(selectedFQ));
         queryParam.setOwnerIds(ownerIdsforQuery);
 
-        //get the data from the table as a list
+        // get the data from the table as a list
         List<SpecialistForecastlineItem__c> listSplFCastlineItems =
         ForecastHelper.getSpecialistForecastLinesTable(queryParam );
 
-        //get Quota information for all the users
+        // get Quota information for all the users
         AggregateResult[] listSplFCastQuotas =
         ForecastHelper.getSpecialistForecastQuota(queryParam );
 
@@ -364,7 +364,7 @@ public with sharing class SpecialistForecastController {
         Map<Id,SpecialistForecastlineItemVO> ownerlineItemsMap = new
         Map<Id,SpecialistForecastlineItemVO>();
 
-        //********************** consolidation Start *************************
+        /********************** consolidation Start *************************/
         // Agreegate the records by owner for display as we are having one
         //  record for a quater and we store as months
 
@@ -386,8 +386,8 @@ public with sharing class SpecialistForecastController {
         // consolidate child records with 2nd level roles/users
         for (Id lineItemOwnerId : mapSecondLeverUsersAndChild.keySet()) {
             sfLIne = new SpecialistForecastlineItemVO();
-            boolean mgrCommitOverride = false;
-            boolean mgrBestCaseOverride = false;
+            Boolean mgrCommitOverride = false;
+            Boolean mgrBestCaseOverride = false;
 
             // TODO Refactor nested loops?
             for (Id childLinesOwnerId : mapSecondLeverUsersAndChild.get(lineItemOwnerId)) {
@@ -406,8 +406,8 @@ public with sharing class SpecialistForecastController {
                     pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
                     quotaAmount = zeroIfNull(lineItem.quotaAmount);
 
-                    //lineItem.mgrCommitOverridden = true;
-                    //add to subtotal amount variables
+                    // lineItem.mgrCommitOverridden = true;
+                    // add to subtotal amount variables
                     if (commitOvrrideAmount > 0 && commitOvrrideAmount != commitAmount
                         && childLinesOwnerId != lineItemOwnerId) {
                         commitAmount = commitOvrrideAmount;
@@ -426,7 +426,9 @@ public with sharing class SpecialistForecastController {
                     subtotpipelineAmount += pipelineAmount;
                     subtotQuotaAmount    += quotaAmount;
 
-                    // manager overrides the value then diplay only that amount no calculation else aggregation of amount will be displayed for the user
+                    // manager overrides the value then diplay only that amount
+                    //  no calculation else aggregation of amount will be
+                    //  displayed for the user
                     if (!mgrCommitOverride && childLinesOwnerId != lineItemOwnerId) {
                         subtotcommitOvrrideAmount += (commitOvrrideAmount <= 0
                             ? commitAmount : commitOvrrideAmount);
@@ -516,7 +518,6 @@ public with sharing class SpecialistForecastController {
                 splFClineItems.add(sfLIne);
             } //end if
 
-
             haslineItemstoDisplay        = false;
             subtotclosedAmount           = 0;
             subtotcommitAmount           = 0;
@@ -532,22 +533,22 @@ public with sharing class SpecialistForecastController {
         if (ownerlineItemsMap.containsKey(sfLI.ForecastOwner__c) &&
             ownerlineItemsMap.get(sfLI.ForecastOwner__c) != null) {
 
-            lineItem = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
-            closedAmount = zeroIfNull(lineItem.closedAmount);
-            commitAmount = zeroIfNull(lineItem.commitAmount);
-            bestCaseAmount = zeroIfNull(lineItem.bestCaseAmount);
-            commitOvrrideAmount = (lineItem.CommitOverrideAmount != null &&
-                                   lineItem.CommitOverrideAmount > 0 ?
-                                   lineItem.CommitOverrideAmount : commitAmount);
-            bestCaseOverrideAmount = (lineItem.bestCaseOverrideAmount != null
-                                      && lineItem.bestcaseOverrideAmount > 0 ?
-                                      lineItem.bestCaseOverrideAmount : bestCaseAmount);
-            pipelineAmount = zeroIfNull(lineItem.pipelineAmount);
-            quotaAmount = zeroIfNull(lineItem.quotaAmount);
+            lineItem               = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
+            closedAmount           = zeroIfNull(lineItem.closedAmount);
+            commitAmount           = zeroIfNull(lineItem.commitAmount);
+            bestCaseAmount         = zeroIfNull(lineItem.bestCaseAmount);
+            pipelineAmount         = zeroIfNull(lineItem.pipelineAmount);
+            quotaAmount            = zeroIfNull(lineItem.quotaAmount);
+            commitOvrrideAmount    = ((lineItem.CommitOverrideAmount != null &&
+                lineItem.CommitOverrideAmount > 0) ?
+                lineItem.CommitOverrideAmount : commitAmount);
+            bestCaseOverrideAmount = ((lineItem.bestCaseOverrideAmount != null
+                && lineItem.bestcaseOverrideAmount > 0) ?
+                    lineItem.bestCaseOverrideAmount : bestCaseAmount);
 
             sfLIne.withoutLink   = false;
             sfLIne.reportingUser = false;
-            sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
+            sfLIne.forOverride   = (sfLI.ForecastOwner__c == UserInfo.getUserId()
                                    && selectedFQ != QTR_ALL);
 
             sfLIne.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
@@ -740,9 +741,9 @@ public with sharing class SpecialistForecastController {
     }
 
     /**
-     * Agreegate the records by owner for display as we are having one record
-     * for a quater and  we store as months
-     * @Parameter List of SpecialistForecastlineItem__c
+     *  Agreegate the records by owner for display as we are having one record
+     *  for a quater and  we store as months
+     *  @param List of SpecialistForecastlineItem__c
      */
     private Map<Id,SpecialistForecastlineItemVO> aggregatelineItemsByOwner(
         List<SpecialistForecastlineItem__c> listSplFCastlineItems) {
@@ -765,10 +766,10 @@ public with sharing class SpecialistForecastController {
         for (SpecialistForecastlineItem__c sfl : listSplFCastlineItems) {
             currentOwnerId = sfl.ForecastOwner__c;
 
-            closedAmount   = zeroIfNull(sfl.OriginalClosedAmount__c);
-            commitAmount   = zeroIfNull(sfl.OriginalCommitAmount__c);
-            bestCaseAmount = zeroIfNull(sfl.OriginalbestCaseAmount__c);
-            pipelineAmount = zeroIfNull(sfl.OriginalPipelineAmount__c);
+            closedAmount   = zeroIfNull(sfl.originalClosedAmount__c);
+            commitAmount   = zeroIfNull(sfl.originalCommitAmount__c);
+            bestCaseAmount = zeroIfNull(sfl.originalbestCaseAmount__c);
+            pipelineAmount = zeroIfNull(sfl.originalPipelineAmount__c);
 
             commitOverrideAmount =
                 zeroIfNull(sfl.SpecialistForecastOverride__r.ownOverriddenCommitAmount__c);
@@ -797,7 +798,8 @@ public with sharing class SpecialistForecastController {
                  splv.mgrBestCaseOverrideAmount = bestCaseMgrOverrideAmount;
                  splv.submittedDate = (sfl.submitteddate__c != null ?
                      sfl.submitteddate__c.format() : zeroIfNull(splv.submittedDate));
-                 splv.isSubmitted = (sfl.Submitteddate__c != null || splv.isSubmitted);
+                 splv.isSubmitted = (sfl.Submitteddate__c != null || 
+                     (splv.isSubmitted == null ? false : splv.isSubmitted));
 
                  splv.MycommitOverridden =
                      sfl.SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c != null;
@@ -815,7 +817,6 @@ public with sharing class SpecialistForecastController {
                      sfl.SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c;
                  splv.prevDirectRepBestcaseAmount =
                      sfl.SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c;
-
             } else {
                 splv.closedAmount              += closedAmount;
                 splv.commitAmount              += commitAmount;
@@ -862,7 +863,7 @@ public with sharing class SpecialistForecastController {
     /**
      *
      */
-    private void setRoleUserValue( HierarchyUtil.RoleNodeWrapper rolewrapper,
+    private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper rolewrapper,
     User myusr) {
 
         RoleUserInfoVO ruinfo = new RoleUserInfoVO();
@@ -871,7 +872,7 @@ public with sharing class SpecialistForecastController {
         ruinfo.userId = myusr.Id;
         ruinfo.userName = myusr.Name;
         mapUsers.put(myusr.Id,ruinfo);
-        /* Put the key with the child*/
+        /* Put the key with the child */
         roleTraverse(rolewrapper);
         alluserIds.add(myusr.Id);
         allTotaluserIds.add(myusr.Id);
@@ -879,7 +880,7 @@ public with sharing class SpecialistForecastController {
 
     }
 
-    /***************Specialist Forecast Override**********************/
+    /***************    Specialist Forecast Override     **********************/
     /**
      *
      */
@@ -898,7 +899,6 @@ public with sharing class SpecialistForecastController {
             }
             spovr.PreviousDirectRepCommitAmount__c = originaloldAmount;
         } else if (strField =='bestcase') {
-
             if (isSelfOverride()) {
                 spovr.OwnOverriddenBestCaseAmount__c = overrideAmount;
                 spovr.OwnOverrideNotes__c = overrideComment;
@@ -906,8 +906,8 @@ public with sharing class SpecialistForecastController {
                 spovr.ManagerOverriddenBestCaseAmount__c = overrideAmount;
                 spovr.ManagerOverrideBestcaseNotes__c = overrideComment;
             }
-           spovr.PreviousDirectRepBestcaseAmount__c = originaloldAmount;
-       }
+            spovr.PreviousDirectRepBestcaseAmount__c = originaloldAmount;
+        }
 
        spovr.PeriodType__c = selectedFQ;
        external_Key = lineItemOwnerId + SelectedFY + selectedFQ;
@@ -923,7 +923,7 @@ public with sharing class SpecialistForecastController {
         }
 
         //upsert Line item
-        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
+        String[] lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
 
         spc.ExtIdentifier__c = lineItemOwnerId + SelectedFY + lstMonths.get(0);
         spc.SpecialistForecastOverride__c = spovr.Id;
@@ -962,9 +962,9 @@ public with sharing class SpecialistForecastController {
          strField = '';
          lineItemOwnerId = '';
      }
-     /*************** Specialist Forecast Override End **********************/
+     /***************  Specialist Forecast Override End  **********************/
 
-     /*************** Specialist Forecast DrillDown **********************/
+     /***************    Specialist Forecast DrillDown   **********************/
      public List<SpecialistForecast__c> specialistforecastList{ get;set; }
 
      public boolean displayDrilDownPopup {get; set;}
@@ -993,12 +993,10 @@ public with sharing class SpecialistForecastController {
         List<String> lstStatus = new List<String>();
         lstStatus.add(strField);
 
-        if (strField == CLOSED) {
-            lstStatus.add(CLOSED_WON);
-        }
+        if (strField == CLOSED) { lstStatus.add(CLOSED_WON); }
 
         List<String> lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
-        //get months by quarter
+        // get months by quarter
 
         specialistforecastList = [SELECT Opportunity__C, Opportunity__r.Name,
                                     Account__c, FiscalYear__c, FYMonth__c,

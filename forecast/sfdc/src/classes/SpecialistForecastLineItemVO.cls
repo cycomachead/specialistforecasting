@@ -35,38 +35,38 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 public with sharing class SpecialistForecastLineItemVO {
 
-       public Boolean  withoutLink                 { get;set; }
-       public Boolean  reportingUser               { get;set; }
-       public Boolean  forOverride                 { get;set; }
-       public Boolean  myCommitOverridden           { get;set; }
-       public Boolean  myBestcaseOverridden         { get;set; }
-       public Boolean  mgrCommitOverridden          { get;set; }
-       public Boolean  mgrBestcaseOverridden        { get;set; }
-       public Boolean  isSubmitted                 { get;set; }
-       public Boolean  isCommitOverridden           { get;set; }
-       public Boolean  isBestcaseOverridden         { get;set; }
-       public Boolean  searchUser                  { get;set; }
+       public Boolean withoutLink                 { get;set; }
+       public Boolean reportingUser               { get;set; }
+       public Boolean forOverride                 { get;set; }
+       public Boolean myCommitOverridden          { get;set; }
+       public Boolean myBestcaseOverridden        { get;set; }
+       public Boolean mgrCommitOverridden         { get;set; }
+       public Boolean mgrBestcaseOverridden       { get;set; }
+       public Boolean isSubmitted                 { get;set; }
+       public Boolean isCommitOverridden          { get;set; }
+       public Boolean isBestcaseOverridden        { get;set; }
+       public Boolean searchUser                  { get;set; }
 
-       public Decimal  closedAmount                { get;set; }
-       public Decimal  commitAmount                { get;set; }
-       public Decimal  bestCaseAmount              { get;set; }
-       public Decimal  commitOverrideAmount        { get;set; }
-       public Decimal  bestCaseOverrideAmount      { get;set; }
-       public Decimal  mgrbestCaseOverrideAmount   { get;set; }
-       public Decimal  mgrcommitOverrideAmount     { get;set; }
-       public Decimal  prevDirectRepCommitAmount   { get;set; }
-       public Decimal  prevDirectRepBestcaseAmount { get;set; }
-       public Decimal  quotaAmount                 { get;set; }
-       public Decimal  pipelineAmount              { get;set; }
+       public Decimal closedAmount                { get;set; }
+       public Decimal commitAmount                { get;set; }
+       public Decimal bestCaseAmount              { get;set; }
+       public Decimal commitOverrideAmount        { get;set; }
+       public Decimal bestCaseOverrideAmount      { get;set; }
+       public Decimal mgrbestCaseOverrideAmount   { get;set; }
+       public Decimal mgrcommitOverrideAmount     { get;set; }
+       public Decimal prevDirectRepCommitAmount   { get;set; }
+       public Decimal prevDirectRepBestcaseAmount { get;set; }
+       public Decimal quotaAmount                 { get;set; }
+       public Decimal pipelineAmount              { get;set; }
 
-       public String   roleName                    { get;set; }
-       public String   userName                    { get;set; }
-       public String   roleId                      { get;set; }
-       public String   userId                      { get;set; }
-       public String   mgrCommitOverrideNotes      { get;set; }
-       public String   mgrbestcaseOverrideNotes    { get;set; }
-       public String   strLineItmId                { get;set; }
-       public String   submittedDate               { get;set; }
+       public String roleName                     { get;set; }
+       public String userName                     { get;set; }
+       public String roleId                       { get;set; }
+       public String userId                       { get;set; }
+       public String mgrCommitOverrideNotes       { get;set; }
+       public String mgrbestcaseOverrideNotes     { get;set; }
+       public String strLineItmId                 { get;set; }
+       public String submittedDate                { get;set; }
 
 
 
@@ -80,14 +80,14 @@ public with sharing class SpecialistForecastLineItemVO {
             return '';
        }
 
-       public boolean getCommitPreviousAmountMatch() {
+       public Boolean getCommitPreviousAmountMatch() {
             return (searchUser != null  || !searchUser) &&
                 (prevDirectRepCommitAmount != null && (commitAmount != null
                     && prevDirectRepCommitAmount != commitAmount));
        }
 
-       public string  getprevVFDirectRepCommitAmount(){
-           List<String> args = new String[]{'0','number','###,###,##0.00'};
+       public String getprevVFDirectRepCommitAmount() {
+           String[] args = new String[] {'0','number','###,###,##0.00'};
            String sCurrency;
            if (prevDirectRepCommitAmount != null) {
                prevDirectRepCommitAmount.setscale(2);

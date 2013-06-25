@@ -186,7 +186,7 @@
         <label>My Best case Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-	<defaultValue>true</defaultValue>
+    <defaultValue>true</defaultValue>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -195,8 +195,8 @@
         <label>My Commit Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-	<defaultValue>true</defaultValue>
-	<type>Checkbox</type>
+    <defaultValue>true</defaultValue>
+    <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>OriginalBestCaseAmount__c</fullName>

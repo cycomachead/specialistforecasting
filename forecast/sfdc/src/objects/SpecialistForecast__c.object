@@ -44,26 +44,26 @@
     </actionOverrides>
 
     <nameField>
-	<displayFormat>SAF-{00000000}</displayFormat>
-	<label>Specialist Forecast Name</label>
-	<type>AutoNumber</type>
+    <displayFormat>SAF-{00000000}</displayFormat>
+    <label>Specialist Forecast Name</label>
+    <type>AutoNumber</type>
     </nameField>
 
     <fields>
-	<fullName>Account__c</fullName>
-	<label>Account</label>
-	<formula>
-		Opportunity__r.Account.Name &amp; ' - ' &amp; 'https://login.salesforce.com/' &amp; Opportunity__r.Account.Id
-	</formula>
-	<type>Text</type>
+    <fullName>Account__c</fullName>
+    <label>Account</label>
+    <formula>
+        Opportunity__r.Account.Name &amp; ' - ' &amp; 'https://login.salesforce.com/' &amp; Opportunity__r.Account.Id
+    </formula>
+    <type>Text</type>
     </fields>
     
     <fields>
-	<fullName>Opportunity__c</fullName>
-	<label>Opportunity</label>
-	<referenceTo>Opportunity</referenceTo>
-	<relationshipName>SpecialistForecastToOpportunity</relationshipName>
-	<type>Lookup</type>
+    <fullName>Opportunity__c</fullName>
+    <label>Opportunity</label>
+    <referenceTo>Opportunity</referenceTo>
+    <relationshipName>SpecialistForecastToOpportunity</relationshipName>
+    <type>Lookup</type>
     </fields>
     <fields>
         <fullName>FiscalYear__c</fullName>
@@ -163,7 +163,7 @@
         <fullName>ForecastCloseDate__c</fullName>
         <externalId>false</externalId>
         <label>Close Date</label>
-	<inlineHelpText>Date the Specialist AE expects the opportunity to close</inlineHelpText>
+    <inlineHelpText>Date the Specialist AE expects the opportunity to close</inlineHelpText>
         <required>true</required>
         <trackHistory>false</trackHistory>
         <type>Date</type>
@@ -188,80 +188,80 @@
         <type>Picklist</type>
     </fields>
     <fields>
-	<fullName>ForecastNotes__c</fullName>
-	<label>Forecast Notes</label>
-	<length>32768</length>
-	<type>LongTextArea</type>
-	<visibleLines>3</visibleLines>
+    <fullName>ForecastNotes__c</fullName>
+    <label>Forecast Notes</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
     </fields>
     <fields>
-	<fullName>MgrForecastNotes__c</fullName>
-	<label>Manager Forecast Notes</label>
-	<length>32768</length>
-	<type>LongTextArea</type>
-	<visibleLines>3</visibleLines>
+    <fullName>MgrForecastNotes__c</fullName>
+    <label>Manager Forecast Notes</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
     </fields>
     <fields>
-	<fullName>ForecastStage__c</fullName>
-	<label>Specialist AE Stage</label>
-	<inlineHelpText>Stage classified by the Specialist AE</inlineHelpText>
-	<type>Picklist</type>
-	<picklist>
-		<picklistValues>
-			<fullName>01 - Identifying an Opportunity</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>02 - Determining Problem, Impact, Ideal</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>03 - Validating Benefits &amp; Value</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>04 - Confirming Value With Power</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>05 - Negotiating $$ &amp; Mutual Plan</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>06 - Finalizing Closure</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>07 - Pending</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>08 - Closed</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>Closed - Out Clause</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>Dead - Duplicate</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>Dead - Lost</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>Dead - No Opportunity</fullName>
-		        <default>false</default>
-		</picklistValues>
-		<picklistValues>
-			<fullName>Dead - No Decision</fullName>
-		        <default>false</default>
-		</picklistValues>
+    <fullName>ForecastStage__c</fullName>
+    <label>Specialist AE Stage</label>
+    <inlineHelpText>Stage classified by the Specialist AE</inlineHelpText>
+    <type>Picklist</type>
+    <picklist>
+        <picklistValues>
+            <fullName>01 - Identifying an Opportunity</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>02 - Determining Problem, Impact, Ideal</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>03 - Validating Benefits &amp; Value</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>04 - Confirming Value With Power</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>05 - Negotiating $$ &amp; Mutual Plan</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>06 - Finalizing Closure</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>07 - Pending</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>08 - Closed</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>Closed - Out Clause</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>Dead - Duplicate</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>Dead - Lost</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>Dead - No Opportunity</fullName>
+                <default>false</default>
+        </picklistValues>
+        <picklistValues>
+            <fullName>Dead - No Decision</fullName>
+                <default>false</default>
+        </picklistValues>
             <sorted>false</sorted>
-	</picklist>
-	<trackHistory>true</trackHistory>
+    </picklist>
+    <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>ForecastStatus__c</fullName>
@@ -334,39 +334,21 @@
         <type>Picklist</type>
     </fields>
     <fields>
-	<fullName>ForecastAmount__c</fullName>
-	<label>Specialist AE Opportunity Amount</label>
-	<inlineHelpText>Specialist AE's forecasted opportunity amount for their cloud-specific products</inlineHelpText>
-	<precision>16</precision>
-	<scale>2</scale>
-	<type>Currency</type>
-	<trackHistory>true</trackHistory>
-	<description>Specialist AE's forecasted opportunity amount for their cloud-specific products</description>
-    </fields>
-    <fields>
-	<fullName>PlatformNamedAccount__c</fullName>
-	<label>Platform Named Account?</label>
-	<inlineHelpText>Identifies if the account is a Platform Named Account</inlineHelpText>
-	<formula>
-		IF(Opportunity__r.Account.Platform_Named_Account__c, "Yes", "No")
-	</formula>
-	<type>Text</type>
-    </fields>
-    <fields>
-	<fullName>ServiceCloudNamedAccount__c</fullName>
-	<inlineHelpText>Identifies if the account is a Service Cloud Named Account</inlineHelpText>
-	<label>Service Cloud Named Account?</label>
-	<formula>
-		IF(Opportunity__r.Account.Service_Cloud_Named_Account__c, "Yes", "No")
-	</formula>
-	<type>Text</type>
+        <fullName>ForecastAmount__c</fullName>
+        <label>Specialist AE Opportunity Amount</label>
+        <inlineHelpText>Specialist AE's forecasted opportunity amount for their cloud-specific products</inlineHelpText>
+        <precision>16</precision>
+        <scale>2</scale>
+        <type>Currency</type>
+        <trackHistory>true</trackHistory>
+        <description>Specialist AE's forecasted opportunity amount for their cloud-specific products</description>
     </fields>
     <fields>
         <fullName>ExcludeFromCalculation__c</fullName>
         <externalId>false</externalId>
         <label>Exclude From Calculation?</label>
         <trackHistory>false</trackHistory>
-	<defaultValue>false</defaultValue>
+    <defaultValue>false</defaultValue>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -388,26 +370,26 @@
             <externalId>false</externalId>
             <label>Owner Copy</label>
             <deleteConstraint>SetNull</deleteConstraint>
-	    <referenceTo>User</referenceTo>
+        <referenceTo>User</referenceTo>
             <relationshipName>SpecialistForecastToUser</relationshipName>
             <trackHistory>false</trackHistory>
             <type>Lookup</type>
     </fields>
     <fields>
-    	<fullName>OwnerManager__c</fullName>
-    	<label>Owner Manager</label>
-	<formula>
-		OwnerCopy__r.Manager.FirstName &amp; ' ' &amp; OwnerCopy__r.Manager.LastName
-	</formula>
-    	<type>Text</type>
+        <fullName>OwnerManager__c</fullName>
+        <label>Owner Manager</label>
+    <formula>
+        OwnerCopy__r.Manager.FirstName &amp; ' ' &amp; OwnerCopy__r.Manager.LastName
+    </formula>
+        <type>Text</type>
     </fields>
     <fields>
             <fullName>FiscalQuarter__c</fullName>
-    	    <label>Fiscal Quarter</label>
-	    <formula>
-	      CASE(Month(ForecastCloseDate__c),12,Text(FiscalYear__c) &amp;' Q4' , 11,Text(FiscalYear__c) &amp;' Q4' , 1,Text(FiscalYear__c)  &amp;' Q4' ,10,Text(FiscalYear__c) &amp;' Q3' , 9,Text(FiscalYear__c) &amp;' Q3', 8,Text(FiscalYear__c) &amp; ' Q3' ,7,Text(FiscalYear__c) &amp; ' Q2' , 6,Text(FiscalYear__c) &amp;' Q2' , 5,Text(FiscalYear__c) &amp;' Q2' , 4,Text(FiscalYear__c) &amp;' Q1' , 3,Text(FiscalYear__c) &amp;' Q1' , 2,Text(FiscalYear__c) &amp;' Q1' , '')
-	    </formula>
-    	<type>Text</type>
+            <label>Fiscal Quarter</label>
+        <formula>
+          CASE(Month(ForecastCloseDate__c),12,Text(FiscalYear__c) &amp;' Q4' , 11,Text(FiscalYear__c) &amp;' Q4' , 1,Text(FiscalYear__c)  &amp;' Q4' ,10,Text(FiscalYear__c) &amp;' Q3' , 9,Text(FiscalYear__c) &amp;' Q3', 8,Text(FiscalYear__c) &amp; ' Q3' ,7,Text(FiscalYear__c) &amp; ' Q2' , 6,Text(FiscalYear__c) &amp;' Q2' , 5,Text(FiscalYear__c) &amp;' Q2' , 4,Text(FiscalYear__c) &amp;' Q1' , 3,Text(FiscalYear__c) &amp;' Q1' , 2,Text(FiscalYear__c) &amp;' Q1' , '')
+        </formula>
+        <type>Text</type>
     </fields>
     
     <listViews>
@@ -421,11 +403,10 @@
         <columns>FYMonth__c</columns>
         <columns>ForecastStatus__c</columns>
         <columns>ForecastStage__c</columns>
-	<columns>ForecastAmount__c</columns>
-	<columns>PlatformNamedAccount__c</columns>
-	<columns>ServiceCloudNamedAccount__c</columns>
-	<columns>ForecastNotes__c</columns>
-	<columns>ExcludeFromCalculation__c</columns>
+    <columns>ForecastAmount__c</columns>
+
+    <columns>ForecastNotes__c</columns>
+    <columns>ExcludeFromCalculation__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
@@ -433,13 +414,13 @@
 
     <recordTypes>
         <fullName>SpecialistForecastData</fullName>
-	<description>Record Type assigned to platform or service cloud</description>
+    <description>Record Type assigned to platform or service cloud</description>
         <active>true</active>
         <label>Specialist Forecast Data</label>
     </recordTypes>
      <recordTypes>
         <fullName>SpecialistForecastOptyLineData</fullName>
-	<description>Record Type assigned to platform or service cloud for OpportunityLine Item</description>
+    <description>Record Type assigned to platform or service cloud for OpportunityLine Item</description>
         <active>true</active>
         <label>Specialist Forecast OptyLine Data</label>
     </recordTypes>

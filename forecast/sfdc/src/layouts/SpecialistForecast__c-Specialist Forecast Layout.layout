@@ -4,7 +4,7 @@
 	<detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Specialist Forecast Detail</label>
-        <layoutColumns>    
+        <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>OwnerId</field>
@@ -17,17 +17,9 @@
                 <behavior>Edit</behavior>
                 <field>ForecastType__c</field>
             </layoutItems>
-	   <layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ProductLead__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>PlatformNamedAccount__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>ServiceCloudNamedAccount__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -71,7 +63,7 @@
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
-	<detailHeading>true</detailHeading>
+        <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>System Information</label>
         <layoutColumns>
@@ -97,9 +89,9 @@
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
-	<detailHeading>true</detailHeading>
+        <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <layoutColumns/>
+        <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
 </Layout>

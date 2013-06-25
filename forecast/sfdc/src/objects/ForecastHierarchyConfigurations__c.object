@@ -18,17 +18,17 @@
     <fields>
         <fullName>HierarchyRole__c</fullName>
         <label>Hierarchy Role</label>
-	    <length>20</length>
+        <length>20</length>
         <required>true</required>
         <type>Text</type>
     </fields>
     <fields>
-	<fullName>HierarchyRoleUser__c</fullName>
-	<label>Hierarchy Role User</label>
-	<referenceTo>User</referenceTo>
-	<relationshipName>HierarchyRoleUsers</relationshipName>
-	<type>Lookup</type>
-	</fields>	 
+    <fullName>HierarchyRoleUser__c</fullName>
+    <label>Hierarchy Role User</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>HierarchyRoleUsers</relationshipName>
+    <type>Lookup</type>
+    </fields>     
     <fields>
         <fullName>IsManager__c</fullName>
         <label>Is Manager?</label>
@@ -80,7 +80,7 @@
         <columns>Comment__c</columns>
         <columns>HashForCheck__c</columns>
         <columns>ExtIdentifier__c</columns>
-	<columns>CheckAccessToSyncJob__c</columns>
+    <columns>CheckAccessToSyncJob__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
