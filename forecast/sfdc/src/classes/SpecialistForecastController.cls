@@ -798,7 +798,7 @@ public with sharing class SpecialistForecastController {
                  splv.mgrBestCaseOverrideAmount = bestCaseMgrOverrideAmount;
                  splv.submittedDate = (sfl.submitteddate__c != null ?
                      sfl.submitteddate__c.format() : zeroIfNull(splv.submittedDate));
-                 splv.isSubmitted = (sfl.Submitteddate__c != null || 
+                 splv.isSubmitted = (sfl.Submitteddate__c != null ||
                      (splv.isSubmitted == null ? false : splv.isSubmitted));
 
                  splv.MycommitOverridden =

@@ -1,18 +1,21 @@
-.sumRow {
+.sumRow td {
     font-weight: bold;
     font-size: 1em;
     text-align: center;
     vertical-align: middle;
     padding: .2em .4em;
+    width: auto;
+    background-color: #BBBBCC;
 }
 
-.dataRow {
+.dataRow td {
+    width: auto;
     text-align: right;
     vertical-align: middle;
     padding: .2em .4em;
 }
 
-/*.apexp .detailList .list td, .apexp .detailList .list th, 
+/*.apexp .detailList .list td, .apexp .detailList .list th,
 .apexp .editPage .bPageBlock .detailList .list tr td,
 .apexp .editPage .bPageBlock .detailList .list tr th {
     padding: 4px 5px;
@@ -25,7 +28,7 @@
     vertical-align: middle;
 }
 
-/* Cascade over default table styling */    
+/* Cascade over default table styling */
 body .pbBody table.list tr.dataRow th, body .pbBody table.list tr.dataRow td {
     border-width: 2px;
     vertical-align: middle;
@@ -36,11 +39,11 @@ body .pbBody table.list tr.dataRow th, body .pbBody table.list tr.dataRow td {
     /* margin-bottom: -0.3em;
 }
 */
-body .bDetailBlock.bPageBlock .pbBody .labelCol, 
-body .bDetailBlock.bPageBlock .pbBody .dataCol, 
-body .bDetailBlock.bPageBlock .pbBody .data2Col, 
-body .bPageBlock.bEditBlock .pbBody .labelCol, 
-body .bPageBlock.bEditBlock .pbBody .dataCol, 
+body .bDetailBlock.bPageBlock .pbBody .labelCol,
+body .bDetailBlock.bPageBlock .pbBody .dataCol,
+body .bDetailBlock.bPageBlock .pbBody .data2Col,
+body .bPageBlock.bEditBlock .pbBody .labelCol,
+body .bPageBlock.bEditBlock .pbBody .dataCol,
 body .bPageBlock.bEditBlock .pbBody .data2Col {
     padding-top: 0;
     padding-bottom: 0;
@@ -49,6 +52,9 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 
 .topTable {
     border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    width: auto;
 }
 
 .topTable th {
@@ -69,10 +75,11 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 
 .topTable tr td {
     border-style: solid;
-    border-width: 2px;
+    border-color: #000000;
+    border-width: 1px;
     height: auto;
     width: auto;
-    max-width: auto;
+    max-width: none;
     vertical-align: middle;
     text-align: right;
     padding: .2em .4em;
@@ -94,9 +101,9 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
     left: 50%;
     padding:10px;
     position: absolute;
-    /* These are the 3 css properties you will need to change so the popup 
-    displays in the center of the screen. First set the width. Then set 
-    margin-left to negative half of what the width is. You can add 
+    /* These are the 3 css properties you will need to change so the popup
+    displays in the center of the screen. First set the width. Then set
+    margin-left to negative half of what the width is. You can add
     the height property for a fixed size pop up if you want.*/
     width: 500px;
     margin-left: -250px;
