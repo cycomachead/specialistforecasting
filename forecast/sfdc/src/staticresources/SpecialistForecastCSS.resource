@@ -1,11 +1,11 @@
 .topTable {
     border: 2px solid #AAA;
-    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
     vertical-align: middle;
     /*max-height: 50px; */
     /*overflow: scroll;*/
-    border-collapse:collapse;
-    border-spacing: 0;
+    width: 100%;
 }
 
 .header {
@@ -15,9 +15,9 @@
     background-image:    -moz-linear-gradient(top, #F0FAFF, #B4E6FF);
     background-image:     -ms-linear-gradient(top, #F0FAFF, #B4E6FF);
     background-image:      -o-linear-gradient(top, #F0FAFF, #B4E6FF);
-    width: auto;
     max-width: none;
-    padding: .2em;
+    padding: 5px;
+    width: auto;
 /*    position: absolute;
     overflow: none;*/
 }
@@ -25,56 +25,62 @@
 .headerRow th, .sumRow td {
     border: 2px solid #AAA;
     font-weight: bold;
-/*    position: absolute;
-    overflow: none;*/
-    padding: .3em;
     text-align: center;
-    font-size: 1.2em;
 }
 
-.footer {
+.headerRow th {
+    font-size: 1.25em;
+    padding: 5px;
+}
+
+.sumRow td {
+    font-size: 1.15em;
+    padding: 4px;
+}
+
+/* matches tab style color, which is 2nd to last column, 3rd down. */
+tfoot.footer {
     background-color: rgb(109, 135, 168);
-    /* matches tab style color, which is 2nd to last column, 3rd down. */
 }
 
-tr.dataRow, .dataRow tr > td {
-    font-size: .9em;
-    text-align: right;
+.cell {
     border: 1px solid #AAA;
-    padding: .2em .4em !important;
+    padding: 3px 6px;
+    text-align: right;
+}
+
+.cell td, .dataRow td, .topTable td,
+.outer td, .dataRow tr > td {
+     vertical-align: middle !important;
+}
+
+.topTable tr:nth-child(even) .cell {
+    background: #FFF;
+}
+
+/* Image and Link alignment */
+.cell span, .cell td > span {
+    margin: 2px 0;
+    padding: 3px 6px;
+    text-align: right;
     vertical-align: middle;
 }
 
-/* These two should have fallbacks for IE 7/8 */
-tr.dataRow tr:nth-child(even) .cell {
-    background: #FFF !important;
-}
-
-tr.dataRow tr:nth-child(odd) .cell {
-    background: #CCC !important;
-}
-
-/* Fixes for amount override buttons not being aligned properly by VF pages */
-.dataRow span, .dataRow a {
-    vertical-align: middle;
-    padding: .1em;
+.cell img, /*.cell * > img,*/
+.cell td > span > img,
+.cell td > span > a > img {
     margin: 0;
-}
-
-.dataRow img {
+    padding: .2em;
     vertical-align: middle;
-    padding: .1em;
-    margin: 0;
 }
 
-td.userName { /*fix for something better?*/
-    text-align: center;
-}
+.no { text-decoration: none; }
+
+.uName { text-align: center; }
 
 /* Column used for a scrollbar in the table. */
 #scrollbar {
     width: 16px;
-    rowspan: ;
 }
 
 .leftCol {
@@ -83,7 +89,6 @@ td.userName { /*fix for something better?*/
     vertical-align: middle;
     padding: .1em .3em;
 }
-
 
 .custPopup {
     background-color: #FFF;
@@ -101,7 +106,6 @@ td.userName { /*fix for something better?*/
     margin-left: -250px;
     top:100px;
 }
-
 
 .popupBackground {
     background-color: rgba(0, 0, 0, .2);

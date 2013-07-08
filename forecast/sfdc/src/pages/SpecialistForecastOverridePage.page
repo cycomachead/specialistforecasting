@@ -13,7 +13,7 @@
     </script>
 
         <apex:pageBlock id="pb">
-             <apex:pagemessages />
+            <apex:pagemessages />
             <apex:pageBlockSection collapsible="false" title="Override the Original Amount"  id="pbs">
                  <apex:panelGrid columns="2"  id="pbsg">
                        <apex:Outputtext value="Original Amount" />

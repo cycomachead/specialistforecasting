@@ -18,7 +18,7 @@
                 <apex:outputLabel value="Notify on n-th Minute of Hour:" for="notificationMinute"/>
                 <apex:inputText value="{!notificationMinute}" id="notificationMinute" size="2" maxlength="2" rendered="true"/><br/><br/>
                 <apex:outputLabel value="Click the Button to schedule the Batch job for  Specialist Forecasting" for="notificationMinute"/>
-                
+
             </apex:outputPanel>
             <br/>
             <br/>
@@ -55,7 +55,5 @@
         </apex:form>
 
     </div>
-    <br/>
-    <br/>
-    
+
 </apex:page>

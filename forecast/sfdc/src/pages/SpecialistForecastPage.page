@@ -194,7 +194,7 @@
                 </tfoot>
                 <apex:repeat value="{!SpecialistforecastLineItemsData}" var="forecast" rows="{! SpecialistforecastLineItemsData.size - 1}">
                     <tr class="dataRow">
-                        <td class="userName "><!-- User -->
+                        <td class="cell uName"><!-- User -->
                             <apex:commandLink value="{!forecast.UserRoleName}" action="{!reportDrildownByUser_Role}">
                                 <apex:param name="userId" value="{!forecast.UserId}" assignTo="{!selectedUserId}"/>
                             </apex:commandLink>
@@ -214,7 +214,7 @@
                                 <apex:param name="ovrType2" value="Closed" assignTo="{!strField}"/>
                             </apex:commandLink>
                         </td>
-                        <td><!-- My Commit -->
+                        <td class="cell"><!-- My Commit -->
                             <apex:outputPanel rendered="{!(forecast.MycommitOverridden)}">
                                 <img title="{!forecast.mgrCommitOverrideNotes}" src="/img/mgr_override.gif" />
                             </apex:outputpanel>
@@ -222,7 +222,7 @@
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitOverrideAmount}"/>
                                 </apex:outputText>
-                                <apex:commandLink action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
+                                <apex:commandLink styleClass="no" action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
                                     <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
                                     <apex:param name="orgamt" value="{!forecast.commitOverrideAmount}" assignTo="{!originalAmount}"/>
                                     <apex:param name="orgOldamt" value="{!forecast.commitAmount}" assignTo="{!originaloldAmount}"/>
@@ -232,14 +232,14 @@
                                 </apex:commandLink>
                             </apex:outputPanel>
                         </td>
-                        <td><!-- Dir Reps Commit -->
+                        <td class="cell"><!-- Dir Reps Commit -->
                             <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepCommitAmount}" rendered="{!(NOT(forecast.searchUser&& forecast.commitAmount > 0) && (forecast.MycommitOverridden && forecast.commitPreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
                                 <apex:param value="{!forecast.commitAmount}"/>
                             </apex:outputText>
                             <apex:outputText rendered="{!(NOT(forecast.searchUser&& forecast.commitAmount>0) && NOT(forecast.MycommitOverridden &&forecast.commitPreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
                                 <apex:param value="{!forecast.commitAmount}"/>
                             </apex:outputText>
-                            <apex:commandLink rendered="{!(forecast.searchUser&& forecast.commitAmount>0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup" >
+                            <apex:commandLink styleClass="no" rendered="{!(forecast.searchUser&& forecast.commitAmount>0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup" >
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>
@@ -247,7 +247,7 @@
                                 <apex:param name="ovrType2" value="Commit" assignTo="{!strField}"/>
                             </apex:commandLink>
                         </td>
-                        <td><!-- Best Case -->
+                        <td class="cell"><!-- Best Case -->
                             <apex:outputPanel rendered="{!(forecast.MyBestcaseOverridden)}">
                                 <img title="{!forecast.mgrBestcaseOverrideNotes}" src="/img/mgr_override.gif"/>
                             </apex:outputpanel>
@@ -255,7 +255,7 @@
                                 <apex:param value="{!forecast.bestCaseOverrideAmount}" />
                             </apex:outputText>
                             <apex:outputPanel>
-                                <apex:commandLink action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
+                                <apex:commandLink styleClass="no" action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
                                     <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
                                     <apex:param name="orgamt" value="{!forecast.bestcaseOverrideAmount}" assignTo="{!originalAmount}"/>
                                     <apex:param name="orgOldamt" value="{!forecast.bestcaseAmount}" assignTo="{!originaloldAmount}"/>
@@ -265,7 +265,7 @@
                                 </apex:commandLink>
                             </apex:outputPanel>
                         </td>
-                        <td><!-- Dir Reps Best Case -->
+                        <td class="cell"><!-- Dir Reps Best Case -->
                             <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepbestcaseAmount}" rendered="{!(NOT(forecast.searchUser && forecast.bestcaseAmount > 0) &&(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
                                 <apex:param value="{!forecast.bestcaseAmount}"/>
                             </apex:outputText>
@@ -282,7 +282,7 @@
                                 <apex:param name="ovrType2" value="Best Case" assignTo="{!strField}"/>
                             </apex:commandLink>
                         </td>
-                        <td><!-- Pipelined -->
+                        <td class="cell"><!-- Pipelined -->
                             <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.pipelineAmount>0)}"
                                 value="${0, number,###,###,###,##0.00}">
                                 <apex:param value="{!forecast.pipelineAmount}" />
@@ -296,7 +296,7 @@
                                 <apex:param name="ovrType2" value="Pipeline" assignTo="{!strField}"/>
                             </apex:commandLink>
                         </td>
-                        <td><!-- Quota -->
+                        <td class="cell"><!-- Quota -->
                             <apex:outputText value="${0, number,###,###,###,##0.00}">
                                 <apex:param value="{!forecast.quotaAmount}" />
                             </apex:outputText>
