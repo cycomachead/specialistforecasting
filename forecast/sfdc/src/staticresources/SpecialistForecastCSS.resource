@@ -1,88 +1,80 @@
-.sumRow td {
-    font-weight: bold;
-    font-size: 1em;
-    text-align: center;
-    vertical-align: middle;
-    padding: .2em .4em;
-    width: auto;
-    background-color: #BBBBCC;
-}
-
-.dataRow td {
-    width: auto;
-    text-align: right;
-    vertical-align: middle;
-    padding: .2em .4em;
-}
-
-/*.apexp .detailList .list td, .apexp .detailList .list th,
-.apexp .editPage .bPageBlock .detailList .list tr td,
-.apexp .editPage .bPageBlock .detailList .list tr th {
-    padding: 4px 5px;
-    white-space: nowrap;
-}*/
-
-.apexp .detailList .list .headerRow th {
-    border-bottom: 1px solid #000000;
-    text-align: center;
-    vertical-align: middle;
-}
-
-/* Cascade over default table styling */
-body .pbBody table.list tr.dataRow th, body .pbBody table.list tr.dataRow td {
-    border-width: 2px;
-    vertical-align: middle;
-}
-
-/*body .bRelatedList .pbBody table.list, body .apexp .pbBody table.list {
-    border: 2px solid #D4DADC;
-    /* margin-bottom: -0.3em;
-}
-*/
-body .bDetailBlock.bPageBlock .pbBody .labelCol,
-body .bDetailBlock.bPageBlock .pbBody .dataCol,
-body .bDetailBlock.bPageBlock .pbBody .data2Col,
-body .bPageBlock.bEditBlock .pbBody .labelCol,
-body .bPageBlock.bEditBlock .pbBody .dataCol,
-body .bPageBlock.bEditBlock .pbBody .data2Col {
-    padding-top: 0;
-    padding-bottom: 0;
-    border-bottom: 0;
-}
-
 .topTable {
-    border-style: solid;
-    border-width: 1px;
-    border-color: #000000;
-    width: auto;
+    border: 2px solid #AAA;
+    width: 100%;
+    vertical-align: middle;
+    /*max-height: 50px; */
+    /*overflow: scroll;*/
+    border-collapse:collapse;
+    border-spacing: 0;
 }
 
-.topTable th {
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F0FAFF', endColorstr='##B4E6FF'); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from(#F0FAFF), to(#B4E6FF)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  #F0FAFF,  #B4E6FF); /* for firefox 3.6+ */
-    border-style: solid;
-    border-width: 2px;
-    border-color: #AAAAAA;
-    padding: .5em;
+.header {
+    background-color: #09F;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0FAFF), to(#B4E6FF));
+    background-image: -webkit-linear-gradient(top, #F0FAFF, #B4E6FF);
+    background-image:    -moz-linear-gradient(top, #F0FAFF, #B4E6FF);
+    background-image:     -ms-linear-gradient(top, #F0FAFF, #B4E6FF);
+    background-image:      -o-linear-gradient(top, #F0FAFF, #B4E6FF);
+    width: auto;
+    max-width: none;
+    padding: .2em;
+/*    position: absolute;
+    overflow: none;*/
+}
+
+.headerRow th, .sumRow td {
+    border: 2px solid #AAA;
+    font-weight: bold;
+/*    position: absolute;
+    overflow: none;*/
+    padding: .3em;
     text-align: center;
     font-size: 1.2em;
-    vertical-align: middle;
-    height: auto;
-    max-width: none;
-    width: auto;
 }
 
-.topTable tr td {
-    border-style: solid;
-    border-color: #000000;
-    border-width: 1px;
-    height: auto;
-    width: auto;
-    max-width: none;
-    vertical-align: middle;
+.footer {
+    background-color: rgb(109, 135, 168);
+    /* matches tab style color, which is 2nd to last column, 3rd down. */
+}
+
+tr.dataRow, .dataRow tr > td {
+    font-size: .9em;
     text-align: right;
-    padding: .2em .4em;
+    border: 1px solid #AAA;
+    padding: .2em .4em !important;
+    vertical-align: middle;
+}
+
+/* These two should have fallbacks for IE 7/8 */
+tr.dataRow tr:nth-child(even) .cell {
+    background: #FFF !important;
+}
+
+tr.dataRow tr:nth-child(odd) .cell {
+    background: #CCC !important;
+}
+
+/* Fixes for amount override buttons not being aligned properly by VF pages */
+.dataRow span, .dataRow a {
+    vertical-align: middle;
+    padding: .1em;
+    margin: 0;
+}
+
+.dataRow img {
+    vertical-align: middle;
+    padding: .1em;
+    margin: 0;
+}
+
+td.userName { /*fix for something better?*/
+    text-align: center;
+}
+
+/* Column used for a scrollbar in the table. */
+#scrollbar {
+    width: 16px;
+    rowspan: ;
 }
 
 .leftCol {
@@ -94,7 +86,7 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 
 
 .custPopup {
-    background-color: white;
+    background-color: #FFF;
     border-width: 2px;
     border-style: solid;
     z-index: 9999;
@@ -110,10 +102,10 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
     top:100px;
 }
 
+
 .popupBackground {
-    background-color:black;
-    opacity: 0.20;
-    filter: alpha(opacity = 20);
+    background-color: rgba(0, 0, 0, .2);
+    filter: alpha(opacity = 20); /* ms */
     position: absolute;
     width: 100%;
     height: 100%;
@@ -123,7 +115,7 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 }
 
 .custPopupDrilDown{
-    background-color: white;
+    background-color: #FFF;
     border-width: 2px;
     border-style: solid;
     z-index: 9999;
@@ -136,8 +128,7 @@ body .bPageBlock.bEditBlock .pbBody .data2Col {
 }
 
 .popupBackgroundDrilDown {
-    background-color:black;
-    opacity: 0.20;
+    background-color: rgba(0, 0, 0, .2);
     filter: alpha(opacity = 20);
     position: absolute;
     width: 100%;

@@ -130,6 +130,8 @@
     <types>
         <members>SpecialistForecastSubmitIcon</members>
         <members>SpecialistForecastCSS</members>
+        <members>icon</members>
+        <members>icon_xsmall</members>
         <name>StaticResource</name>
     </types>
     <version>24.0</version>

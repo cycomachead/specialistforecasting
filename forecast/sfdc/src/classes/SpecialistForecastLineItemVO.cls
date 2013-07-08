@@ -35,7 +35,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 public with sharing class SpecialistForecastLineItemVO {
 
-       public Boolean withoutLink                 { get;set; }
        public Boolean reportingUser               { get;set; }
        public Boolean forOverride                 { get;set; }
        public Boolean myCommitOverridden          { get;set; }
@@ -86,7 +85,7 @@ public with sharing class SpecialistForecastLineItemVO {
                     && prevDirectRepCommitAmount != commitAmount));
        }
 
-       public String getprevVFDirectRepCommitAmount() {
+       public String getPrevVFDirectRepCommitAmount() {
            String[] args = new String[] {'0','number','###,###,##0.00'};
            String sCurrency;
            if (prevDirectRepCommitAmount != null) {
@@ -126,7 +125,6 @@ public with sharing class SpecialistForecastLineItemVO {
     Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
     Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
 
-        this.withoutLink            = (lineItemownerid == searchUser);
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemownerid).userName;
         this.roleName               = mapUsers.get(lineItemownerid).roleName;
