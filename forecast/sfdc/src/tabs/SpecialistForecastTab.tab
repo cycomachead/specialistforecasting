@@ -4,7 +4,7 @@
     <label>Specialist Forecast Reports</label>
     <customObject>false</customObject>
     <mobileReady>false</mobileReady>
-    <motif>Custom172: Custom</motif>
+    <motif>Custom94: Custom</motif>
     <!-- <icon>/resources/icon_xsmall</icon> -->
     <page>SpecialistForecastPage</page>
 </CustomTab>

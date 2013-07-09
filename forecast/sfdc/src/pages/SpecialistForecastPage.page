@@ -95,7 +95,7 @@
 
             <!-- Forecasts Table data/user select section -->
             <apex:pageBlockSection collapsible="true" title="Find a Forecast">
-                <apex:outputPanel rendered="true" id="dataId3" style="">
+                <apex:outputPanel rendered="true"> <!-- id="dataId3" style="" -->
                     <apex:inputField style="font-weight:bold" value="{!sfLI.ForecastOwner__c}" id="txtUsr"  />
                 </apex:outputPanel>
 
@@ -121,7 +121,8 @@
                     </apex:actionStatus>
                 </apex:outputPanel>
 
-                <apex:outputPanel rendered="true" id="dataId6">
+                <apex:outputPanel rendered="true">
+                    <apex:commandButton rendered="true" id="backButton" title="Back TODO    " value="Back" action="http://michaelballphoto.com" status="" rerender="" />
                     <!-- <apex:outputText value="" /> -->
                     <apex:commandButton rendered="{!(canSubmit)}" Id="SubmitReport" title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
                     <apex:commandButton rendered="{!(viewAccessToSyncButton)}" Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
@@ -134,6 +135,7 @@
             <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
                 <h3>{!PreparedByUser}'s Forecast</h3>
             </div>
+            <br />
             <!-- Custom table is lighter than Apex
             and the repeat construct handles iteration
             uses all custom CSS for view settings -->

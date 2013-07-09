@@ -41,7 +41,6 @@ public with sharing class SpecialistForecastController {
     private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
     private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
     private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
-
     private static final String FOR_ID =
             SpecialistForecastException.FOR_ID;
     private static final String USER_ID_NULL =
@@ -49,36 +48,37 @@ public with sharing class SpecialistForecastController {
     private static final String ROLE_ID_NULL =
             SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
 
-    private Set<Id> allUserIDs = new Set<Id>();
-    private Set<Id> allTotaluserIDs = new Set<Id>();
-
-    private List<SelectOption> fiscalYears;
-    private List<SelectOption> fiscalQuarters;
-
-    public SpecialistForecastlineItemVO[] splFClineItems;
-
     private Map<Id,set<Id>> mapSecondLeverUsersAndChild = new Map<Id,set<Id>>();
     private Map<Id,RoleUserInfoVO> mapUsers = new Map<Id,RoleUserInfoVO>();
 
-    public Boolean displayPopup      { get;set; }
+    private SelectOption[] fiscalYears;
+    private SelectOption[] fiscalQuarters;
 
-    public Decimal overrideAmount    { get;set; }
-    public Decimal originalAmount    { get;set; }
-    public Decimal originaloldAmount { get;set; }
+    private Set<Id> allUserIDs = new Set<Id>();
+    private Set<Id> allTotaluserIDs = new Set<Id>();
 
+    public Boolean displayPopup         { get;set; }
+    public boolean displayDrilDownPopup { get;set; }
+
+    public Decimal originalAmount       { get;set; }
+    public Decimal originalOldAmount    { get;set; }
+    public Decimal overrideAmount       { get;set; }
+
+    public SpecialistForecast__c[] specialistforecastList { get;set; }
     public SpecialistForecastlineItem__c sfLI;
+    public SpecialistForecastlineItemVO[] splFClineItems;
 
-    public String overrideComment    { get;set; }
-    public String strRecordId        { get;set; }
-    public String strField           { get;set; }
-    public String lineItemOwnerId    { get;set; }
-    public String fiscalYear         { get;set; }
-    public String fiscalQuarter      { get;set; }
-    public String selectedFY         { get;set; }
-    public String selectedFQ         { get;set; }
-    public String preparedByUser     { get;set; }
-    public String selectedUserId     { get;set; }
-    public String selectedRoleId     { get;set; }
+    public String overrideComment       { get;set; }
+    public String strRecordId           { get;set; }
+    public String strField              { get;set; }
+    public String lineItemOwnerId       { get;set; }
+    public String fiscalYear            { get;set; }
+    public String fiscalQuarter         { get;set; }
+    public String selectedFY            { get;set; }
+    public String selectedFQ            { get;set; }
+    public String preparedByUser        { get;set; }
+    public String selectedUserId        { get;set; }
+    public String selectedRoleId        { get;set; }
 
     /**
      *  Constructs a new Specialist Forecast Controller Class
@@ -110,38 +110,9 @@ public with sharing class SpecialistForecastController {
     }
 
     /**
-     *
-     */
-    public List<SelectOption> getFiscalYears() {
-        if (this.fiscalYears == null) {
-            this.setFiscalYears();
-        }
-        return this.fiscalYears;
-    }
-
-    /**
-     *  @param fYears is a SelectOption[]
-     */
-    public void setFiscalYears(List<SelectOption> fYears) {
-        this.fiscalYears = fYears;
-    }
-
-    /**
-     *
-     */
-    public void setFiscalYears() {
-        this.fiscalYears = new List<SelectOption>();
-        List<String> fYears = ForecastHelper.getSupportedFiscalYears();
-
-        for(String fYear : fYears) {
-            this.fiscalYears.add(new SelectOption(fYear, fYear));
-        }
-    }
-
-    /**
      *  @return the list of fiscal quaters as a SelectOption[]
      */
-    public List<SelectOption> getFiscalQuarters() {
+    public SelectOption[] getFiscalQuarters() {
         if (this.fiscalQuarters == null) {
             this.fiscalQuarters = new List<SelectOption>();
             this.fiscalQuarters.add(new SelectOption(QTR_ALL, QTR_ALL));
@@ -153,6 +124,36 @@ public with sharing class SpecialistForecastController {
         }
         return this.fiscalQuarters;
     }
+
+    /**
+     *  @return the list of selectable fiscal years
+     */
+    public SelectOption[] getFiscalYears() {
+        if (this.fiscalYears == null) {
+            this.setFiscalYears();
+        }
+        return this.fiscalYears;
+    }
+
+    /**
+     *  Set the selectable fiscal years to an input of FYEARS (SelectOption)
+     */
+    public void setFiscalYears(SelectOption[] fYears) {
+        this.fiscalYears = fYears;
+    }
+
+    /**
+     *  Reset fiscal year selections to the base supported years
+     */
+    public void setFiscalYears() {
+        this.fiscalYears = new List<SelectOption>();
+        List<String> fYears = ForecastHelper.getSupportedFiscalYears();
+
+        for(String fYear : fYears) {
+            this.fiscalYears.add(new SelectOption(fYear, fYear));
+        }
+    }
+
 
     /**
      *  @return
@@ -955,7 +956,7 @@ public with sharing class SpecialistForecastController {
      /**
       *
       */
-    private void initializeOverrideVariables() {
+     private void initializeOverrideVariables() {
          overrideAmount = null;
          originalAmount = 0;
          originaloldAmount = 0;
@@ -967,10 +968,6 @@ public with sharing class SpecialistForecastController {
      /***************  Specialist Forecast Override End  **********************/
 
      /***************    Specialist Forecast DrillDown   **********************/
-     public List<SpecialistForecast__c> specialistforecastList{ get;set; }
-
-     public boolean displayDrilDownPopup {get; set;}
-
      /**
       *
       */
