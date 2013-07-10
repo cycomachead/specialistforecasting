@@ -36,7 +36,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 public with sharing class ForecastReportQueryParam {
 
     String fiscalYear;
-    List<String> monthsInQrtr;
+    String[] monthsInQrtr;
     Set<Id> ownerIds;
 
     public ForecastReportQueryParam() {
