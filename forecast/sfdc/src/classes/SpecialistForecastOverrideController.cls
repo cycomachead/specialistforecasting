@@ -155,7 +155,7 @@ public with sharing class SpecialistForecastOverrideController {
 
      private boolean isSelfOverride(){
          Boolean blnoverride = false;
-         if (UserInfo.getUserId() == lineItemownerID){
+         if (UserInfo.getUserId() == lineItemownerID) {
              blnoverride = true;
          }
          return blnoverride;

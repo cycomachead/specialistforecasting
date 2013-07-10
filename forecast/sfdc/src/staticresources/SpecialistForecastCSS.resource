@@ -38,7 +38,6 @@
     padding: 4px;
 }
 
-/* matches tab style color, which is 2nd to last column, 3rd down. */
 tfoot.footer {
     background-color: rgb(109, 135, 168);
 }
@@ -50,7 +49,7 @@ tfoot.footer {
 }
 
 .cell td, .dataRow td, .topTable td,
-.outer td, .dataRow tr > td {
+.dataRow tr > td {
      vertical-align: middle !important;
 }
 
@@ -58,7 +57,6 @@ tfoot.footer {
     background: #FFF;
 }
 
-/* Image and Link alignment */
 .cell span, .cell td > span {
     margin: 2px 0;
     padding: 3px 6px;
@@ -66,7 +64,7 @@ tfoot.footer {
     vertical-align: middle;
 }
 
-.cell img, /*.cell * > img,*/
+.cell img,
 .cell td > span > img,
 .cell td > span > a > img {
     margin: 0;
@@ -74,9 +72,9 @@ tfoot.footer {
     vertical-align: middle;
 }
 
-.no { text-decoration: none; }
+.no, .no:hover { text-decoration: none; }
 
-.uName { text-align: center; }
+.center { text-align: center; }
 
 /* Column used for a scrollbar in the table. */
 #scrollbar {
@@ -92,9 +90,8 @@ tfoot.footer {
 
 .custPopup {
     background-color: #FFF;
-    border-width: 2px;
-    border-style: solid;
-    z-index: 9999;
+    border: 3px solid #000;
+    box-shadow: 5px 5px 15px #888;
     left: 50%;
     padding:10px;
     position: absolute;
@@ -105,39 +102,28 @@ tfoot.footer {
     width: 500px;
     margin-left: -250px;
     top:100px;
-}
-
-.popupBackground {
-    background-color: rgba(0, 0, 0, .2);
-    filter: alpha(opacity = 20); /* ms */
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 9998;
+    z-index: 9999;
 }
 
 .custPopupDrilDown{
     background-color: #FFF;
-    border-width: 2px;
-    border-style: solid;
-    z-index: 9999;
+    border: 3px solid #000;
+    box-shadow: 5px 5px 15px #888;
     left: 50%;
-    padding:10px;
+    padding: 10px;
     position: absolute;
     width: 1100px;
     margin-left: -450px;
-    top:50px;
+    top: 50px;
+    z-index: 9999;
 }
 
-.popupBackgroundDrilDown {
-    background-color: rgba(0, 0, 0, .2);
-    filter: alpha(opacity = 20);
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 9998;
+.blur {
+    -webkit-filter: alpha(opacity = 30);
+       -moz-filter: alpha(opacity = 30);
+        -ms-filter: alpha(opacity = 30);
+         -o-filter: alpha(opacity = 30);
+            filter: alpha(opacity = 30);
+    -webkit-filter: blur(2.5px) saturate(50%);
+            filter: blur(2.5px) saturate(50%);
 }

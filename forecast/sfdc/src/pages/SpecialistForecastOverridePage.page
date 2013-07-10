@@ -1,15 +1,12 @@
 <apex:page id="pg" Controller="SpecialistForecastOverrideController" tabstyle="SpecialistForecastTab__tab" showHeader="false" sidebar="false" >
     <apex:form id="frm">
-   
+
     <script>
         function refreshParent()
         {
-          
-              parent.window.opener.location.href="/apex/SpecialistForecastPage?ref=true&fy={!JSENCODE(strFY)}&fq={!JSENCODE(strFQ)}" ;
-              self.close();
-                
+            parent.window.opener.location.href="/apex/SpecialistForecastPage?ref=true&fy={!JSENCODE(strFY)}&fq={!JSENCODE(strFQ)}" ;
+            self.close();
         }
-           
     </script>
 
         <apex:pageBlock id="pb">
@@ -33,7 +30,7 @@
                                     <apex:facet name="stop">
                                         <!--apex:commandButton Id="overrideamnts" title="Override Amount on Specialist Forecast Report" onclick="if(refreshParent()==false) return false;" value="Update" action="{!saveOverride}"  oncomplete="refreshParent();" status="counterStatus" rerender="pb" /-->
                                          <apex:commandButton Id="overrideamnts" title="Override Amount on Specialist Forecast Report"  value="Update" action="{!saveOverride}"  status="counterStatus" rerender="pb" />
-                                   
+
                                     </apex:facet>
                                 </apex:actionStatus>
                                 <apex:commandButton id="canceloverrideamnt"  title="Close the window and refresh parent" value="Close"  oncomplete="refreshParent();"/>

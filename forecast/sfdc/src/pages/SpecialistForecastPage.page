@@ -1,29 +1,31 @@
-<apex:page showHeader="true" docType="html-5.0" cache="false" tabStyle="SpecialistForecastTab__tab" controller="SpecialistForecastController" title="Specialist Forecast" standardStylesheets="false">
+<apex:page showHeader="true" docType="html-5.0" cache="false"
+    tabStyle="SpecialistForecastTab__tab" controller="SpecialistForecastController"
+    title="Specialist Forecast Reports" standardStylesheets="false">
     <apex:stylesheet value="{!$Resource.SpecialistForecastCSS}" />
 
     <apex:form>
         <!-- id="spforecastForm" -->
         <apex:actionfunction name="callMethod" action="{!viewSpecialistReport}" />
-        <img title="Custom Forecast" class="pageTitleIcon" src="/img/s.gif" />
 
+        <!-- Override Popup -->
         <apex:outputPanel id="ovrpopup">
             <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}" />
             <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
                 <apex:pageBlock id="pb">
                     <apex:pagemessages />
                     <apex:pageBlockSection collapsible="false" title="Override the Original Amount" id="pbs">
-                        <apex:panelGrid columns="2" id="pbsg">
-                            <apex:Outputtext value="Original Amount" />
+                        <apex:panelGrid columns="2"> <!-- id="pbsg" -->
+                            <apex:outputText value="Original Amount" />
                             <apex:outputText value="{0, number, $###,##0.00}">
                                 <apex:param value="{!originalAmount}"/>
                             </apex:outputText>
-                            <apex:Outputtext value="Override Amount" />
-                            <apex:inputtext id="Originaloverrideamount" value="{!overrideAmount}"/>
-                            <apex:Outputtext value="Comments" />
+                            <apex:outputText value="Override Amount" />
+                            <apex:inputText id="Originaloverrideamount" value="{!overrideAmount}"/>
+                            <apex:outputText value="Comments" />
                             <apex:inputTextarea id="Originaloverridecomment" value="{!overrideComment}"/>
                             <apex:actionStatus startText="ProcessingTheStuff" id="counterStatus">
-                                <apex:facet name="start" >
-                                    <apex:commandButton Id="overrideamnt" title="Override Amount" value="Update" disabled="true" action="{!saveOverride}" >
+                                <apex:facet name="start">
+                                    <apex:commandButton Id="overrideamnt" title="Override Amount" value="Update" disabled="true" action="{!saveOverride}" onClick="removeBlur()">
                                         <img src="/apexpages/devmode/img/saveStatus.gif" />
                                     </apex:commandButton>
                                 </apex:facet>
@@ -32,283 +34,302 @@
                                     <apex:commandButton Id="overrideamnts" title="Override Amount on Specialist Forecast Report" value="Update" action="{!saveOverride}" status="counterStatus" rerender="pb" />
                                 </apex:facet>
                             </apex:actionStatus>
-                            <apex:commandButton id="canceloverrideamnt" title="Close the window and refresh parent" value="Close" action="{!closeOverridePopup}"/>
+                            <apex:commandButton id="canceloverrideamnt" title="Close the window and refresh parent" value="Close" action="{!closeOverridePopup}" onClick="removeBlur()" />
                         </apex:panelGrid>
                     </apex:pageBlockSection>
                 </apex:pageBlock>
             </apex:outputPanel>
         </apex:outputPanel>
 
-        <!-- ********* Drilldown Popup ********************** -->
+        <!-- Drill-down Popup -->
         <apex:outputPanel id="drldwnpopup">
-            <apex:outputPanel styleClass="popupBackgroundDrilDown" layout="block" rendered="{!displayDrilDownPopup }"/>
-            <apex:outputPanel styleClass="custPopupDrilDown" layout="block" rendered="{!displayDrilDownPopup }">
-                <apex:pageBlock id="pbdrl">
+            <!-- <apex:outputPanel styleClass="popupBackgroundDrilDown" layout="block" rendered="{!displayDrilDownPopup}" /> -->
+            <apex:outputPanel styleClass="custPopupDrilDown" layout="block" rendered="{!displayDrilDownPopup}">
+                <apex:pageBlock> <!-- id="pbdrl" -->
                    <apex:pagemessages />
-                   <apex:outputPanel >
-                          <apex:commandButton Id="close" title="Close Specialist Forecast data" value="Close" action="{!closeDrilDownPopup}" />
+                   <apex:outputPanel>
+                          <apex:commandButton Id="close" title="Close Specialist Forecast data" value="Close" action="{!closeDrilDownPopup}" onClick="removeBlur()" />
                    </apex:outputPanel>
-
-                   <apex:pageBlockSection collapsible="false" title="List Forecast" columns="3" id="pgBlockSectiondrldwn">
-                       <apex:dataTable styleClass="topTable" id="forecastRows" border="1" value="{!SpecialistforecastList}" var="forecast" width="1000">
-                             <apex:column>
-                                 <apex:facet name="header">Opportunity</apex:facet>
-                                 <apex:outputlink style="white-space:pre-wrap; float: left;" rendered="{!forecast.Opportunity__c!=null}" value="../{!forecast.Opportunity__c}" target="_blank" >{!forecast.Opportunity__r.Name}</apex:outputLink>
-                             </apex:column>
-                             <apex:column>
-                                 <apex:facet name="header">Specialist AE Opportunity Amount</apex:facet>
-                                 <apex:outputText style="float: right;" value="${0, number,###,###,###,##0.00}">
-                                     <apex:param value="{!forecast.ForecastAmount__c}" />
-                                 </apex:outputText>
-                             </apex:column>
-                             <apex:column>
-                                 <apex:facet name="header">Status</apex:facet>
-                                 <apex:outputText value="{!forecast.ForecastStatus__c}"/>
-                             </apex:column>
-                             <apex:column>
-                                 <apex:facet name="header">Month</apex:facet>
-                                 <apex:outputText value="{!forecast.FYMonth__c}"/>
-                             </apex:column>
-                             <apex:column>
-                                 <apex:facet name="header">Year</apex:facet>
-                                 <apex:outputText value="{!forecast.FiscalYear__c}" />
-                             </apex:column>
-                             <apex:column>
-                                 <apex:facet name="header">Stage</apex:facet>
-                                 <apex:outputText rendered="true" value="{!forecast.ForecastStage__c}"/>
-                             </apex:column>
-                             <apex:column>
-                                 <apex:facet name="header">Close Date</apex:facet>
-                                 <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
-                                    <apex:param value="{!forecast.ForecastCloseDate__c}" />
-                                 </apex:outputText>
-                             </apex:column>
-                        </apex:dataTable>
-                    </apex:pageBlockSection>
-                </apex:pageBlock>
+                   <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
+                       <h3>List Forecast</h3> <!-- FIXME this is terrible -->
+                   </div>
+                   <br />
+                   <table class="topTable" width="1000">
+                       <thead class="header">
+                           <tr class="headerRow">
+                               <th>Opportunity</th>
+                               <th>Specialist AE Opportunity Amount</th>
+                               <th>Status</th>
+                               <th>Month</th>
+                               <th>Year</th>
+                               <th>Stage</th>
+                               <th>Close Date</th>
+                               <!-- <td id="scrollbar" rowspan="1001"><td> -->
+                               <!-- 1000 is max length of apex:repeat+header -->
+                           </tr>
+                       </thead>
+                       <apex:repeat value="{!SpecialistforecastList}" var="forecast">
+                           <tr class="dataRow">
+                               <td class="cell center"><!-- Opportunity -->
+                                   <apex:outputlink rendered="{!forecast.Opportunity__c!=null}" value="../{!forecast.Opportunity__c}" target="_blank" >{!forecast.Opportunity__r.Name}</apex:outputLink>
+                               </td>
+                               <td class="cell"><!-- Specialist AE Opportunity Amount -->
+                                   <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                       <apex:param value="{!forecast.ForecastAmount__c}" />
+                                   </apex:outputText>
+                               </td>
+                               <td class="cell center"><!-- Status -->
+                                   {!forecast.ForecastStatus__c}
+                               </td>
+                               <td class="cell center"><!-- Month -->
+                                   {!forecast.FYMonth__c}
+                               </td>
+                               <td class="cell center"><!-- Year -->
+                                   {!forecast.FiscalYear__c}
+                               </td>
+                               <td class="cell center"><!-- Stage-->
+                                   {!forecast.ForecastStage__c}
+                               </td>
+                               <td class="cell center"><!-- Pipelined -->
+                                   <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                       <apex:param value="{!forecast.ForecastCloseDate__c}" />
+                                   </apex:outputText>
+                               </td>
+                           </tr>
+                       </apex:repeat>
+                   </table>
+               </apex:pageBlock>
             </apex:outputPanel>
         </apex:outputPanel>
-        <!-- ************ Drill-down popup End ***************** -->
 
-        <apex:pageBlock rendered="true" title="Specialist Forecasts" id="pgBlock">
-            <apex:pageMessages />
+        <!-- Main Page -->
+        <div id="blur">
+            <apex:pageBlock rendered="true" title="Specialist Forecasts" id="pgBlock">
+                <apex:pageMessages />
+                <!-- Forecasts Table data/user select section -->
+                <apex:pageBlockSection collapsible="true" title="Find a Forecast">
+                    <apex:outputPanel rendered="true">
+                        <apex:inputField style="font-weight:bold" value="{!sfLI.ForecastOwner__c}" id="txtUsr"  />
+                    </apex:outputPanel>
 
-            <!-- Forecasts Table data/user select section -->
-            <apex:pageBlockSection collapsible="true" title="Find a Forecast">
-                <apex:outputPanel rendered="true"> <!-- id="dataId3" style="" -->
-                    <apex:inputField style="font-weight:bold" value="{!sfLI.ForecastOwner__c}" id="txtUsr"  />
-                </apex:outputPanel>
+                    <apex:outputPanel rendered="true" id="fiscalYear">
+                        <strong>Fiscal Year&nbsp;</strong>
+                        <apex:selectList value="{!selectedFY}" multiselect="false" size="1">
+                            <apex:selectOptions value="{!fiscalYears}" />
+                        </apex:selectList>
 
-                <apex:outputPanel rendered="true" id="fiscalYear">
-                    <strong>Fiscal Year&nbsp;</strong>
-                    <apex:selectList value="{!selectedFY}" multiselect="false" size="1">
-                        <apex:selectOptions value="{!fiscalYears}" />
-                    </apex:selectList>
+                        <strong>&nbsp;Fiscal Quarter&nbsp;</strong>
+                        <apex:selectList value="{!selectedFQ}" multiselect="false" size="1">
+                            <apex:selectOptions value="{!fiscalQuarters}" />
+                        </apex:selectList>
+                        <apex:actionStatus startText="ProcessingTheStuff" id="counterStatus">
+                            <apex:facet name="start" >
+                                <apex:commandButton Id="processReport" title="View Report" value="ViewReport" disabled="true" action="{!viewSpecialistReport}">
+                                    <img src="/apexpages/devmode/img/saveStatus.gif" />
+                                </apex:commandButton>
+                            </apex:facet>
+                            <apex:facet name="stop">
+                                <apex:commandButton Id="viewReport" title="View Specialist Forecast Report" value="View Report" action="{!viewSpecialistReport}" status="counterStatus" rerender="pgBlock" />
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
 
-                    <strong>&nbsp;Fiscal Quarter&nbsp;</strong>
-                    <apex:selectList value="{!selectedFQ}" multiselect="false" size="1">
-                        <apex:selectOptions value="{!fiscalQuarters}" />
-                    </apex:selectList>
-                    <apex:actionStatus startText="ProcessingTheStuff" id="counterStatus">
-                        <apex:facet name="start" >
-                            <apex:commandButton Id="processReport" title="View Report" value="ViewReport" disabled="true" action="{!viewSpecialistReport}">
-                                <img src="/apexpages/devmode/img/saveStatus.gif" />
-                            </apex:commandButton>
-                        </apex:facet>
-                        <apex:facet name="stop">
-                            <apex:commandButton Id="viewReport" title="View Specialist Forecast Report" value="View Report" action="{!viewSpecialistReport}" status="counterStatus" rerender="pgBlock" />
-                        </apex:facet>
-                    </apex:actionStatus>
-                </apex:outputPanel>
+                    <apex:outputPanel rendered="true">
+                        <apex:commandButton rendered="{!canGoBack}" id="backButton" title="Back TODO" value="Back" action="{!backLink}" />
+                        <apex:commandButton rendered="{!canSubmit}" Id="SubmitReport" title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
+                        <apex:commandButton rendered="{!(viewAccessToSyncButton)}" Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
 
-                <apex:outputPanel rendered="true">
-                    <apex:commandButton rendered="true" id="backButton" title="Back TODO    " value="Back" action="http://michaelballphoto.com" status="" rerender="" />
-                    <!-- <apex:outputText value="" /> -->
-                    <apex:commandButton rendered="{!(canSubmit)}" Id="SubmitReport" title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
-                    <apex:commandButton rendered="{!(viewAccessToSyncButton)}" Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
-                </apex:outputPanel>
-            </apex:pageBlockSection>
+                <!-- Header Section, w/o extra VF tags-->
+                <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
+                    <h3>{!PreparedByUser}'s Forecast for {!selectedFQ} {!selectedFY}</h3>
+                </div>
+                <br />
 
-            <!-- Main Forecasts Table -->
-            <!-- Classes are VF conversions to look like a pageblock header,
-                but are light weight to speed up page renders -->
-            <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
-                <h3>{!PreparedByUser}'s Forecast</h3>
-            </div>
-            <br />
-            <!-- Custom table is lighter than Apex
-            and the repeat construct handles iteration
-            uses all custom CSS for view settings -->
-            <table class="topTable">
-                <thead class="header">
-                    <tr class="headerRow">
-                        <th>User (Role)</th>
-                        <th>Closed</th>
-                        <th>My Commit</th>
-                        <th>My Direct Reports' Commit</th>
-                        <th>My Best Case</th>
-                        <th>My Direct Reports' Best Case</th>
-                        <th>Pipelined</th>
-                        <th>Quota</th>
-                        <!-- <td id="scrollbar" rowspan="1002"><td> -->
-                        <!-- 1000 is max length of apex:repeat+header/footer -->
-                    </tr>
-                </thead>
-                <tfoot class="footer">
-                    <tr class="sumRow">
-                        <td><!-- User -->Total</td>
-                        <td><!-- Closed -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.closedAmount}"/>
-                            </apex:outputText>
-                        </td>
-                        <td><!-- My Commit -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.commitOverrideAmount}"/>
-                            </apex:outputText>
-                        </td>
-                        <td><!-- Dir Reps Commit -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.commitAmount}"/>
-                            </apex:outputText>
-                        </td>
-                        <td><!-- Best Case -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.bestCaseOverrideAmount}" />
-                            </apex:outputText>
-                        </td>
-                        <td><!-- Dir Reps Best Case -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.bestCaseAmount}"/>
-                            </apex:outputText>
-                        </td>
-                        <td><!-- Pipelined -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.pipelineAmount}"/>
-                            </apex:outputText>
-                        </td>
-                        <td><!-- Quota -->
-                            <apex:outputText rendered="true" value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!totalLine.quotaAmount}" />
-                            </apex:outputText>
-                        </td>
-                    </tr>
-                </tfoot>
-                <apex:repeat value="{!SpecialistforecastLineItemsData}" var="forecast" rows="{! SpecialistforecastLineItemsData.size - 1}">
-                    <tr class="dataRow">
-                        <td class="cell uName"><!-- User -->
-                            <apex:commandLink value="{!forecast.UserRoleName}" action="{!reportDrildownByUser_Role}">
-                                <apex:param name="userId" value="{!forecast.UserId}" assignTo="{!selectedUserId}"/>
-                            </apex:commandLink>
-                            <apex:outputPanel rendered="{!(forecast.isSubmitted)}">
-                                <apex:image title="submitted on {!forecast.SubmittedDate}" url="{!$Resource.SpecialistForecastSubmitIcon}"/>
-                            </apex:outputpanel>
-                        </td>
-                        <td class="cell"><!-- Closed -->
-                            <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.closedAmount > 0)}" value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.closedAmount}" />
-                            </apex:outputText>
-                            <apex:commandLink rendered="{!(forecast.searchUser && forecast.closedAmount > 0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup">
+                <!-- Main Forecasts Table -->
+                <table class="topTable">
+                    <thead class="header">
+                        <tr class="headerRow">
+                            <th>User (Role)</th>
+                            <th>Closed</th>
+                            <th>My Commit</th>
+                            <th>My Direct Reports' Commit</th>
+                            <th>My Best Case</th>
+                            <th>My Direct Reports' Best Case</th>
+                            <th>Pipelined</th>
+                            <th>Quota</th>
+                            <!-- <td id="scrollbar" rowspan="1002"><td> -->
+                            <!-- 1000 is max length of apex:repeat+header/footer -->
+                        </tr>
+                    </thead>
+                    <tfoot class="footer">
+                        <tr class="sumRow">
+                            <td><!-- User -->Total</td>
+                            <td><!-- Closed -->
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                    <apex:param value="{!forecast.closedAmount}"/>
+                                    <apex:param value="{!totalLine.closedAmount}"/>
                                 </apex:outputText>
-                                <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
-                                <apex:param name="ovrType2" value="Closed" assignTo="{!strField}"/>
-                            </apex:commandLink>
-                        </td>
-                        <td class="cell"><!-- My Commit -->
-                            <apex:outputPanel rendered="{!(forecast.MycommitOverridden)}">
-                                <img title="{!forecast.mgrCommitOverrideNotes}" src="/img/mgr_override.gif" />
-                            </apex:outputpanel>
-                            <apex:outputPanel>
+                            </td>
+                            <td><!-- My Commit -->
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                    <apex:param value="{!forecast.commitOverrideAmount}"/>
+                                    <apex:param value="{!totalLine.commitOverrideAmount}"/>
                                 </apex:outputText>
-                                <apex:commandLink styleClass="no" action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
-                                    <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
-                                    <apex:param name="orgamt" value="{!forecast.commitOverrideAmount}" assignTo="{!originalAmount}"/>
-                                    <apex:param name="orgOldamt" value="{!forecast.commitAmount}" assignTo="{!originaloldAmount}"/>
-                                    <apex:param name="lineitem" value="{!forecast.strLineItmId}" assignTo="{!strRecordId}"/>
-                                    <apex:param name="lineowner" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
-                                    <apex:param name="ovrType" value="commit" assignTo="{!strField}"/>
+                            </td>
+                            <td><!-- Dir Reps Commit -->
+                                <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalLine.commitAmount}"/>
+                                </apex:outputText>
+                            </td>
+                            <td><!-- Best Case -->
+                                <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalLine.bestCaseOverrideAmount}" />
+                                </apex:outputText>
+                            </td>
+                            <td><!-- Dir Reps Best Case -->
+                                <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalLine.bestCaseAmount}"/>
+                                </apex:outputText>
+                            </td>
+                            <td><!-- Pipelined -->
+                                <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalLine.pipelineAmount}"/>
+                                </apex:outputText>
+                            </td>
+                            <td><!-- Quota -->
+                                <apex:outputText rendered="true" value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalLine.quotaAmount}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    <apex:repeat value="{!SFcastLineItemsData}" var="forecast" rows="{! SFcastLineItemsData.size - 1}">
+                        <tr class="dataRow">
+                            <td class="cell center"><!-- User -->
+                                <apex:commandLink value="{!forecast.UserRoleName}" action="{!reportDrildownByUser_Role}">
+                                    <apex:param name="userId" value="{!forecast.UserId}" assignTo="{!selectedUserId}"/>
                                 </apex:commandLink>
-                            </apex:outputPanel>
-                        </td>
-                        <td class="cell"><!-- Dir Reps Commit -->
-                            <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepCommitAmount}" rendered="{!(NOT(forecast.searchUser&& forecast.commitAmount > 0) && (forecast.MycommitOverridden && forecast.commitPreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.commitAmount}"/>
-                            </apex:outputText>
-                            <apex:outputText rendered="{!(NOT(forecast.searchUser&& forecast.commitAmount>0) && NOT(forecast.MycommitOverridden &&forecast.commitPreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.commitAmount}"/>
-                            </apex:outputText>
-                            <apex:commandLink styleClass="no" rendered="{!(forecast.searchUser&& forecast.commitAmount>0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup" >
-                                <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                <apex:outputPanel rendered="{!(forecast.isSubmitted)}">
+                                    <apex:image title="submitted on {!forecast.SubmittedDate}" url="{!$Resource.SpecialistForecastSubmitIcon}"/>
+                                </apex:outputpanel>
+                            </td>
+                            <td class="cell"><!-- Closed -->
+                                <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.closedAmount > 0)}" value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!forecast.closedAmount}" />
+                                </apex:outputText>
+                                <apex:commandLink rendered="{!(forecast.searchUser && forecast.closedAmount > 0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup"
+                                    onClick="setBlur();">
+                                    <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                        <apex:param value="{!forecast.closedAmount}"/>
+                                    </apex:outputText>
+                                    <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
+                                    <apex:param name="ovrType2" value="Closed" assignTo="{!strField}"/>
+                                </apex:commandLink>
+                            </td>
+                            <td class="cell"><!-- My Commit -->
+                                <apex:outputPanel rendered="{!forecast.MyCommitOverridden}">
+                                    <img title="{!forecast.mgrCommitOverrideNotes}" src="/img/mgr_override.gif" />
+                                </apex:outputpanel>
+                                <apex:outputPanel>
+                                    <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                        <apex:param value="{!forecast.commitOverrideAmount}"/>
+                                    </apex:outputText>
+                                    <apex:commandLink styleClass="no" onClick="setBlur();"
+                                        action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
+                                        <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
+                                        <apex:param name="orgamt" value="{!forecast.commitOverrideAmount}" assignTo="{!originalAmount}"/>
+                                        <apex:param name="orgOldamt" value="{!forecast.commitAmount}" assignTo="{!originaloldAmount}"/>
+                                        <apex:param name="lineitem" value="{!forecast.strLineItmId}" assignTo="{!strRecordId}"/>
+                                        <apex:param name="lineowner" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
+                                        <apex:param name="ovrType" value="commit" assignTo="{!strField}"/>
+                                    </apex:commandLink>
+                                </apex:outputPanel>
+                            </td>
+                            <td class="cell"><!-- Dir Reps Commit -->
+                                <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepCommitAmount}" rendered="{!(NOT(forecast.searchUser&& forecast.commitAmount > 0) && (forecast.MyCommitOverridden && forecast.commitPreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>
-                                <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
-                                <apex:param name="ovrType2" value="Commit" assignTo="{!strField}"/>
-                            </apex:commandLink>
-                        </td>
-                        <td class="cell"><!-- Best Case -->
-                            <apex:outputPanel rendered="{!(forecast.MyBestcaseOverridden)}">
-                                <img title="{!forecast.mgrBestcaseOverrideNotes}" src="/img/mgr_override.gif"/>
-                            </apex:outputpanel>
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.bestCaseOverrideAmount}" />
-                            </apex:outputText>
-                            <apex:outputPanel>
-                                <apex:commandLink styleClass="no" action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
-                                    <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
-                                    <apex:param name="orgamt" value="{!forecast.bestcaseOverrideAmount}" assignTo="{!originalAmount}"/>
-                                    <apex:param name="orgOldamt" value="{!forecast.bestcaseAmount}" assignTo="{!originaloldAmount}"/>
-                                    <apex:param name="lineitem" value="{!forecast.strLineItmId}" assignTo="{!strRecordId}"/>
-                                    <apex:param name="lineowner" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
-                                    <apex:param name="ovrType" value="bestcase" assignTo="{!strField}"/>
+                                <apex:outputText rendered="{!(NOT(forecast.searchUser&& forecast.commitAmount>0) && NOT(forecast.MycommitOverridden &&forecast.commitPreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!forecast.commitAmount}"/>
+                                </apex:outputText>
+                                <apex:commandLink styleClass="no" onClick="setBlur()"
+                                    rendered="{!(forecast.searchUser&& forecast.commitAmount>0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup">
+                                    <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                        <apex:param value="{!forecast.commitAmount}"/>
+                                    </apex:outputText>
+                                    <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
+                                    <apex:param name="ovrType2" value="Commit" assignTo="{!strField}"/>
                                 </apex:commandLink>
-                            </apex:outputPanel>
-                        </td>
-                        <td class="cell"><!-- Dir Reps Best Case -->
-                            <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepbestcaseAmount}" rendered="{!(NOT(forecast.searchUser && forecast.bestcaseAmount > 0) &&(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.bestcaseAmount}"/>
-                            </apex:outputText>
-                            <apex:outputText value="${0, number,###,###,###,##0.00}"
-                                rendered="{!NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && NOT(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch)}">
-                                <apex:param value="{!forecast.bestCaseAmount}" />
-                            </apex:outputText>
-                            <apex:commandLink rendered="{!((forecast.searchUser)&& forecast.bestcaseAmount>0)}"
-                                action="{!showDrilDownPopup}" rerender="drldwnpopup" >
+                            </td>
+                            <td class="cell"><!-- Best Case -->
+                                <apex:outputPanel rendered="{!(forecast.MyBestcaseOverridden)}">
+                                    <img title="{!forecast.mgrBestcaseOverrideNotes}" src="/img/mgr_override.gif"/>
+                                </apex:outputpanel>
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                    <apex:param value="{!forecast.bestCaseAmount}"/>
+                                    <apex:param value="{!forecast.bestCaseOverrideAmount}" />
                                 </apex:outputText>
-                                <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
-                                <apex:param name="ovrType2" value="Best Case" assignTo="{!strField}"/>
-                            </apex:commandLink>
-                        </td>
-                        <td class="cell"><!-- Pipelined -->
-                            <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.pipelineAmount>0)}"
-                                value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.pipelineAmount}" />
-                            </apex:outputText>
-                            <apex:commandLink rendered="{!((forecast.searchUser) && forecast.pipelineAmount>0)}"
-                                action="{!showDrilDownPopup}" rerender="drldwnpopup" >
+                                <apex:outputPanel>
+                                    <apex:commandLink styleClass="no" onClick="setBlur();"
+                                        action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
+                                        <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
+                                        <apex:param name="orgamt" value="{!forecast.bestcaseOverrideAmount}" assignTo="{!originalAmount}"/>
+                                        <apex:param name="orgOldamt" value="{!forecast.bestcaseAmount}" assignTo="{!originaloldAmount}"/>
+                                        <apex:param name="lineitem" value="{!forecast.strLineItmId}" assignTo="{!strRecordId}"/>
+                                        <apex:param name="lineowner" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
+                                        <apex:param name="ovrType" value="bestcase" assignTo="{!strField}"/>
+                                    </apex:commandLink>
+                                </apex:outputPanel>
+                            </td>
+                            <td class="cell"><!-- Dir Reps Best Case -->
+                                <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepbestcaseAmount}" rendered="{!(NOT(forecast.searchUser && forecast.bestcaseAmount > 0) &&(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!forecast.bestcaseAmount}"/>
+                                </apex:outputText>
+                                <apex:outputText value="${0, number,###,###,###,##0.00}"
+                                    rendered="{!NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && NOT(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch)}">
+                                    <apex:param value="{!forecast.bestCaseAmount}" />
+                                </apex:outputText>
+                                <apex:commandLink rendered="{!((forecast.searchUser)&& forecast.bestcaseAmount>0)}"
+                                    action="{!showDrilDownPopup}" rerender="drldwnpopup" onClick="setBlur()">
+                                    <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                        <apex:param value="{!forecast.bestCaseAmount}"/>
+                                    </apex:outputText>
+                                    <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
+                                    <apex:param name="ovrType2" value="Best Case" assignTo="{!strField}"/>
+                                </apex:commandLink>
+                            </td>
+                            <td class="cell"><!-- Pipelined -->
+                                <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.pipelineAmount>0)}"
+                                    value="${0, number,###,###,###,##0.00}">
+                                    <apex:param value="{!forecast.pipelineAmount}" />
+                                </apex:outputText>
+                                <apex:commandLink rendered="{!((forecast.searchUser) && forecast.pipelineAmount>0)}"
+                                    action="{!showDrilDownPopup}" rerender="drldwnpopup" onClick="setBlur()">
+                                    <apex:outputText value="${0, number,###,###,###,##0.00}">
+                                        <apex:param value="{!forecast.pipelineAmount}"/>
+                                    </apex:outputText>
+                                    <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
+                                    <apex:param name="ovrType2" value="Pipeline" assignTo="{!strField}"/>
+                                </apex:commandLink>
+                            </td>
+                            <td class="cell"><!-- Quota -->
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                    <apex:param value="{!forecast.pipelineAmount}"/>
+                                    <apex:param value="{!forecast.quotaAmount}" />
                                 </apex:outputText>
-                                <apex:param name="lineowner1" value="{!forecast.UserId}" assignTo="{!lineItemownerID}"/>
-                                <apex:param name="ovrType2" value="Pipeline" assignTo="{!strField}"/>
-                            </apex:commandLink>
-                        </td>
-                        <td class="cell"><!-- Quota -->
-                            <apex:outputText value="${0, number,###,###,###,##0.00}">
-                                <apex:param value="{!forecast.quotaAmount}" />
-                            </apex:outputText>
-                        </td>
-                    </tr>
-                </apex:repeat>
-            </table>
-       </apex:pageBlock>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </apex:pageBlock>
+        </div>
 
     </apex:form>
     <!-- End main page form -->
-
+    <script type="text/javascript">
+        function setBlur() {
+            document.getElementById("blur").className = "blur";
+        }
+        function removeBlur() {
+            document.getElementById('blur').className = "";
+        }
+    </script>
 </apex:page>

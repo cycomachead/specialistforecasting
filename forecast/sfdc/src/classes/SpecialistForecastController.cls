@@ -34,8 +34,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class SpecialistForecastController {
 
-    private Boolean isValidated = true;
-
+    /** Static helper strings and error messages. */
     private static final String CLOSED      = ForecastHelper.CLOSED;
     private static final String CLOSED_WON  = ForecastHelper.CLOSED_WON;
     private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
@@ -48,13 +47,15 @@ public with sharing class SpecialistForecastController {
     private static final String ROLE_ID_NULL =
             SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
 
+    private Boolean isValidated = true;
+
     private Map<Id,set<Id>> mapSecondLeverUsersAndChild = new Map<Id,set<Id>>();
     private Map<Id,RoleUserInfoVO> mapUsers = new Map<Id,RoleUserInfoVO>();
 
     private SelectOption[] fiscalYears;
     private SelectOption[] fiscalQuarters;
 
-    private Set<Id> allUserIDs = new Set<Id>();
+    private Set<Id> allUserIDs      = new Set<Id>();
     private Set<Id> allTotaluserIDs = new Set<Id>();
 
     public Boolean displayPopup         { get;set; }
@@ -66,7 +67,7 @@ public with sharing class SpecialistForecastController {
 
     public SpecialistForecast__c[] specialistforecastList { get;set; }
     public SpecialistForecastlineItem__c sfLI;
-    public SpecialistForecastlineItemVO[] splFClineItems;
+    public SFcastLineItem[] splFClineItems;
 
     public String overrideComment       { get;set; }
     public String strRecordId           { get;set; }
@@ -82,6 +83,7 @@ public with sharing class SpecialistForecastController {
 
     /**
      *  Constructs a new Specialist Forecast Controller Class
+     *  If no FY or FQ is provided, then the current system time is used.
      */
     public SpecialistForecastController() {
         try {
@@ -100,7 +102,7 @@ public with sharing class SpecialistForecastController {
         }
     }
 
-    // Will need to be updated for month editing.
+    // FIXME Will need to be updated for month editing.
     /**
      *  @retun true IFF the user is allowed to override/edit forecasts
      */
@@ -136,13 +138,6 @@ public with sharing class SpecialistForecastController {
     }
 
     /**
-     *  Set the selectable fiscal years to an input of FYEARS (SelectOption)
-     */
-    public void setFiscalYears(SelectOption[] fYears) {
-        this.fiscalYears = fYears;
-    }
-
-    /**
      *  Reset fiscal year selections to the base supported years
      */
     public void setFiscalYears() {
@@ -154,23 +149,30 @@ public with sharing class SpecialistForecastController {
         }
     }
 
+    /**
+     *  Set the selectable fiscal years to an input of FYEARS (SelectOption)
+     */
+    public void setFiscalYears(SelectOption[] fYears) {
+        this.fiscalYears = fYears;
+    }
 
     /**
-     *  @return
+     *  @return the current forcast record (line item)
      */
-     public SpecialistForecastlineItem__c getSfLI() {
+    public SpecialistForecastlineItem__c getSfLI() {
         return this.sfLI;
     }
 
     /**
-     *  @return
+     *  Returns the current user working with forecasts
      */
     public String getPreparedByUser() {
-          return preparedByUser;
+        return preparedByUser;
     }
 
-
-    /** */
+    /**
+     *  Close the override popup and set the values to defualt for next time.
+     */
     public void closeOverridePopup() {
         displayPopup = false;
         initializeOverrideVariables();
@@ -253,6 +255,15 @@ public with sharing class SpecialistForecastController {
         }
     }
 
+    /** Return True IFF the user has somewhere to go back to. */
+    public boolean getCanGoBack() {
+        return true;
+    }
+
+    /** Returns the link of where the uder will go back to. */
+    public String backLink() {
+        return 'http://michaelballphoto.com';
+    }
     /**
      * Called from specialist forecast page Refresh Now  Button to get the
      * latest data from SpecialistForecast Object to SpecialistForecast lineItem
@@ -272,8 +283,9 @@ public with sharing class SpecialistForecastController {
      *  TODO: REFACTOR REFACTOR REFACTOR
      *
      */
-    public SpecialistForecastlineItemVO[] getSpecialistforecastlineItemsData() {
-        try { // Background check to make sure that we have the necessary data.
+    public SFcastLineItem[] getSFcastLineItemsData() {
+        // Background check to make sure that we have the necessary data.
+        try {
             User usr;
             if (sfLI.ForecastOwner__c != null) {
                 usr = [SELECT Id, UserRoleId FROM User
@@ -324,10 +336,10 @@ public with sharing class SpecialistForecastController {
 
         // map used for setting the user and role as key and
         // SpecialistForecastlineItem as the value
-        Map<String,SpecialistForecastlineItemVO> mapUserRolelineItems = new
-        Map<String,SpecialistForecastlineItemVO>();
+        Map<String,SFcastLineItem> mapUserRolelineItems = new
+        Map<String,SFcastLineItem>();
 
-        splFClineItems = new List<SpecialistForecastlineItemVO>();
+        splFClineItems = new List<SFcastLineItem>();
 
         List<HierarchyUtil.RoleNodeWrapper> lstRoles;
         // get the searchuser and all level reporting users
@@ -335,7 +347,7 @@ public with sharing class SpecialistForecastController {
         mapUsers.clear();
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
-        SpecialistForecastlineItemVO sfLIne = new SpecialistForecastlineItemVO();
+        SFcastLineItem sfLine = new SFcastLineItem();
 
         Set<Id> ownerIdsforQuery = new Set<Id>();
 
@@ -360,10 +372,10 @@ public with sharing class SpecialistForecastController {
         ForecastHelper.getSpecialistForecastQuota(queryParam );
 
         // Consolidate data
-        SpecialistForecastlineItemVO lineItem;
+        SFcastLineItem lineItem;
 
-        Map<Id,SpecialistForecastlineItemVO> ownerlineItemsMap = new
-        Map<Id,SpecialistForecastlineItemVO>();
+        Map<Id,SFcastLineItem> ownerlineItemsMap = new
+        Map<Id,SFcastLineItem>();
 
         /********************** consolidation Start *************************/
         // Agreegate the records by owner for display as we are having one
@@ -386,7 +398,7 @@ public with sharing class SpecialistForecastController {
         boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
         for (Id lineItemOwnerId : mapSecondLeverUsersAndChild.keySet()) {
-            sfLIne = new SpecialistForecastlineItemVO();
+            sfLIne = new SFcastLineItem();
             Boolean mgrCommitOverride = false;
             Boolean mgrBestCaseOverride = false;
 
@@ -579,7 +591,7 @@ public with sharing class SpecialistForecastController {
             totcommitOvrrideAmount    += commitOvrrideAmount;
 
         } else {
-            sfLIne = new SpecialistForecastlineItemVO();
+            sfLIne = new SFcastLineItem();
             sfLIne.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
             sfLIne.forOverride = (selectedFQ != QTR_ALL ? sfLIne.forOverride : false);
@@ -588,7 +600,7 @@ public with sharing class SpecialistForecastController {
 
 
         // create total line items
-        sfLIne = new SpecialistForecastlineItemVO();
+        sfLIne = new SFcastLineItem();
         sfLIne.reportingUser          = true;
         sfLIne.userName               = GRAND_TOTAL;
         sfLIne.closedAmount           = totclosedAmount;
@@ -606,7 +618,7 @@ public with sharing class SpecialistForecastController {
     }
 
     /** Return the Total line for the Forecasts table on the VF page. */
-    public SpecialistForecastlineItemVO getTotalLine() {
+    public SFcastLineItem getTotalLine() {
         return splFClineItems[splFClineItems.size() - 1];
     }
 
@@ -748,11 +760,11 @@ public with sharing class SpecialistForecastController {
      *  for a quater and  we store as months
      *  @param List of SpecialistForecastlineItem__c
      */
-    private Map<Id,SpecialistForecastlineItemVO> aggregatelineItemsByOwner(
+    private Map<Id,SFcastLineItem> aggregatelineItemsByOwner(
         List<SpecialistForecastlineItem__c> listSplFCastlineItems) {
 
-        Map<Id,SpecialistForecastlineItemVO> ownerlineItemsMap =
-            new Map<Id,SpecialistForecastlineItemVO>();
+        Map<Id,SFcastLineItem> ownerlineItemsMap =
+            new Map<Id,SFcastLineItem>();
         Decimal closedAmount   = 0;
         Decimal commitAmount   = 0;
         Decimal bestCaseAmount = 0;
@@ -762,7 +774,7 @@ public with sharing class SpecialistForecastController {
         Decimal commitMgrOvrrideAmount;
         Decimal bestCaseMgrOverrideAmount;
 
-        SpecialistForecastlineItemVO splv;
+        SFcastLineItem splv;
         String currentOwnerId;
         String previousOwnerId;
 
@@ -786,7 +798,7 @@ public with sharing class SpecialistForecastController {
 
             splv = ownerlineItemsMap.get(currentOwnerId);
             if (splv == null) {
-                splv = new SpecialistForecastlineItemVO();
+                splv = new SFcastLineItem();
             }
 
             if (previousOwnerId != currentOwnerId) {
@@ -951,10 +963,10 @@ public with sharing class SpecialistForecastController {
      */
     private boolean isSelfOverride() {
         return UserInfo.getUserId() == lineItemOwnerId;
-     }
+    }
 
-     /**
-      *
+     /** FIXME: OverrideAmt null and not 0?
+      *  Sets default values for all variables.
       */
      private void initializeOverrideVariables() {
          overrideAmount = null;
@@ -986,18 +998,18 @@ public with sharing class SpecialistForecastController {
      }
 
     /**
-     *
+     *  Sets specialistForecastList to forecast records in selected FQ and FY.
      */
     private void getSpecialistForecastRecords() {
-        List<String> lstStatus = new List<String>();
+        String[] lstStatus = new String[]{};
         lstStatus.add(strField);
 
         if (strField == CLOSED) { lstStatus.add(CLOSED_WON); }
 
-        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
+        String[] lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
         // get months by quarter
 
-        specialistforecastList = [SELECT Opportunity__C, Opportunity__r.Name,
+        specialistForecastList = [SELECT Opportunity__C, Opportunity__r.Name,
                                     Account__c, FiscalYear__c, FYMonth__c,
                                     ForecastAmount__c, ForecastStatus__c,
                                     ForecastCloseDate__c, ForecastStage__c
@@ -1008,18 +1020,22 @@ public with sharing class SpecialistForecastController {
                                     AND ForecastStatus__c in :lststatus];
     }
 
+    /** Return 0 if INP is null, else inp. */
     private static Integer defaultIfNull(Integer inp) {
         return inp == null ? 0 : inp;
     }
 
+    /** Return 0 if INP is null, else inp. */
     private static Decimal defaultIfNull(Decimal inp) {
         return inp == null ? 0 : inp;
     }
 
+    /** Return '' if INP is null, else inp. */
     private static String defaultIfNull(String inp) {
         return inp == null ? '' : inp;
     }
 
+    /** Return false if INP is null, else inp. */
     private static Boolean defaultIfNull(Boolean inp) {
         return inp == null ? false : inp;
     }

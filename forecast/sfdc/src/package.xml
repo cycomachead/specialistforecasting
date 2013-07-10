@@ -15,7 +15,7 @@
         <members>SpecialistForecastException</members>
         <members>SpecialistForecastSubmitBatch</members>
         <members>SpecialistForecastOverrideController</members>
-        <members>SpecialistForecastLineItemVO</members>
+        <members>SFcastLineItem</members>
         <members>SplstForecastDrildownOptyController</members>
         <members>StoreBatchAdminController</members>
         <members>StoreScheduler</members>

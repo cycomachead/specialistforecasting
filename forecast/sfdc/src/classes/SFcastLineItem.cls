@@ -33,7 +33,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  @since 180.store
  */
 
-public with sharing class SpecialistForecastLineItemVO {
+public with sharing class SFcastLineItem {
 
        public Boolean reportingUser               { get;set; }
        public Boolean forOverride                 { get;set; }
@@ -111,7 +111,7 @@ public with sharing class SpecialistForecastLineItemVO {
           return sCurrency;
       }
 
-      public boolean getbestcasePreviousAmountMatch() {
+      public boolean getBestCasePreviousAmountMatch() {
           return (searchUser != null || !searchUser) &&
               prevDirectRepBestcaseAmount != null && bestCaseAmount != null
                   && prevDirectRepbestCaseAmount != bestCaseAmount;
@@ -119,18 +119,17 @@ public with sharing class SpecialistForecastLineItemVO {
 
     /**
      *  Create  displayble virtual LineItem for the VF page
-     *
      *  @param LineItem and User Map
      */
-    Public void createEmptySPLineItemforVFPage(Id lineItemownerid, Id searchUser,
-    Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaamt ) {
+    public void createEmptySPLineItemforVFPage(Id lineItemOwnerId, Id searchUser,
+    Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaAmt) {
 
         this.forOverride            = (searchUser != UserInfo.getUserId());
-        this.userName               = mapUsers.get(lineItemownerid).userName;
-        this.roleName               = mapUsers.get(lineItemownerid).roleName;
-        this.userId                 = mapUsers.get(lineItemownerid).userID;
-        this.roleId                 = mapUsers.get(lineItemownerid).roleID;
-        this.quotaAmount            = quotaamt;
+        this.userName               = mapUsers.get(lineItemOwnerId).userName;
+        this.roleName               = mapUsers.get(lineItemOwnerId).roleName;
+        this.userId                 = mapUsers.get(lineItemOwnerId).userID;
+        this.roleId                 = mapUsers.get(lineItemOwnerId).roleID;
+        this.quotaAmount            = quotaAmt;
 
         this.closedAmount           = 0;
         this.commitAmount           = 0;

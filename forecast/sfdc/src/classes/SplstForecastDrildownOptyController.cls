@@ -40,20 +40,20 @@ public with sharing class SplstForecastDrildownOptyController {
 
     /**********Constructor***********/
     public SplstForecastDrildownOptyController() {
-         String SelectedFQ = System.currentPageReference().getParameters().get('fq');
-         String SelectedFY = System.currentPageReference().getParameters().get('fy');
-         Id SelectedOwner = System.currentPageReference().getParameters().get('oId');
+         String selectedFQ = System.currentPageReference().getParameters().get('fq');
+         String selectedFY = System.currentPageReference().getParameters().get('fy');
+         Id selectedOwner = System.currentPageReference().getParameters().get('oId');
          String status = System.currentPageReference().getParameters().get('st');
 
-         selectedFQ = SelectedFQ != null ?
-             String.escapeSingleQuotes(SelectedFQ) : null;
-         selectedFY = SelectedFY != null ?
-             String.escapeSingleQuotes(SelectedFY) : null;
-         selectedOwner = SelectedOwner != null ?
-             String.escapeSingleQuotes(SelectedOwner) : null;
+         selectedFQ = selectedFQ != null ?
+             String.escapeSingleQuotes(selectedFQ) : null;
+         selectedFY = selectedFY != null ?
+             String.escapeSingleQuotes(selectedFY) : null;
+         selectedOwner = selectedOwner != null ?
+             String.escapeSingleQuotes(selectedOwner) : null;
          status = status != null ? String.escapeSingleQuotes(status) : null;
 
-         List<String> lstStatus = new List<String>();
+         String[] lstStatus = new List<String>();
          lstStatus.add(status);
          if (status == CLOSED) {
              lstStatus.add(CLOSED_WON);
@@ -67,7 +67,7 @@ public with sharing class SplstForecastDrildownOptyController {
     public void getSpecialistForecastRecords(String fy, String fq, Id ownerId,
     String[] lststatus) {
         //get months by quarter
-        List<String> lstMonths = ForecastHelper.getMonthsInQuarter(fq);
+        String[] lstMonths = ForecastHelper.getMonthsInQuarter(fq);
         specialistforecastList=[SELECT Opportunity__C,Opportunity__r.Name,
                                     Account__c, FiscalYear__c, FYMonth__c,
                                     ForecastAmount__c, ForecastStatus__c,

@@ -4,8 +4,8 @@
     <label>Specialist Forecast Reports</label>
     <customObject>false</customObject>
     <mobileReady>false</mobileReady>
-    <motif>Custom94: Custom</motif>
-    <!-- <icon>/resources/icon_xsmall</icon> -->
+    <motif>Custom147: Random</motif>
+    <icon>icon/icon.png</icon>
     <page>SpecialistForecastPage</page>
 </CustomTab>
 
