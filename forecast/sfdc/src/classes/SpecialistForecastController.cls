@@ -230,7 +230,7 @@ public with sharing class SpecialistForecastController {
             SpecialistForecastlineItem__c sfLI = new SpecialistForecastlineItem__c();
             sfLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
             sfLI.FiscalYear__c = SelectedFY;
-            sfLI.FYMonth__c = strMonth; //This needs to be fixed. TODO
+            sfLI.Month__c = strMonth; //This needs to be fixed. TODO
             sfLI.submittedDate__c = System.now() ;
             sfLI.ExtIdentifier__c = sfLI.ForecastOwner__c + SelectedFY + strMonth;
             upsert sfLI ExtIdentifier__c;
@@ -942,7 +942,7 @@ public with sharing class SpecialistForecastController {
 
         spc.ExtIdentifier__c = lineItemOwnerId + SelectedFY + lstMonths.get(0);
         spc.SpecialistForecastOverride__c = spovr.Id;
-        spc.FYMonth__c = lstMonths.get(0);
+        spc.Month__c = lstMonths.get(0);
         spc.ForecastOwner__c = lineItemOwnerId;
         spc.FiscalYear__c = SelectedFY;
         spc.OwnerId = lineItemOwnerId;
@@ -1010,12 +1010,12 @@ public with sharing class SpecialistForecastController {
         // get months by quarter
 
         specialistForecastList = [SELECT Opportunity__C, Opportunity__r.Name,
-                                    Account__c, FiscalYear__c, FYMonth__c,
+                                    Account__c, FiscalYear__c, Month__c,
                                     ForecastAmount__c, ForecastStatus__c,
                                     ForecastCloseDate__c, ForecastStage__c
                                     FROM SpecialistForecast__c
                                     WHERE FiscalYear__c = :SelectedFY
-                                    AND FYMonth__c in :lstMonths
+                                    AND Month__c in :lstMonths
                                     AND OwnerId = :lineItemOwnerId
                                     AND ForecastStatus__c in :lststatus];
     }

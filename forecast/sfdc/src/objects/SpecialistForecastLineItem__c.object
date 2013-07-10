@@ -63,10 +63,10 @@
         <unique>true</unique>
     </fields>
     <fields>
-        <fullName>FYMonth__c</fullName>
+        <fullName>Month__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>The month in number for the year starting from 1</inlineHelpText>
-        <label>FY Month #</label>
+        <inlineHelpText>The month the specialist forecast applies to</inlineHelpText>
+        <label>Fiscal Month Name</label>
         <picklist>
             <picklistValues>
                 <fullName>April</fullName>
@@ -181,9 +181,9 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>MyBestcaseOverridden__c</fullName>
+        <fullName>MyBestCaseOverridden__c</fullName>
         <externalId>false</externalId>
-        <label>My Best case Overridden?</label>
+        <label>My Best Case Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
     <defaultValue>true</defaultValue>
@@ -297,7 +297,7 @@
         <description>Record Type assigned for Specialist Forecast Line Item</description>
         <label>Specialist Forecast Line Item Data</label>
         <picklistValues>
-            <picklist>FYMonth__c</picklist>
+            <picklist>Month__c</picklist>
             <values>
                 <fullName>April</fullName>
                 <default>false</default>

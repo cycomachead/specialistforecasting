@@ -69,12 +69,12 @@ public with sharing class SplstForecastDrildownOptyController {
         //get months by quarter
         String[] lstMonths = ForecastHelper.getMonthsInQuarter(fq);
         specialistforecastList=[SELECT Opportunity__C,Opportunity__r.Name,
-                                    Account__c, FiscalYear__c, FYMonth__c,
+                                    Account__c, FiscalYear__c, Month__c,
                                     ForecastAmount__c, ForecastStatus__c,
                                     ForecastCloseDate__c, ForecastStage__c
                                     FROM SpecialistForecast__c
                                     WHERE FiscalYear__c = :fy
-                                    AND FYMonth__c in :lstMonths
+                                    AND Month__c in :lstMonths
                                     AND OwnerId = :ownerId
                                     AND ForecastStatus__c in :lststatus];
     }

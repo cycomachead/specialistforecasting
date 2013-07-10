@@ -18,7 +18,7 @@ trigger SpecialistForecastTrigger on SpecialistForecast__c bulk(before insert,
                 }
                 monthAndFiscalYear =
                      ForecastHelper.extractFYAndMonthFromDate(specForecast.ForecastCloseDate__c);
-                specForecast.FYMonth__c = monthAndFiscalYear[0];
+                specForecast.Month__c = monthAndFiscalYear[0];
                 specForecast.FiscalYear__c = monthAndFiscalYear[1];
                 if (specForecast.ForecastAmount__c == null ||
                 specForecast.ForecastAmount__c < 0) {

@@ -97,7 +97,7 @@ global with sharing class SpecialistForecastBatch implements
             AggregateResult ar = (AggregateResult) so;
             // process the results
             external_Key = (String) ar.get('OwnerId') +
-                (String) ar.get('FiscalYear__c') + (String) ar.get('FYMonth__c');
+                (String) ar.get('FiscalYear__c') + (String) ar.get('Month__c');
             if (processedRecords.get(external_Key) == null) {
                  item = new SpecialistForecastLineItem__c();
                  item.OriginalClosedAmount__c   = 0;
@@ -111,8 +111,8 @@ global with sharing class SpecialistForecastBatch implements
             item.ForecastOwner__c = (Id) ar.get('OwnerId');
             item.OwnerId = (Id) ar.get('OwnerId');
             item.FiscalYear__c = (String)ar.get('FiscalYear__c');
-            temp = (String) ar.get('FYMonth__c');
-            item.FYMonth__c =  temp;
+            temp = (String) ar.get('Month__c');
+            item.Month__c =  temp;
             temp = (String) ar.get('ForecastStatus__c');
             Decimal tempAmount = (Decimal) ar.get('amnt');
 

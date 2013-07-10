@@ -37,7 +37,7 @@
             -->
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>FYMonth__c</field>
+                <field>Month__c</field>
             </layoutItems>
          </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

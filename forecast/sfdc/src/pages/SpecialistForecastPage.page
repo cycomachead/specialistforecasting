@@ -82,7 +82,7 @@
                                    {!forecast.ForecastStatus__c}
                                </td>
                                <td class="cell center"><!-- Month -->
-                                   {!forecast.FYMonth__c}
+                                   {!forecast.Month__c}
                                </td>
                                <td class="cell center"><!-- Year -->
                                    {!forecast.FiscalYear__c}

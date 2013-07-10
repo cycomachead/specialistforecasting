@@ -170,7 +170,7 @@
                          <apex:facet name="header">
                             <apex:outputText value="Month" />          
                          </apex:facet>  
-                         <apex:outputText value="{!forecast.FYMonth__c}"/>
+                         <apex:outputText value="{!forecast.Month__c}"/>
                       </apex:column>
                       <apex:column >
                          <apex:facet name="header">

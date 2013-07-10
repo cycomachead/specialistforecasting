@@ -54,7 +54,7 @@
         <members>SpecialistForecast__c.FiscalQuarter__c</members>
         <members>SpecialistForecast__c.FiscalYear__c</members>
         <members>SpecialistForecast__c.ForecastType__c</members>
-        <members>SpecialistForecast__c.FYMonth__c</members>
+        <members>SpecialistForecast__c.Month__c</members>
         <members>SpecialistForecast__c.ForecastStatus__c</members>
         <members>SpecialistForecast__c.ForecastStage__c</members>
         <members>SpecialistForecast__c.ForecastAmount__c</members>
@@ -65,7 +65,7 @@
         <members>SpecialistForecast__c.MgrForecastNotes__c</members>
         <members>SpecialistForecast__c.OwnerCopy__c</members>
         <members>SpecialistForecast__c.OwnerManager__c</members>
-        <members>SpecialistForecastLineItem__c.FYMonth__c</members>
+        <members>SpecialistForecastLineItem__c.Month__c</members>
         <members>SpecialistForecastLineItem__c.FiscalYear__c</members>
         <members>SpecialistForecastLineItem__c.ForecastOwner__c</members>
         <members>SpecialistForecastLineItem__c.ForecastNotes__c</members>
@@ -73,7 +73,7 @@
         <members>SpecialistForecastLineItem__c.OriginalCommitAmount__c</members>
         <members>SpecialistForecastLineItem__c.OriginalBestCaseAmount__c</members>
         <members>SpecialistForecastLineItem__c.OriginalPipelineAmount__c</members>
-        <members>SpecialistForecastLineItem__c.MyBestcaseOverridden__c</members>
+        <members>SpecialistForecastLineItem__c.MyBestCaseOverridden__c</members>
         <members>SpecialistForecastLineItem__c.MyCommitOverridden__c</members>
         <members>SpecialistForecastLineItem__c.SpecialistForecastOverride__c</members>
         <members>SpecialistForecastLineItem__c.ExcludeFromCalculation__c</members>
@@ -99,7 +99,7 @@
         <members>ForecastHierarchyConfigurations__c.ExtIdentifier__c</members>
         <members>ForecastHierarchyConfigurations__c.checkAccessToSyncJob__c</members>
         <members>SpecialistForecastQuota__c.FiscalYear__c</members>
-        <members>SpecialistForecastQuota__c.FYMonth__c</members>
+        <members>SpecialistForecastQuota__c.Month__c</members>
         <members>SpecialistForecastQuota__c.QuotaAmount__c</members>
         <members>SpecialistForecastQuota__c.QuotaNotes__c</members>
         <members>SpecialistForecastQuota__c.SpecialistForecastUser__c</members>

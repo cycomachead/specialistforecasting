@@ -136,7 +136,7 @@ public with sharing class SpecialistForecastOverrideController {
 
         spc.ExtIdentifier__c = lineItemownerID + strFY + lstMonths.get(0);
         spc.SpecialistForecastOverride__c = spovr.Id;
-        spc.FYMonth__c = lstMonths.get(0);
+        spc.Month__c = lstMonths.get(0);
         spc.ForecastOwner__c = lineItemownerID;
         spc.FiscalYear__c = strFY;
         spc.OwnerId = lineItemownerID;

@@ -40,11 +40,11 @@ global with sharing class ForecastIterable implements Iterator<AggregateResult> 
     global ForecastIterable() {
         count = 0;
 //      List<String> supportFYs = ForecastHelper.getSupportedFiscalYearsForForecast();
-        ownerMap = [SELECT OwnerId, ForecastStatus__c, FiscalYear__c, FYMonth__c,
+        ownerMap = [SELECT OwnerId, ForecastStatus__c, FiscalYear__c, Month__c,
                      SUM(ForecastAmount__c) amnt FROM SpecialistForecast__c
                     WHERE  ExcludeFROMCalculation__c != true Group By OwnerId,
-                    ForecastStatus__c, FiscalYear__c, FYMonth__c Order by OwnerID,
-                    FiscalYear__c, FYMonth__c];
+                    ForecastStatus__c, FiscalYear__c, Month__c Order by OwnerID,
+                    FiscalYear__c, Month__c];
     }
 
     global boolean hasNext() {

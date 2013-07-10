@@ -40,7 +40,7 @@
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
     <fields>
-        <fullName>FYMonth__c</fullName>
+        <fullName>Month__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The month in number for the year starting from 1</inlineHelpText>
         <label>FY Month #</label>
@@ -177,7 +177,7 @@
         <columns>QuotaAmount__c</columns>
         <columns>SpecialistForecastUser__c</columns>
         <columns>FiscalYear__c</columns>
-        <columns>FYMonth__c</columns>
+        <columns>Month__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

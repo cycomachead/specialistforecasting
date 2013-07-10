@@ -295,7 +295,7 @@ public with sharing class ForecastHelper {
 
         SpecialistForecastLineItem__c[] lineItemsData;
 
-        lineItemsData = [SELECT Id,ForecastOwner__c, FiscalYear__c, FYMonth__c,
+        lineItemsData = [SELECT Id,ForecastOwner__c, FiscalYear__c, Month__c,
             OriginalBestcaseAmount__c, OriginalClosedAmount__c,
             OriginalCommitAmount__c, OriginalPipelineAmount__c,
             SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c,
@@ -310,7 +310,7 @@ public with sharing class ForecastHelper {
                         FROM SpecialistForecastLineItem__c
                         WHERE ExcludeFromCalculation__c = false
                             AND FiscalYear__c = :queryParam.getFiscalYear()
-                            AND FYMonth__c IN : queryParam.getMonthsInQrtr()
+                            AND Month__c IN : queryParam.getMonthsInQrtr()
                             AND ForecastOwner__c IN :queryParam.getOwnerIds()
                             Order By ForecastOwner__c
                       ];
@@ -332,7 +332,7 @@ public with sharing class ForecastHelper {
                         sum(QuotaAmount__c) amnt
               FROM SpecialistForecastQuota__c
                         WHERE FiscalYear__c = :queryParam.getFiscalYear()
-                        AND FYMonth__c IN : queryParam.getMonthsInQrtr()
+                        AND Month__c IN : queryParam.getMonthsInQrtr()
                         AND SpecialistForecastuser__c IN :queryParam.getOwnerIds()
                         GROUP BY  SpecialistForecastuser__c,FiscalYear__c
                         ORDER BY SpecialistForecastuser__c
