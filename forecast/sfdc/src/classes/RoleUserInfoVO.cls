@@ -34,8 +34,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 public with sharing class RoleUserInfoVO {
-    public Id roleId { get;set; }
-    public Id userId { get;set; } 
+    public Id     roleId   { get;set; }
+    public Id     userId   { get;set; }
     public String roleName { get;set; }
     public String userName { get;set; }
 

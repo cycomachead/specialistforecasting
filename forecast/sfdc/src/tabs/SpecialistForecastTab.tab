@@ -5,7 +5,7 @@
     <customObject>false</customObject>
     <mobileReady>false</mobileReady>
     <motif>Custom147: Random</motif>
-    <icon>icon/icon.png</icon>
+    <!-- <icon>icon/icon.png</icon> -->
     <page>SpecialistForecastPage</page>
 </CustomTab>
 

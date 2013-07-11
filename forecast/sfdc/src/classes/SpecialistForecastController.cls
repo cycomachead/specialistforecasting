@@ -49,14 +49,17 @@ public with sharing class SpecialistForecastController {
 
     private Boolean isValidated = true;
 
-    private Map<Id,set<Id>> mapSecondLeverUsersAndChild = new Map<Id,set<Id>>();
-    private Map<Id,RoleUserInfoVO> mapUsers = new Map<Id,RoleUserInfoVO>();
+    private Map<Id,Set<Id>> mapSecondLeverUsersAndChild = new Map<Id,Set<Id>>();
+    private Map<Id,UserRole> mapUsers = new Map<Id,UserRole>();
 
     private SelectOption[] fiscalYears;
     private SelectOption[] fiscalQuarters;
 
     private Set<Id> allUserIDs      = new Set<Id>();
     private Set<Id> allTotaluserIDs = new Set<Id>();
+
+    // A list to be used as a stack for back button
+    private String[] usersStack    = new String[] {};
 
     public Boolean displayPopup         { get;set; }
     public boolean displayDrilDownPopup { get;set; }
@@ -81,14 +84,22 @@ public with sharing class SpecialistForecastController {
     public String selectedUserId        { get;set; }
     public String selectedRoleId        { get;set; }
 
+    // Simple wrapper for role and user info, mostly for use in maps.
+    public with sharing class UserRole {
+        public Id     roleId   { get;set; }
+        public Id     userId   { get;set; }
+        public String roleName { get;set; }
+        public String userName { get;set; }
+    }
+
     /**
      *  Constructs a new Specialist Forecast Controller Class
      *  If no FY or FQ is provided, then the current system time is used.
      */
     public SpecialistForecastController() {
         try {
-            this.sfLI = new SpecialistForecastlineItem__c();
-            this.sfLI.ForecastOwner__c = UserInfo.getUserId();
+            sfLI = new SpecialistForecastlineItem__c();
+            sfLI.ForecastOwner__c = UserInfo.getUserId();
             preparedbyUser = UserInfo.getName();
             if (selectedFY == null) {
                 selectedFY = ForecastHelper.getCurrentFiscalYear();
@@ -124,7 +135,7 @@ public with sharing class SpecialistForecastController {
                 this.fiscalQuarters.add(new SelectOption(fQuarter, fQuarter));
             }
         }
-        return this.fiscalQuarters;
+        return fiscalQuarters;
     }
 
     /**
@@ -149,23 +160,17 @@ public with sharing class SpecialistForecastController {
         }
     }
 
-    /**
-     *  Set the selectable fiscal years to an input of FYEARS (SelectOption)
-     */
+    /**  Set selectable fiscal years to FYEARS (SelectOption list) */
     public void setFiscalYears(SelectOption[] fYears) {
         this.fiscalYears = fYears;
     }
 
-    /**
-     *  @return the current forcast record (line item)
-     */
+    /** Returns the current forcast line item object */
     public SpecialistForecastlineItem__c getSfLI() {
         return this.sfLI;
     }
 
-    /**
-     *  Returns the current user working with forecasts
-     */
+    /** Returns the current user working with forecasts */
     public String getPreparedByUser() {
         return preparedByUser;
     }
@@ -188,7 +193,7 @@ public with sharing class SpecialistForecastController {
         isvalidated = true;
         allTotaluserIds.add(UserInfo.getUserId());
         try {
-            this.getMappedUserInfoFromRoleHierarchy(UserInfo.getUserId());
+            getMappedUserInfoFromRoleHierarchy(UserInfo.getUserId());
             if (!allTotaluserIds.contains(sfLI.ForecastOwner__c)) {
                 isvalidated = false;
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
@@ -230,10 +235,10 @@ public with sharing class SpecialistForecastController {
             SpecialistForecastlineItem__c sfLI = new SpecialistForecastlineItem__c();
             sfLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
             sfLI.FiscalYear__c = SelectedFY;
-            sfLI.Month__c = strMonth; //This needs to be fixed. TODO
-            sfLI.submittedDate__c = System.now() ;
+            sfLI.Month__c = strMonth;
+            sfLI.submittedDate__c = System.now();
             sfLI.ExtIdentifier__c = sfLI.ForecastOwner__c + SelectedFY + strMonth;
-            upsert sfLI ExtIdentifier__c;
+            Upsert sfLI ExtIdentifier__c;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
                 'Report Submitted successfully'));
        } else {
@@ -255,15 +260,16 @@ public with sharing class SpecialistForecastController {
         }
     }
 
-    /** Return True IFF the user has somewhere to go back to. */
+    /** Return true IFF the user has somewhere to go back to. */
     public boolean getCanGoBack() {
-        return true;
+        return !userStack.isEmpty();
     }
 
     /** Returns the link of where the uder will go back to. */
     public String backLink() {
-        return 'http://michaelballphoto.com';
+        return '/' + userStack.remove(userStack.size() - 1);
     }
+
     /**
      * Called from specialist forecast page Refresh Now  Button to get the
      * latest data from SpecialistForecast Object to SpecialistForecast lineItem
@@ -302,6 +308,7 @@ public with sharing class SpecialistForecastController {
             return null; // kill the method to prevent later exceptions
         }
 
+        userStack.add(FIXME);
 
         Decimal closedAmount                 = 0;
         Decimal commitAmount                 = 0;
@@ -339,12 +346,12 @@ public with sharing class SpecialistForecastController {
         Map<String,SFcastLineItem> mapUserRolelineItems = new
         Map<String,SFcastLineItem>();
 
-        splFClineItems = new List<SFcastLineItem>();
+        splFClineItems = new SFcastLineItem[0];
 
-        List<HierarchyUtil.RoleNodeWrapper> lstRoles;
+        HierarchyUtil.RoleNodeWrapper[] lstRoles;
         // get the searchuser and all level reporting users
         mapSecondLeverUsersAndChild.clear();
-        mapUsers.clear();
+        // FIXME mapUsers.clear();
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
         SFcastLineItem sfLine = new SFcastLineItem();
@@ -364,12 +371,12 @@ public with sharing class SpecialistForecastController {
         queryParam.setOwnerIds(ownerIdsforQuery);
 
         // get the data from the table as a list
-        List<SpecialistForecastlineItem__c> listSplFCastlineItems =
-        ForecastHelper.getSpecialistForecastLinesTable(queryParam );
+        SpecialistForecastlineItem__c[] listSplFCastlineItems =
+        ForecastHelper.getSpecialistForecastLinesTable(queryParam);
 
         // get Quota information for all the users
         AggregateResult[] listSplFCastQuotas =
-        ForecastHelper.getSpecialistForecastQuota(queryParam );
+        ForecastHelper.getSpecialistForecastQuota(queryParam);
 
         // Consolidate data
         SFcastLineItem lineItem;
@@ -434,7 +441,7 @@ public with sharing class SpecialistForecastController {
                         bestCaseAmount = bestCaseOverrideAmount;
                     }
 
-                    subtotbestCaseAmount += (lineItem.MyBestcaseOverridden ?
+                    subtotbestCaseAmount += (lineItem.myBestCaseOverridden ?
                         lineItem.bestCaseOverrideAmount : bestCaseAmount);
                     subtotpipelineAmount += pipelineAmount;
                     subtotQuotaAmount    += quotaAmount;
@@ -494,7 +501,7 @@ public with sharing class SpecialistForecastController {
                     sfLIne.bestCaseOverrideAmount = (!lineItem.mgrBestCaseOverridden
                         ? subtotbestCaseAmount : subtotbestCaseOverrideAmount);
                     sfLIne.myCommitOverridden = (lineItem.mgrCommitOverridden);
-                    sfLIne.myBestcaseOverridden = (lineItem.mgrBestCaseOverridden);
+                    sfLIne.myBestCaseOverridden = (lineItem.mgrBestCaseOverridden);
                     sfLIne.strLineItmId = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
                     sfLIne.isSubmitted = (defaultIfNull(lineItem.isSubmitted) ||
                          defaultIfNull(sfLIne.isSubmitted));
@@ -507,8 +514,8 @@ public with sharing class SpecialistForecastController {
                 } else {
                     sfLIne.commitOverrideAmount = subtotcommitAmount;
                     sfLIne.bestCaseOverrideAmount = subtotbestCaseAmount;
-                    sfLIne.MycommitOverridden = false;
-                    sfLIne.MyBestcaseOverridden = false;
+                    sfLIne.myCommitOverridden = false;
+                    sfLIne.myBestCaseOverridden = false;
                     sfLIne.strLineItmId = '';
                 }
 
@@ -574,8 +581,8 @@ public with sharing class SpecialistForecastController {
             sfLIne.bestCaseOverrideAmount = bestCaseOverrideAmount;
             sfLIne.pipelineAmount         = pipelineAmount;
             sfLIne.quotaAmount            = quotaAmount;
-            sfLIne.myCommitOverridden     = lineItem.MycommitOverridden;
-            sfLIne.myBestcaseOverridden   = lineItem.MyBestcaseOverridden;
+            sfLIne.myCommitOverridden     = lineItem.myCommitOverridden;
+            sfLIne.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
             sfLIne.strLineItmId           = lineItem.strLineItmId;
             sfLIne.searchUser             = true;
 
@@ -648,16 +655,15 @@ public with sharing class SpecialistForecastController {
             return;
         }
 
-        RoleUserInfoVO ruinfo;
-        List<HierarchyUtil.RoleNodeWrapper> lstchildUserNodes =
-            rolwraps.myChildNodes;
+        UserRole ruinfo;
+        HierarchyUtil.RoleNodeWrapper[] lstchildUserNodes = rolwraps.myChildNodes;
 
         if (lstchildUserNodes != null) {
             for (HierarchyUtil.RoleNodeWrapper rolewrapper : lstchildUserNodes) {
                 if (roleWrapper.myUsers != null
                 && roleWrapper.myUsers.size() == 1) {
                     alluserIds = new Set<Id>();
-                    ruinfo = new RoleUserInfoVO();
+                    ruinfo = new UserRole();
                     ruinfo.roleId = rolewrapper.myRoleId;
                     ruinfo.roleName = rolewrapper.myroleName;
                     ruinfo.userId = rolewrapper.myUsers.get(0).Id;
@@ -676,7 +682,7 @@ public with sharing class SpecialistForecastController {
                 && !roleWrapper.isLeafNode) {
                     alluserIds = new Set<Id>();
 
-                    ruinfo            = new RoleUserInfoVO();
+                    ruinfo            = new UserRole();
                     ruinfo.roleId     = rolewrapper.myRoleId;
                     ruinfo.roleName   = rolewrapper.myroleName;
                     ruinfo.userId     = rolewrapper.myMappedUser.Id;
@@ -695,7 +701,7 @@ public with sharing class SpecialistForecastController {
                 && roleWrapper.isLeafNode) {
                     for(User myusr : rolewrapper.myUsers) {
                         alluserIds = new Set<Id>();
-                        ruinfo = new RoleUserInfoVO();
+                        ruinfo = new UserRole();
                         ruinfo.roleId = rolewrapper.myRoleId;
                         ruinfo.roleName = rolewrapper.myroleName;
                         ruinfo.userId = myusr.Id;
@@ -714,7 +720,7 @@ public with sharing class SpecialistForecastController {
         }//end if
 
         // mapped/search user
-        ruinfo = new RoleUserInfoVO();
+        ruinfo = new UserRole();
         ruinfo.roleId = usr.UserRoleId;
         ruinfo.roleName = usr.userrole.Name;
         ruinfo.userId = userId;
@@ -761,10 +767,9 @@ public with sharing class SpecialistForecastController {
      *  @param List of SpecialistForecastlineItem__c
      */
     private Map<Id,SFcastLineItem> aggregatelineItemsByOwner(
-        List<SpecialistForecastlineItem__c> listSplFCastlineItems) {
+    List<SpecialistForecastlineItem__c> listSplFCastlineItems) {
 
-        Map<Id,SFcastLineItem> ownerlineItemsMap =
-            new Map<Id,SFcastLineItem>();
+        Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
         Decimal closedAmount   = 0;
         Decimal commitAmount   = 0;
         Decimal bestCaseAmount = 0;
@@ -797,9 +802,8 @@ public with sharing class SpecialistForecastController {
 
 
             splv = ownerlineItemsMap.get(currentOwnerId);
-            if (splv == null) {
-                splv = new SFcastLineItem();
-            }
+
+            if (splv == null) { splv = new SFcastLineItem(); }
 
             if (previousOwnerId != currentOwnerId) {
                  previousOwnerId = currentOwnerId;
@@ -814,11 +818,11 @@ public with sharing class SpecialistForecastController {
                  splv.submittedDate = (sfl.submitteddate__c != null ?
                      sfl.submitteddate__c.format() : defaultIfNull(splv.submittedDate));
                  splv.isSubmitted = (sfl.Submitteddate__c != null ||
-                     (splv.isSubmitted == null ? false : splv.isSubmitted));
+                      defaultIfNull(splv.isSubmitted));
 
                  splv.MycommitOverridden =
                      sfl.SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c != null;
-                 splv.MyBestcaseOverridden =
+                 splv.myBestCaseOverridden =
                      sfl.SpecialistForecastOverride__r.OwnOverriddenBestcaseAmount__c != null;
                  splv.mgrCommitOverridden =
                      sfl.SpecialistForecastOverride__r.ManagerOverriddenCommitAmount__c != null;
@@ -843,16 +847,16 @@ public with sharing class SpecialistForecastController {
                 splv.mgrBestCaseOverrideAmount += bestCaseMgrOverrideAmount;
                 splv.MycommitOverridden =
                     (sfl.SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c
-                    != null || splv.MycommitOverridden);
-                splv.MyBestcaseOverridden =
+                    != null || splv.myCommitOverridden);
+                splv.myBestCaseOverridden =
                     (sfl.SpecialistForecastOverride__r.OwnOverriddenBestcaseAmount__c
-                    != null || splv.MyBestcaseOverridden);
+                    != null || splv.myBestCaseOverridden);
                 splv.mgrCommitOverridden =
                     (sfl.SpecialistForecastOverride__r.ManagerOverriddenCommitAmount__c
-                    != null ||splv.mgrCommitOverridden);
+                    != null || splv.mgrCommitOverridden);
                 splv.mgrBestCaseOverridden =
                     (sfl.SpecialistForecastOverride__r.ManagerOverriddenBestcaseAmount__c
-                    != null ||splv.mgrBestCaseOverridden);
+                    != null || splv.mgrBestCaseOverridden);
                 splv.submittedDate = (sfl.submitteddate__c != null ?
                     sfl.submitteddate__c.format() : defaultIfNull(splv.submittedDate));
                 splv.isSubmitted = (sfl.Submitteddate__c != null ||
@@ -881,7 +885,7 @@ public with sharing class SpecialistForecastController {
     private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper rolewrapper,
     User myusr) {
 
-        RoleUserInfoVO ruinfo = new RoleUserInfoVO();
+        UserRole ruinfo = new UserRole();
         ruinfo.roleId = rolewrapper.myRoleId;
         ruinfo.roleName = rolewrapper.myroleName;
         ruinfo.userId = myusr.Id;
@@ -937,7 +941,6 @@ public with sharing class SpecialistForecastController {
            return null;
         }
 
-        //upsert Line item
         String[] lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
 
         spc.ExtIdentifier__c = lineItemOwnerId + SelectedFY + lstMonths.get(0);
@@ -965,13 +968,11 @@ public with sharing class SpecialistForecastController {
         return UserInfo.getUserId() == lineItemOwnerId;
     }
 
-     /** FIXME: OverrideAmt null and not 0?
-      *  Sets default values for all variables.
-      */
+     /** Sets default values for all variables. */
      private void initializeOverrideVariables() {
          overrideAmount = null;
          originalAmount = 0;
-         originaloldAmount = 0;
+         originalOldAmount = 0;
          overrideComment = '';
          strRecordId = '';
          strField = '';
@@ -1007,7 +1008,6 @@ public with sharing class SpecialistForecastController {
         if (strField == CLOSED) { lstStatus.add(CLOSED_WON); }
 
         String[] lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
-        // get months by quarter
 
         specialistForecastList = [SELECT Opportunity__C, Opportunity__r.Name,
                                     Account__c, FiscalYear__c, Month__c,

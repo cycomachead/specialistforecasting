@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Header Forecast Line Item</description>
-    <label>Header Forecasts Line Items</label>
+    <description>Specialist Forecast Line Item FIXME</description>
+    <label>Specialist Forecasts Line Items</label>
     <customObject>true</customObject>
     <mobileReady>false</mobileReady>
-    <motif>Custom82: Whistle</motif>
+    <motif>Custom147: Whistle</motif>
 </CustomTab>
 

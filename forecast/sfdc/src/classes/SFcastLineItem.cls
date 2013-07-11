@@ -38,7 +38,7 @@ public with sharing class SFcastLineItem {
        public Boolean reportingUser               { get;set; }
        public Boolean forOverride                 { get;set; }
        public Boolean myCommitOverridden          { get;set; }
-       public Boolean myBestcaseOverridden        { get;set; }
+       public Boolean myBestCaseOverridden        { get;set; }
        public Boolean mgrCommitOverridden         { get;set; }
        public Boolean mgrBestcaseOverridden       { get;set; }
        public Boolean isSubmitted                 { get;set; }
@@ -114,7 +114,7 @@ public with sharing class SFcastLineItem {
       public boolean getBestCasePreviousAmountMatch() {
           return (searchUser != null || !searchUser) &&
               prevDirectRepBestcaseAmount != null && bestCaseAmount != null
-                  && prevDirectRepbestCaseAmount != bestCaseAmount;
+                  && prevDirectRepBestCaseAmount != bestCaseAmount;
       }
 
     /**
@@ -122,7 +122,7 @@ public with sharing class SFcastLineItem {
      *  @param LineItem and User Map
      */
     public void createEmptySPLineItemforVFPage(Id lineItemOwnerId, Id searchUser,
-    Map<Id,RoleUserInfoVO> mapUsers, Decimal quotaAmt) {
+    Map<Id,Object> mapUsers, Decimal quotaAmt) {
 
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemOwnerId).userName;
@@ -139,7 +139,7 @@ public with sharing class SFcastLineItem {
         this.pipelineAmount         = 0;
         this.reportingUser          = false;
         this.myCommitOverridden     = false;
-        this.myBestcaseOverridden   = false;
+        this.myBestCaseOverridden  = false;
         this.searchUser             = false;
     }
 

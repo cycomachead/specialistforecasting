@@ -8,6 +8,9 @@ TODO: About the package
 #### Conventions
 
 ### Customizations
+To make Specialist Forecasting work for your organization, you'll want to change a few things.
+##### Forecasting Product Types
+A forecast may have a product type associated with it. By default, there are two products, "Product 1" and "Product 2" which are defined in the file `/objects/SpecialistForecast__c.object`. They belong to the `ForecastType__c` object and you may simply add or change the fields in the metadata file with no ill effects (as long as you do it on install).
 
 ##License
 Copyright (c) 2013, salesforce.com, Inc.
@@ -21,9 +24,9 @@ are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
     and/or other materials provided with the distribution.
-    * Neither the name of the salesforce.com, Inc. nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+    * Neither the name of the salesforce.com, Inc. nor the names of its
+    contributors may be used to endorse or promote products derived from this
+    software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED

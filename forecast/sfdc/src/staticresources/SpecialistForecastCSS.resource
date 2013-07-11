@@ -119,11 +119,10 @@ tfoot.footer {
 }
 
 .blur {
-    -webkit-filter: alpha(opacity = 30);
-       -moz-filter: alpha(opacity = 30);
-        -ms-filter: alpha(opacity = 30);
-         -o-filter: alpha(opacity = 30);
-            filter: alpha(opacity = 30);
+            opacity: .5;
+        -ms-opacity: .5;
+    -webkit-opacity:  1;
+            filter: alpha(opacity = 50);
     -webkit-filter: blur(2.5px) saturate(50%);
             filter: blur(2.5px) saturate(50%);
 }

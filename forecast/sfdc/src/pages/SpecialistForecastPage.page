@@ -58,7 +58,7 @@
                        <thead class="header">
                            <tr class="headerRow">
                                <th>Opportunity</th>
-                               <th>Specialist AE Opportunity Amount</th>
+                               <th>AE Opportunity Amount</th>
                                <th>Status</th>
                                <th>Month</th>
                                <th>Year</th>
@@ -122,9 +122,10 @@
                         <apex:selectList value="{!selectedFQ}" multiselect="false" size="1">
                             <apex:selectOptions value="{!fiscalQuarters}" />
                         </apex:selectList>
+                        &nbsp;&nbsp;
                         <apex:actionStatus startText="ProcessingTheStuff" id="counterStatus">
                             <apex:facet name="start" >
-                                <apex:commandButton Id="processReport" title="View Report" value="ViewReport" disabled="true" action="{!viewSpecialistReport}">
+                                <apex:commandButton Id="processReport" title="View Report" value="View Report" disabled="true" action="{!viewSpecialistReport}">
                                     <img src="/apexpages/devmode/img/saveStatus.gif" />
                                 </apex:commandButton>
                             </apex:facet>
@@ -135,7 +136,7 @@
                     </apex:outputPanel>
 
                     <apex:outputPanel rendered="true">
-                        <apex:commandButton rendered="{!canGoBack}" id="backButton" title="Back TODO" value="Back" action="{!backLink}" />
+                        <apex:commandButton rendered="{!canGoBack}" id="backButton" title="Go Back to the Previous Report" value="Back" action="{!backLink}" />
                         <apex:commandButton rendered="{!canSubmit}" Id="SubmitReport" title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
                         <apex:commandButton rendered="{!(viewAccessToSyncButton)}" Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
                     </apex:outputPanel>
@@ -209,7 +210,7 @@
                                 <apex:commandLink value="{!forecast.UserRoleName}" action="{!reportDrildownByUser_Role}">
                                     <apex:param name="userId" value="{!forecast.UserId}" assignTo="{!selectedUserId}"/>
                                 </apex:commandLink>
-                                <apex:outputPanel rendered="{!(forecast.isSubmitted)}">
+                                <apex:outputPanel rendered="{!forecast.isSubmitted}">
                                     <apex:image title="submitted on {!forecast.SubmittedDate}" url="{!$Resource.SpecialistForecastSubmitIcon}"/>
                                 </apex:outputpanel>
                             </td>
@@ -218,7 +219,7 @@
                                     <apex:param value="{!forecast.closedAmount}" />
                                 </apex:outputText>
                                 <apex:commandLink rendered="{!(forecast.searchUser && forecast.closedAmount > 0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup"
-                                    onClick="setBlur();">
+                                    onClick="setBlur()">
                                     <apex:outputText value="${0, number,###,###,###,##0.00}">
                                         <apex:param value="{!forecast.closedAmount}"/>
                                     </apex:outputText>
@@ -235,7 +236,7 @@
                                         <apex:param value="{!forecast.commitOverrideAmount}"/>
                                     </apex:outputText>
                                     <apex:commandLink styleClass="no" onClick="setBlur();"
-                                        action="{!showOverridePopup}" rendered="{!(forecast.forOverride)}" rerender="ovrpopup">
+                                        action="{!showOverridePopup}" rendered="{!forecast.forOverride}" rerender="ovrpopup">
                                         <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
                                         <apex:param name="orgamt" value="{!forecast.commitOverrideAmount}" assignTo="{!originalAmount}"/>
                                         <apex:param name="orgOldamt" value="{!forecast.commitAmount}" assignTo="{!originaloldAmount}"/>
@@ -253,7 +254,7 @@
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>
                                 <apex:commandLink styleClass="no" onClick="setBlur()"
-                                    rendered="{!(forecast.searchUser&& forecast.commitAmount>0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup">
+                                    rendered="{!(forecast.searchUser&& forecast.commitAmount > 0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup">
                                     <apex:outputText value="${0, number,###,###,###,##0.00}">
                                         <apex:param value="{!forecast.commitAmount}"/>
                                     </apex:outputText>
@@ -262,7 +263,7 @@
                                 </apex:commandLink>
                             </td>
                             <td class="cell"><!-- Best Case -->
-                                <apex:outputPanel rendered="{!(forecast.MyBestcaseOverridden)}">
+                                <apex:outputPanel rendered="{!forecast.myBestCaseOverridden}">
                                     <img title="{!forecast.mgrBestcaseOverrideNotes}" src="/img/mgr_override.gif"/>
                                 </apex:outputpanel>
                                 <apex:outputText value="${0, number,###,###,###,##0.00}">
@@ -281,11 +282,11 @@
                                 </apex:outputPanel>
                             </td>
                             <td class="cell"><!-- Dir Reps Best Case -->
-                                <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepbestcaseAmount}" rendered="{!(NOT(forecast.searchUser && forecast.bestcaseAmount > 0) &&(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
+                                <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepbestcaseAmount}" rendered="{!(NOT(forecast.searchUser && forecast.bestcaseAmount > 0) &&(forecast.myBestCaseOverridden&& forecast.bestcasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.bestcaseAmount}"/>
                                 </apex:outputText>
                                 <apex:outputText value="${0, number,###,###,###,##0.00}"
-                                    rendered="{!NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && NOT(forecast.MyBestcaseOverridden && forecast.bestcasePreviousAmountMatch)}">
+                                    rendered="{!NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && NOT(forecast.myBestCaseOverridden&& forecast.bestcasePreviousAmountMatch)}">
                                     <apex:param value="{!forecast.bestCaseAmount}" />
                                 </apex:outputText>
                                 <apex:commandLink rendered="{!((forecast.searchUser)&& forecast.bestcaseAmount>0)}"

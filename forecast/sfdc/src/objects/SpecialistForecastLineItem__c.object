@@ -2,7 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Specialist Forecast Line Item</label>
     <pluralLabel>Specialist Forecast Line Items</pluralLabel>
-    <description>Specialist Forecast Line Items within 62 Org</description>
+    <description>Specialist Forecast Line Items TODO</description>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableFeeds>true</enableFeeds>
@@ -186,7 +186,7 @@
         <label>My Best Case Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-    <defaultValue>true</defaultValue>
+        <defaultValue>true</defaultValue>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -200,7 +200,7 @@
     </fields>
     <fields>
         <fullName>OriginalBestCaseAmount__c</fullName>
-        <description>Specialist AE&apos;s forecasted opportunity best case amount for their cloud-specific products</description>
+        <description>AE's forecasted opportunity best case amount for his/her specific products</description>
         <externalId>false</externalId>
         <label>Original Best Case Amount</label>
         <precision>16</precision>
@@ -212,7 +212,7 @@
     </fields>
     <fields>
         <fullName>OriginalClosedAmount__c</fullName>
-        <description>Specialist AE&apos;s forecasted opportunity closed amount for their cloud-specific products</description>
+        <description>AE's forecasted opportunity closed amount for their specific products</description>
         <externalId>false</externalId>
         <label>Original Closed Amount</label>
         <precision>16</precision>
@@ -224,7 +224,7 @@
     </fields>
     <fields>
         <fullName>OriginalCommitAmount__c</fullName>
-        <description>Specialist AE&apos;s forecasted opportunity commit amount for their cloud-specific products</description>
+        <description>AE's forecasted opportunity commit amount for their specific products</description>
         <externalId>false</externalId>
         <label>Original Commit Amount</label>
         <precision>16</precision>
@@ -236,7 +236,7 @@
     </fields>
     <fields>
         <fullName>OriginalPipelineAmount__c</fullName>
-        <description>Specialist AE&apos;s forecasted opportunity pipeline amount for their cloud-specific products</description>
+        <description>Specialist AE&apos;s forecasted opportunity pipeline amount for their specific products</description>
         <externalId>false</externalId>
         <label>Original Pipeline Amount</label>
         <precision>16</precision>
@@ -299,15 +299,7 @@
         <picklistValues>
             <picklist>Month__c</picklist>
             <values>
-                <fullName>April</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>August</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>December</fullName>
+                <fullName>January</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -315,19 +307,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>January</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>July</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>June</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>March</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>April</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -335,7 +319,19 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>November</fullName>
+                <fullName>June</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>July</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>August</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>September</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -343,7 +339,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>September</fullName>
+                <fullName>November</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>December</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
