@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-
     <types>
         <members>ForecastHelper</members>
         <members>HierarchyUtil</members>
@@ -9,7 +8,6 @@
         <members>ForecastIterable</members>
         <members>MonthUtil</members>
         <members>RetrieveForecastConfigurations</members>
-        <members>RoleUserInfoVO</members>
         <members>SpecialistForecastController</members>
         <members>SpecialistForecastBatch</members>
         <members>SpecialistForecastException</members>
@@ -130,7 +128,7 @@
         <members>icon_xsmall</members>
         <name>StaticResource</name>
     </types>
-    <version>24.0</version>
+    <version>28.0</version>
 </Package>
 
 
