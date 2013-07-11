@@ -1,3 +1,0 @@
-trigger SpecialistForecastTrigger
-trigger ForecastHierarchyConfigurationsTrigger
-

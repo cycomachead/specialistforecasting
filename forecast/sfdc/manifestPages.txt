@@ -1,7 +1,0 @@
-apexpage SpecialistForecastPage SpecialistForecastPage Specialist Forecast Page
-apexpage StoreBatchAdminPage StoreBatchAdminPage Store Batch Admin Page
-apexpage SpecialistForecastOverridePage SpecialistForecastOverridePage Specialist Forecast Override popup Page
-apexpage SpecialistForecastOptyDrildownPage SpecialistForecastOptyDrildownPage  Specialist Forecast Drildown Opportunity popup Page
-
-
-
