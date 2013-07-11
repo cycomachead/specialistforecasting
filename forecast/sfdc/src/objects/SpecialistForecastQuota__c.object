@@ -43,7 +43,7 @@
         <fullName>Month__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The month in number for the year starting from 1</inlineHelpText>
-        <label>FY Month #</label>
+        <label>Month</label>
         <picklist>
             <picklistValues>
                 <fullName>April</fullName>

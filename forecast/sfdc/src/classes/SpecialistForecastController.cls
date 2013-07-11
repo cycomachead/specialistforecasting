@@ -59,7 +59,7 @@ public with sharing class SpecialistForecastController {
     private Set<Id> allTotaluserIDs = new Set<Id>();
 
     // A list to be used as a stack for back button
-    private String[] usersStack    = new String[] {};
+    private String[] userStack    = new String[0];
 
     public Boolean displayPopup         { get;set; }
     public boolean displayDrilDownPopup { get;set; }
@@ -308,7 +308,8 @@ public with sharing class SpecialistForecastController {
             return null; // kill the method to prevent later exceptions
         }
 
-        userStack.add(FIXME);
+        // FIXME, not sure if this is the correct user being called.
+        userStack.add(selectedUserID);
 
         Decimal closedAmount                 = 0;
         Decimal commitAmount                 = 0;
@@ -531,7 +532,7 @@ public with sharing class SpecialistForecastController {
 
             } else if (mapUsers.size() > 0 && !haslineItemstoDisplay &&
             mapUsers.containsKey(lineItemOwnerId)) {
-                sfLIne.createEmptySPlineItemforVFPage(lineItemOwnerId,
+                sfLIne.createEmptySFLineItem(lineItemOwnerId,
                     sfLI.ForecastOwner__c,mapUsers,quotaAmount);
                 sfLIne.forOverride = (selectedFQ != ForecastHelper.QTR_ALL
                     ? sfLIne.forOverride : false);
@@ -599,7 +600,7 @@ public with sharing class SpecialistForecastController {
 
         } else {
             sfLIne = new SFcastLineItem();
-            sfLIne.createEmptySPlineItemforVFPage(sfLI.ForecastOwner__c,
+            sfLIne.createEmptySFLineItem(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
             sfLIne.forOverride = (selectedFQ != QTR_ALL ? sfLIne.forOverride : false);
             splFClineItems.add(sfLIne);

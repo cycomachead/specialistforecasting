@@ -121,8 +121,8 @@ public with sharing class SFcastLineItem {
      *  Create  displayble virtual LineItem for the VF page
      *  @param LineItem and User Map
      */
-    public void createEmptySPLineItemforVFPage(Id lineItemOwnerId, Id searchUser,
-    Map<Id,Object> mapUsers, Decimal quotaAmt) {
+    public void createEmptySFLineItem(Id lineItemOwnerId, Id searchUser,
+    Map<Id,SpecialistForecastController.UserRole> mapUsers, Decimal quotaAmt) {
 
         this.forOverride            = (searchUser != UserInfo.getUserId());
         this.userName               = mapUsers.get(lineItemOwnerId).userName;
@@ -139,7 +139,7 @@ public with sharing class SFcastLineItem {
         this.pipelineAmount         = 0;
         this.reportingUser          = false;
         this.myCommitOverridden     = false;
-        this.myBestCaseOverridden  = false;
+        this.myBestCaseOverridden   = false;
         this.searchUser             = false;
     }
 
