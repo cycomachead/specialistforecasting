@@ -14,9 +14,7 @@
         <members>SpecialistForecastBatch</members>
         <members>SpecialistForecastException</members>
         <members>SpecialistForecastSubmitBatch</members>
-        <members>SpecialistForecastOverrideController</members>
         <members>SFcastLineItem</members>
-        <members>SplstForecastDrildownOptyController</members>
         <members>StoreBatchAdminController</members>
         <members>StoreScheduler</members>
         <members>StoreScheduleWrapper</members>
@@ -25,8 +23,6 @@
     <types>
         <members>StoreBatchAdminPage</members>
         <members>SpecialistForecastPage</members>
-        <members>SpecialistForecastOverridePage</members>
-        <members>SpecialistForecastOptyDrildownPage</members>
         <name>ApexPage</name>
     </types>
     <types>
