@@ -90,7 +90,7 @@ public class SpecForecastTest {
             // The following code runs as user 'u'
             SpecialistForecastController specialistController = new 
                 SpecialistForecastController();
-            SpecialistForecastLineItemVO[] specialistVO = 
+            SFcastLineItem[] specialistVO = 
                 specialistController.getSpecialistforecastLineItemsData();
             System.assert(specialistVO.size() > 0); //FIXME 
         }
@@ -119,7 +119,7 @@ public class SpecForecastTest {
             // The following code runs as user 'u'
             SpecialistForecastController specialistController = new 
                 SpecialistForecastController();
-            List<SpecialistForecastLineItemVO> specialistVO = 
+            List<SFcastLineItem> specialistVO = 
                 specialistController.getSpecialistforecastLineItemsData();
             System.assert(specialistVO.size() > 0);
         }
