@@ -1,24 +1,11 @@
 <apex:page showHeader="true" cache="false" tabStyle="StoreBatchAdminTab__tab" controller="StoreBatchAdminController" title="Store Batch Administration Panel">
 
-    <style type="text/css">
-
-    .outerDiv {
-        margin-top: .2em;
-        margin-left: .2em;
-    }
-
-    </style>
-
-    <!--***********************************************************************************
-    ***************************** STORE BATCH ADMIN PANEL CONTROLS ************************
-    ************************************************************************************-->
-    <div class="outerDiv">
+    <div style="margin: .2em">
         <apex:form Id="BatchForm1">
             <apex:outputPanel id="BatchPanel1">
                 <apex:outputLabel value="Notify on n-th Minute of Hour:" for="notificationMinute"/>
                 <apex:inputText value="{!notificationMinute}" id="notificationMinute" size="2" maxlength="2" rendered="true"/><br/><br/>
                 <apex:outputLabel value="Click the Button to schedule the Batch job for  Specialist Forecasting" for="notificationMinute"/>
-
             </apex:outputPanel>
             <br/>
             <br/>
@@ -36,24 +23,8 @@
                         </apex:commandButton>
                     </apex:facet>
                 </apex:actionStatus>
-                </apex:outputPanel>
-                <!--apex:outputPanel id="BatchPanel3">
-                    <apex:actionStatus startText="Processing..." id="counterStatusnow">
-                        <apex:facet name="start">
-                            <apex:commandButton Id="startJobNow" action="{!startScheduledJobNow}" title="Run Now Scheduler Batch Job" value="Run Now Scheduler Job" disabled="false">
-                                <img src="/apexpages/devmode/img/saveStatus.gif" />
-                                <apex:param name="jobNameNow" value="StoreSchedulerJobNow" assignTo="{!jobNamenow}"/>
-                            </apex:commandButton>
-                        </apex:facet>
-                        <apex:facet name="stop">
-                            <apex:commandButton Id="stopJobnow" action="{!startScheduledJobNow}" title="Run Now Scheduler Batch Job" value="Run Now Scheduler Job" disabled="false" status="counterStatusNow" rerender="counterStatusNow">
-                                <apex:param name="jobNamenow" value="StoreSchedulerJobRunnow" assignTo="{!jobNamenow}"/>
-                            </apex:commandButton>
-                        </apex:facet>
-                    </apex:actionStatus>
-               </apex:outputPanel-->
+            </apex:outputPanel>
         </apex:form>
-
     </div>
 
 </apex:page>

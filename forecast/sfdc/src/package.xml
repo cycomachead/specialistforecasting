@@ -24,6 +24,10 @@
         <name>ApexPage</name>
     </types>
     <types>
+        <members>Specialist_Forecasting</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
         <members>SpecialistForecastTrigger</members>
         <members>ForecastHierarchyConfigurationsTrigger</members>
         <name>ApexTrigger</name>
@@ -109,6 +113,7 @@
         <name>CustomTab</name>
     </types>
     <types>
+        <!-- <members>Opportunity-Opportunity Layout</members> -->
         <members>SpecialistForecast__c-Specialist Forecast Layout</members>
         <members>SpecialistForecastLineItem__c-Specialist Forecast Line Item Layout</members>
         <members>SpecialistForecastQuota__c-Specialist Forecast Quota Layout</members>
@@ -128,7 +133,7 @@
         <members>icon_xsmall</members>
         <name>StaticResource</name>
     </types>
-    <version>28.0</version>
+    <version>26.0</version>
 </Package>
 
 

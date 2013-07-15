@@ -27,7 +27,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- *  Controller to display and override Special AE Forecast
  *
  *  @author auzzaman,smohapatra
  *  @since
@@ -188,7 +187,7 @@ public with sharing class SpecialistForecastController {
         displayPopup = true;
     }
 
-    //View report button
+    //  View report button
     public PageReference viewSpecialistReport() {
         isvalidated = true;
         allTotaluserIds.add(UserInfo.getUserId());
@@ -309,7 +308,12 @@ public with sharing class SpecialistForecastController {
         }
 
         // FIXME, not sure if this is the correct user being called.
-        userStack.add(selectedUserID);
+        // if (selectedUserID == null) {
+        //     userStack.add(sfLI.ForecastOwner__c);
+        // }
+        // else {
+        //     userStack.add(selectedUserID);
+        // }
 
         Decimal closedAmount                 = 0;
         Decimal commitAmount                 = 0;
@@ -768,7 +772,7 @@ public with sharing class SpecialistForecastController {
      *  @param List of SpecialistForecastlineItem__c
      */
     private Map<Id,SFcastLineItem> aggregatelineItemsByOwner(
-    List<SpecialistForecastlineItem__c> listSplFCastlineItems) {
+    SpecialistForecastlineItem__c[] listSplFCastlineItems) {
 
         Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
         Decimal closedAmount   = 0;
@@ -800,7 +804,6 @@ public with sharing class SpecialistForecastController {
                 defaultIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenCommitAmount__c);
             bestCaseMgrOverrideAmount =
                 defaultIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenBestcaseAmount__c);
-
 
             splv = ownerlineItemsMap.get(currentOwnerId);
 
@@ -874,7 +877,6 @@ public with sharing class SpecialistForecastController {
             commitMgrOvrrideAmount = 0;
             commitOverrideAmount = 0;
             ownerlineItemsMap.put(currentOwnerId,splv);
-
         } //end for
 
         return ownerlineItemsMap;

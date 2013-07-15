@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>This is the main page where you create, enter, and view forecast data.</description>
+    <description>The main tab where you create, submit and view forecast data.</description>
     <label>Specialist Forecast Reports</label>
     <customObject>false</customObject>
     <mobileReady>false</mobileReady>
     <motif>Custom147: Random</motif>
-    <!-- <icon>icon/icon.png</icon> -->
+    <!-- <icon>resource/1372446407000/icon_xsmall</icon> -->
     <page>SpecialistForecastPage</page>
 </CustomTab>
 

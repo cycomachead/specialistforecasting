@@ -40,7 +40,7 @@ public with sharing class SFcastLineItem {
        public Boolean myCommitOverridden          { get;set; }
        public Boolean myBestCaseOverridden        { get;set; }
        public Boolean mgrCommitOverridden         { get;set; }
-       public Boolean mgrBestcaseOverridden       { get;set; }
+       public Boolean mgrBestCaseOverridden       { get;set; }
        public Boolean isSubmitted                 { get;set; }
        public Boolean isCommitOverridden          { get;set; }
        public Boolean isBestcaseOverridden        { get;set; }
@@ -52,7 +52,7 @@ public with sharing class SFcastLineItem {
        public Decimal commitOverrideAmount        { get;set; }
        public Decimal bestCaseOverrideAmount      { get;set; }
        public Decimal mgrbestCaseOverrideAmount   { get;set; }
-       public Decimal mgrcommitOverrideAmount     { get;set; }
+       public Decimal mgrCommitOverrideAmount     { get;set; }
        public Decimal prevDirectRepCommitAmount   { get;set; }
        public Decimal prevDirectRepBestcaseAmount { get;set; }
        public Decimal quotaAmount                 { get;set; }
@@ -98,7 +98,7 @@ public with sharing class SFcastLineItem {
           return sCurrency;
       }
 
-      public String getprevVFDirectRepBestcaseAmount() {
+      public String getPrevVFDirectRepBestcaseAmount() {
           List<String> args = new String[] {'0','number','###,###,##0.00'};
           String sCurrency;
           if (prevDirectRepBestcaseAmount != null) {

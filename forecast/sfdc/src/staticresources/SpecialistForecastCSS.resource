@@ -2,9 +2,8 @@
     border: 2px solid #AAA;
     border-collapse: collapse;
     border-spacing: 0;
+    table-layout: fixed;
     vertical-align: middle;
-    /*max-height: 50px; */
-    /*overflow: scroll;*/
     width: 100%;
 }
 
@@ -18,8 +17,6 @@
     max-width: none;
     padding: 5px;
     width: auto;
-/*    position: absolute;
-    overflow: none;*/
 }
 
 .headerRow th, .sumRow td {
@@ -31,6 +28,8 @@
 .headerRow th {
     font-size: 1.25em;
     padding: 5px;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .sumRow td {
@@ -118,11 +117,29 @@ tfoot.footer {
     z-index: 9999;
 }
 
+.popupTable {
+    padding: 4px;
+    text-align: left;
+    width: 100%;
+}
+
+.popupTable td {
+    float: left;
+    padding: 4px;
+    text-align: left;
+    width: 100px;
+}
+
 .blur {
-            opacity: .5;
-        -ms-opacity: .5;
-    -webkit-opacity:  1;
-            filter: alpha(opacity = 50);
+    filter: alpha(opacity = 50);
+    filter: blur(2.5px) saturate(50%);
+    -o-filter: blur(2.5px) saturate(50%);
+    -ms-filter: blur(2.5px) saturate(50%);
+    -moz-filter: blur(2.5px) saturate(50%);
     -webkit-filter: blur(2.5px) saturate(50%);
-            filter: blur(2.5px) saturate(50%);
+    opacity: .5;
+    -o-opacity: .5;
+    -ms-opacity: .5;
+    -moz-opacity: .5;
+    -webkit-opacity: 1;
 }

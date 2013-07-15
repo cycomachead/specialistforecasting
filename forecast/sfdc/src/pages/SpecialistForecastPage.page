@@ -9,34 +9,51 @@
 
         <!-- Override Popup -->
         <apex:outputPanel id="ovrpopup">
-            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}" />
             <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
                 <apex:pageBlock id="pb">
                     <apex:pagemessages />
-                    <apex:pageBlockSection collapsible="false" title="Override the Original Amount" id="pbs">
-                        <apex:panelGrid columns="2"> <!-- id="pbsg" -->
-                            <apex:outputText value="Original Amount" />
-                            <apex:outputText value="{0, number, $###,##0.00}">
-                                <apex:param value="{!originalAmount}"/>
-                            </apex:outputText>
-                            <apex:outputText value="Override Amount" />
-                            <apex:inputText id="Originaloverrideamount" value="{!overrideAmount}"/>
-                            <apex:outputText value="Comments" />
-                            <apex:inputTextarea id="Originaloverridecomment" value="{!overrideComment}"/>
-                            <apex:actionStatus startText="ProcessingTheStuff" id="counterStatus">
-                                <apex:facet name="start">
-                                    <apex:commandButton Id="overrideamnt" title="Override Amount" value="Update" disabled="true" action="{!saveOverride}" onClick="removeBlur()">
-                                        <img src="/apexpages/devmode/img/saveStatus.gif" />
-                                    </apex:commandButton>
-                                </apex:facet>
-                                <apex:facet name="stop">
-                                    <!--apex:commandButton Id="overrideamnts" title="Override Amount on Specialist Forecast Report" onclick="if(refreshParent()==false) return false;" value="Update" action="{!saveOverride}" oncomplete="refreshParent();" status="counterStatus" rerender="pb" /-->
-                                    <apex:commandButton Id="overrideamnts" title="Override Amount on Specialist Forecast Report" value="Update" action="{!saveOverride}" status="counterStatus" rerender="pb" />
-                                </apex:facet>
-                            </apex:actionStatus>
-                            <apex:commandButton id="canceloverrideamnt" title="Close the window and refresh parent" value="Close" action="{!closeOverridePopup}" onClick="removeBlur()" />
-                        </apex:panelGrid>
-                    </apex:pageBlockSection>
+                    <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
+                        <h3>Override Forecast Amount for</h3>
+                    </div>
+                    <table class="popupTable">
+                            <tr>
+                                <td>Original Amount:</td>
+                                <td>
+                                    <apex:outputText value="{0, number, $###,##0.00}">
+                                        <apex:param value="{!originalAmount}"/>
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Override Amount:</td>
+                                <td>
+                                    <apex:inputText id="Originaloverrideamount" value="{!overrideAmount}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Comments:</td>
+                                <td>
+                                    <apex:inputTextarea id="Originaloverridecomment" value="{!overrideComment}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <apex:actionStatus startText="ProcessingTheStuff" id="counterStatus">
+                                        <apex:facet name="start">
+                                            <apex:commandButton Id="overrideamnt" title="Override Amount" value="Update" disabled="true" action="{!saveOverride}" onClick="removeBlur()">
+                                                <img src="/apexpages/devmode/img/saveStatus.gif" />
+                                            </apex:commandButton>
+                                        </apex:facet>
+                                        <apex:facet name="stop">
+                                            <apex:commandButton Id="overrideamnts" title="Override Amount on Specialist Forecast Report" value="Update" action="{!saveOverride}" status="counterStatus" rerender="pb" />
+                                        </apex:facet>
+                                    </apex:actionStatus>
+                                </td>
+                                <td>
+                                    <apex:commandButton id="canceloverrideamnt" title="Close the window and refresh parent" value="Close" action="{!closeOverridePopup}" onClick="removeBlur()" />
+                                </td>
+                            </tr>
+                        </table>
                 </apex:pageBlock>
             </apex:outputPanel>
         </apex:outputPanel>
@@ -47,11 +64,8 @@
             <apex:outputPanel styleClass="custPopupDrilDown" layout="block" rendered="{!displayDrilDownPopup}">
                 <apex:pageBlock> <!-- id="pbdrl" -->
                    <apex:pagemessages />
-                   <apex:outputPanel>
-                          <apex:commandButton Id="close" title="Close Specialist Forecast data" value="Close" action="{!closeDrilDownPopup}" onClick="removeBlur()" />
-                   </apex:outputPanel>
                    <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
-                       <h3>List Forecast</h3> <!-- FIXME this is terrible -->
+                       <h3>Forecast Details View</h3> <!-- FIXME this is terrible -->
                    </div>
                    <br />
                    <table class="topTable" width="1000">
@@ -98,6 +112,10 @@
                            </tr>
                        </apex:repeat>
                    </table>
+                   <br />
+                   <apex:outputPanel>
+                          <apex:commandButton Id="close" title="Close Specialist Forecast data" value="Close" action="{!closeDrilDownPopup}" onClick="removeBlur()" />
+                   </apex:outputPanel>
                </apex:pageBlock>
             </apex:outputPanel>
         </apex:outputPanel>
@@ -118,7 +136,7 @@
                             <apex:selectOptions value="{!fiscalYears}" />
                         </apex:selectList>
 
-                        <strong>&nbsp;Fiscal Quarter&nbsp;</strong>
+                        <strong>&nbsp;&nbsp;Fiscal Quarter&nbsp;</strong>
                         <apex:selectList value="{!selectedFQ}" multiselect="false" size="1">
                             <apex:selectOptions value="{!fiscalQuarters}" />
                         </apex:selectList>
@@ -136,6 +154,9 @@
                     </apex:outputPanel>
 
                     <apex:outputPanel rendered="true">
+                        <!-- <apex:commandLink value="{!forecast.UserRoleName}" action="{!reportDrildownByUser_Role}">
+                            <apex:param name="userId" value="{!forecast.UserId}" assignTo="{!selectedUserId}"/>
+                        </apex:commandLink> -->
                         <apex:commandButton rendered="{!canGoBack}" id="backButton" title="Go Back to the Previous Report" value="Back" action="{!backLink}" />
                         <apex:commandButton rendered="{!canSubmit}" Id="SubmitReport" title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
                         <apex:commandButton rendered="{!(viewAccessToSyncButton)}" Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
@@ -147,7 +168,6 @@
                     <h3>{!PreparedByUser}'s Forecast for {!selectedFQ} {!selectedFY}</h3>
                 </div>
                 <br />
-
                 <!-- Main Forecasts Table -->
                 <table class="topTable">
                     <thead class="header">
@@ -282,14 +302,14 @@
                                 </apex:outputPanel>
                             </td>
                             <td class="cell"><!-- Dir Reps Best Case -->
-                                <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepbestcaseAmount}" rendered="{!(NOT(forecast.searchUser && forecast.bestcaseAmount > 0) &&(forecast.myBestCaseOverridden&& forecast.bestcasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
+                                <apex:outputText title="Previous Amount: ${!forecast.prevVFDirectRepBestCaseAmount}" rendered="{! (NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && (forecast.myBestCaseOverridden && forecast.bestCasePreviousAmountMatch))}" value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.bestcaseAmount}"/>
                                 </apex:outputText>
                                 <apex:outputText value="${0, number,###,###,###,##0.00}"
-                                    rendered="{!NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && NOT(forecast.myBestCaseOverridden&& forecast.bestcasePreviousAmountMatch)}">
+                                    rendered="{!NOT(forecast.searchUser && forecast.bestcaseAmount > 0) && NOT(forecast.myBestCaseOverridden && forecast.bestcasePreviousAmountMatch)}">
                                     <apex:param value="{!forecast.bestCaseAmount}" />
                                 </apex:outputText>
-                                <apex:commandLink rendered="{!((forecast.searchUser)&& forecast.bestcaseAmount>0)}"
+                                <apex:commandLink rendered="{!((forecast.searchUser) && forecast.bestcaseAmount>0)}"
                                     action="{!showDrilDownPopup}" rerender="drldwnpopup" onClick="setBlur()">
                                     <apex:outputText value="${0, number,###,###,###,##0.00}">
                                         <apex:param value="{!forecast.bestCaseAmount}"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Specialist Forecast</label>
+    <label>Specialist Forecast Objects List</label>
     <pluralLabel>Specialist Forecasts</pluralLabel>
     <description>Primary Custom Object for Specialist Forecasting</description>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -44,20 +44,19 @@
     </actionOverrides>
 
     <nameField>
-    <displayFormat>SAF-{00000000}</displayFormat>
-    <label>Specialist Forecast Name</label>
-    <type>AutoNumber</type>
+        <displayFormat>SAF-{00000000}</displayFormat>
+        <label>Specialist Forecast Name</label>
+        <type>AutoNumber</type>
     </nameField>
 
     <fields>
-    <fullName>Account__c</fullName>
-    <label>Account</label>
-    <formula>
-        Opportunity__r.Account.Name &amp; ' - ' &amp; 'https://login.salesforce.com/' &amp; Opportunity__r.Account.Id
-    </formula>
-    <type>Text</type>
+        <fullName>Account__c</fullName>
+        <label>Account</label>
+        <formula>
+            Opportunity__r.Account.Name &amp; ' - ' &amp; 'https://login.salesforce.com/' &amp; Opportunity__r.Account.Id
+        </formula>
+        <type>Text</type>
     </fields>
-
     <fields>
         <fullName>Opportunity__c</fullName>
         <label>Opportunity</label>
@@ -175,6 +174,7 @@
         <label>Forecast Product Type</label>
         <trackHistory>true</trackHistory>
         <picklist>
+            <!-- Customize these values for your organization's use -->
             <picklistValues>
                 <fullName>Product 1</fullName>
                 <default>false</default>
@@ -188,85 +188,87 @@
         <type>Picklist</type>
     </fields>
     <fields>
-    <fullName>ForecastNotes__c</fullName>
-    <label>Forecast Notes</label>
-    <length>32768</length>
-    <type>LongTextArea</type>
-    <visibleLines>3</visibleLines>
+        <fullName>ForecastNotes__c</fullName>
+        <label>Forecast Notes</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
     </fields>
     <fields>
         <fullName>MgrForecastNotes__c</fullName>
         <label>Manager Forecast Notes</label>
         <length>32768</length>
         <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
+        <visibleLines>6</visibleLines>
     </fields>
     <fields>
         <fullName>ForecastStage__c</fullName>
-    <label>AE Forecast Stage</label>
-    <inlineHelpText>Opportunity Stage chosen by the AE for the forecast.</inlineHelpText>
-    <type>Picklist</type>
-    <picklist>
-        <picklistValues>
-            <fullName>01 - Identifying an Opportunity</fullName>
+        <label>AE Forecast Stage</label>
+        <!-- <required>true</required> -->
+        <inlineHelpText>Opportunity Stage chosen by the AE for the forecast.</inlineHelpText>
+        <type>Picklist</type>
+        <picklist>
+            <picklistValues>
+                <fullName>01 - Identifying an Opportunity</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>02 - Determining Problem, Impact, Ideal</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>02 - Determining Problem, Impact, Ideal</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>03 - Validating Benefits &amp; Value</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>03 - Validating Benefits &amp; Value</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>04 - Confirming Value With Power</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>04 - Confirming Value With Power</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>05 - Negotiating $$ &amp; Mutual Plan</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>05 - Negotiating &amp; Mutual Plan</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>06 - Finalizing Closure</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>06 - Finalizing Closure</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>07 - Pending</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>07 - Pending</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>08 - Closed</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>08 - Closed</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>Closed - Out Clause</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed - Out Clause</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>Dead - Duplicate</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dead - Duplicate</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>Dead - Lost</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dead - Lost</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>Dead - No Opportunity</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dead - No Opportunity</fullName>
                 <default>false</default>
-        </picklistValues>
-        <picklistValues>
-            <fullName>Dead - No Decision</fullName>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dead - No Decision</fullName>
                 <default>false</default>
-        </picklistValues>
+            </picklistValues>
             <sorted>false</sorted>
-    </picklist>
-    <trackHistory>true</trackHistory>
+        </picklist>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>ForecastStatus__c</fullName>
         <externalId>false</externalId>
-        <label>Forecast</label>
+        <!-- <required>true</required> FIXME -->
+        <label>Forecast Category</label>
         <trackHistory>true</trackHistory>
         <picklist>
             <controllingField>ForecastStage__c</controllingField>
@@ -276,14 +278,26 @@
                 <controllingFieldValues>02 - Determining Problem, Impact, Ideal</controllingFieldValues>
                 <controllingFieldValues>03 - Validating Benefits &amp; Value</controllingFieldValues>
                 <controllingFieldValues>04 - Confirming Value With Power</controllingFieldValues>
-                <controllingFieldValues>05 - Negotiating $$ &amp; Mutual Plan</controllingFieldValues>
+                <controllingFieldValues>05 - Negotiating &amp; Mutual Plan</controllingFieldValues>
                 <controllingFieldValues>06 - Finalizing Closure</controllingFieldValues>
                 <controllingFieldValues>07 - Pending</controllingFieldValues>
+                <controllingFieldValues>08 - Closed</controllingFieldValues>
+                <controllingFieldValues>Dead - Duplicate</controllingFieldValues>
+                <controllingFieldValues>Dead - Lost</controllingFieldValues>
+                <controllingFieldValues>Dead - No Opportunity</controllingFieldValues>
+                <controllingFieldValues>Dead - No Decision</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Omitted</fullName>
                 <controllingFieldValues>01 - Identifying an Opportunity</controllingFieldValues>
+                <controllingFieldValues>02 - Determining Problem, Impact, Ideal</controllingFieldValues>
+                <controllingFieldValues>03 - Validating Benefits &amp; Value</controllingFieldValues>
+                <controllingFieldValues>04 - Confirming Value With Power</controllingFieldValues>
+                <controllingFieldValues>05 - Negotiating &amp; Mutual Plan</controllingFieldValues>
+                <controllingFieldValues>06 - Finalizing Closure</controllingFieldValues>
+                <controllingFieldValues>07 - Pending</controllingFieldValues>
+                <controllingFieldValues>08 - Closed</controllingFieldValues>
                 <controllingFieldValues>Dead - Duplicate</controllingFieldValues>
                 <controllingFieldValues>Dead - Lost</controllingFieldValues>
                 <controllingFieldValues>Dead - No Opportunity</controllingFieldValues>
@@ -296,7 +310,7 @@
                 <controllingFieldValues>02 - Determining Problem, Impact, Ideal</controllingFieldValues>
                 <controllingFieldValues>03 - Validating Benefits &amp; Value</controllingFieldValues>
                 <controllingFieldValues>04 - Confirming Value With Power</controllingFieldValues>
-                <controllingFieldValues>05 - Negotiating $$ &amp; Mutual Plan</controllingFieldValues>
+                <controllingFieldValues>05 - Negotiating &amp; Mutual Plan</controllingFieldValues>
                 <controllingFieldValues>06 - Finalizing Closure</controllingFieldValues>
                 <controllingFieldValues>07 - Pending</controllingFieldValues>
                 <default>false</default>
@@ -307,7 +321,7 @@
                 <controllingFieldValues>02 - Determining Problem, Impact, Ideal</controllingFieldValues>
                 <controllingFieldValues>03 - Validating Benefits &amp; Value</controllingFieldValues>
                 <controllingFieldValues>04 - Confirming Value With Power</controllingFieldValues>
-                <controllingFieldValues>05 - Negotiating $$ &amp; Mutual Plan</controllingFieldValues>
+                <controllingFieldValues>05 - Negotiating &amp; Mutual Plan</controllingFieldValues>
                 <controllingFieldValues>06 - Finalizing Closure</controllingFieldValues>
                 <controllingFieldValues>07 - Pending</controllingFieldValues>
                 <default>false</default>
@@ -318,7 +332,7 @@
                 <controllingFieldValues>02 - Determining Problem, Impact, Ideal</controllingFieldValues>
                 <controllingFieldValues>03 - Validating Benefits &amp; Value</controllingFieldValues>
                 <controllingFieldValues>04 - Confirming Value With Power</controllingFieldValues>
-                <controllingFieldValues>05 - Negotiating $$ &amp; Mutual Plan</controllingFieldValues>
+                <controllingFieldValues>05 - Negotiating &amp; Mutual Plan</controllingFieldValues>
                 <controllingFieldValues>06 - Finalizing Closure</controllingFieldValues>
                 <controllingFieldValues>07 - Pending</controllingFieldValues>
                 <default>false</default>
@@ -329,6 +343,15 @@
                 <controllingFieldValues>Closed - Out Clause</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Closed Lost</fullName>
+                <controllingFieldValues>08 - Closed</controllingFieldValues>
+                <controllingFieldValues>Dead - Duplicate</controllingFieldValues>
+                <controllingFieldValues>Dead - Lost</controllingFieldValues>
+                <controllingFieldValues>Dead - No Opportunity</controllingFieldValues>
+                <controllingFieldValues>Dead - No Decision</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <type>Picklist</type>
@@ -336,12 +359,12 @@
     <fields>
         <fullName>ForecastAmount__c</fullName>
         <label>AE Opportunity Amount</label>
-        <inlineHelpText>AE's forecasted opportunity amount for their specific products</inlineHelpText>
+        <inlineHelpText>AE's forecast amount for his/her part of the opportunity.</inlineHelpText>
         <precision>16</precision>
         <scale>2</scale>
         <type>Currency</type>
         <trackHistory>true</trackHistory>
-        <description>AE's forecasted opportunity amount for their specific products</description>
+        <description>AE's forecast amount for his/her part of the opportunity.s</description>
     </fields>
     <fields>
         <fullName>ExcludeFromCalculation__c</fullName>
@@ -359,35 +382,35 @@
         <type>Text</type>
         <unique>true</unique>
     </fields>
-   <fields>
-        <fullName>ProductLead__c</fullName>
-        <label>Product Lead</label>
-        <length>80</length>
-        <type>Text</type>
+    <fields>
+       <fullName>ProductLead__c</fullName>
+       <label>Product Lead</label>
+       <length>80</length>
+       <type>Text</type>
     </fields>
     <fields>
-            <fullName>OwnerCopy__c</fullName>
-            <externalId>false</externalId>
-            <label>Owner Copy</label>
-            <deleteConstraint>SetNull</deleteConstraint>
-            <referenceTo>User</referenceTo>
-            <relationshipName>SpecialistForecastToUser</relationshipName>
-            <trackHistory>false</trackHistory>
-            <type>Lookup</type>
+        <fullName>OwnerCopy__c</fullName>
+        <externalId>false</externalId>
+        <label>Owner Copy</label>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <referenceTo>User</referenceTo>
+        <relationshipName>SpecialistForecastToUser</relationshipName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>OwnerManager__c</fullName>
         <label>Owner Manager</label>
         <formula>
-        OwnerCopy__r.Manager.FirstName &amp; ' ' &amp; OwnerCopy__r.Manager.LastName
+            OwnerCopy__r.Manager.FirstName &amp; ' ' &amp; OwnerCopy__r.Manager.LastName
         </formula>
         <type>Text</type>
     </fields>
     <fields>
-            <fullName>FiscalQuarter__c</fullName>
-            <label>Fiscal Quarter</label>
+        <fullName>FiscalQuarter__c</fullName>
+        <label>Fiscal Quarter</label>
         <formula>
-          CASE(Month(ForecastCloseDate__c),12,Text(FiscalYear__c) &amp;' Q4' , 11,Text(FiscalYear__c) &amp;' Q4' , 1,Text(FiscalYear__c)  &amp;' Q4' ,10,Text(FiscalYear__c) &amp;' Q3' , 9,Text(FiscalYear__c) &amp;' Q3', 8,Text(FiscalYear__c) &amp; ' Q3' ,7,Text(FiscalYear__c) &amp; ' Q2' , 6,Text(FiscalYear__c) &amp;' Q2' , 5,Text(FiscalYear__c) &amp;' Q2' , 4,Text(FiscalYear__c) &amp;' Q1' , 3,Text(FiscalYear__c) &amp;' Q1' , 2,Text(FiscalYear__c) &amp;' Q1' , '')
+            CASE(Month(ForecastCloseDate__c),12,Text(FiscalYear__c) &amp;' Q4' , 11,Text(FiscalYear__c) &amp;' Q4' , 1,Text(FiscalYear__c)  &amp;' Q4' ,10,Text(FiscalYear__c) &amp;' Q3' , 9,Text(FiscalYear__c) &amp;' Q3', 8,Text(FiscalYear__c) &amp; ' Q3' ,7,Text(FiscalYear__c) &amp; ' Q2' , 6,Text(FiscalYear__c) &amp;' Q2' , 5,Text(FiscalYear__c) &amp;' Q2' , 4,Text(FiscalYear__c) &amp;' Q1' , 3,Text(FiscalYear__c) &amp;' Q1' , 2,Text(FiscalYear__c) &amp;' Q1' , '')
         </formula>
         <type>Text</type>
     </fields>
@@ -419,9 +442,9 @@
     </recordTypes>
     <recordTypes>
         <fullName>SpecialistForecastOptyLineData</fullName>
-        <description>Record Type assigned to platform or service cloud for OpportunityLine Item</description>
+        <description>Record Type assigned to platform or service cloud for Opportunity Line Item</description>
         <active>true</active>
-        <label>Specialist Forecast OptyLine Data</label>
+        <label>Specialist Forecast Opportunity Line Data</label>
     </recordTypes>
 </CustomObject>
 

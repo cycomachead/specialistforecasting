@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Forecast Hierarchy Configurations</description>
-    <label>Forecast Hierarchy Configurations</label>
+    <description>Configurations for hierarchies used within the specialist forecasts package</description>
+    <label>Specialist Forecast Hierarchies</label>
     <customObject>true</customObject>
     <mobileReady>false</mobileReady>
     <motif>Custom96: Street Sign</motif>
