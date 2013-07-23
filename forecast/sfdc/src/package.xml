@@ -32,6 +32,11 @@
         <members>ForecastHierarchyConfigurationsTrigger</members>
         <name>ApexTrigger</name>
     </types>
+    <!-- <types>
+        <members>detailView</members>
+        <members>overrideView</members>
+        <name>ApexComponent</name>
+    </types> -->
     <types>
         <members>ForecastConfigurations__c</members>
         <members>ForecastHierarchyConfigurations__c</members>
@@ -53,7 +58,7 @@
         <members>SpecialistForecast__c.FiscalYear__c</members>
         <members>SpecialistForecast__c.ForecastType__c</members>
         <members>SpecialistForecast__c.Month__c</members>
-        <members>SpecialistForecast__c.ForecastStatus__c</members>
+        <members>SpecialistForecast__c.ForecastCategory__c</members>
         <members>SpecialistForecast__c.ForecastStage__c</members>
         <members>SpecialistForecast__c.ForecastAmount__c</members>
         <members>SpecialistForecast__c.ExcludeFromCalculation__c</members>

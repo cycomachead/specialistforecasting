@@ -29,7 +29,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *
  *  @author auzzaman,smohapatra
- *  @since
  */
 public with sharing class SpecialistForecastController {
 
@@ -39,29 +38,38 @@ public with sharing class SpecialistForecastController {
     private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
     private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
     private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
-    private static final String FOR_ID =
+    private static final String FOR_ID      =
             SpecialistForecastException.FOR_ID;
     private static final String USER_ID_NULL =
             SpecialistForecastException.USER_ID_NULL + FOR_ID;
     private static final String ROLE_ID_NULL =
             SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
 
-    private Boolean isValidated = true;
+    // The max size of the recent users list, mostly to keep things manageable.
+    private static final Integer MAX_BACK_SIZE = 16;
+    // Access Check if user can view forecast reports
+    private Boolean canView = true;
 
     private Map<Id,Set<Id>> mapSecondLeverUsersAndChild = new Map<Id,Set<Id>>();
-    private Map<Id,UserRole> mapUsers = new Map<Id,UserRole>();
+    private Map<Id,UserInfoWrapper> mapUsers = new Map<Id,UserInfoWrapper>();
 
+    // A list to be used for back button users
+    // Note: Cannot use a set for a VF picklist.
+    private SelectOption[] recentsList = new SelectOption[0];
     private SelectOption[] fiscalYears;
     private SelectOption[] fiscalQuarters;
 
+
     private Set<Id> allUserIDs      = new Set<Id>();
     private Set<Id> allTotaluserIDs = new Set<Id>();
+    // List of user IDs, used to prevent dupes in recent users.
+    private Id[] recentIDs          = new Id[0];
 
-    // A list to be used as a stack for back button
-    private String[] userStack    = new String[0];
+    // Holds the UID of the user selected from the recents picklist
+    public String selectedBackUser      { get;set; }
 
     public Boolean displayPopup         { get;set; }
-    public boolean displayDrilDownPopup { get;set; }
+    public Boolean displayDrilDownPopup { get;set; }
 
     public Decimal originalAmount       { get;set; }
     public Decimal originalOldAmount    { get;set; }
@@ -84,7 +92,7 @@ public with sharing class SpecialistForecastController {
     public String selectedRoleId        { get;set; }
 
     // Simple wrapper for role and user info, mostly for use in maps.
-    public with sharing class UserRole {
+    public with sharing class UserInfoWrapper {
         public Id     roleId   { get;set; }
         public Id     userId   { get;set; }
         public String roleName { get;set; }
@@ -117,51 +125,44 @@ public with sharing class SpecialistForecastController {
      *  @retun true IFF the user is allowed to override/edit forecasts
      */
     public boolean getCanSubmit() {
-        return (this.sfLI.ForecastOwner__c == UserInfo.getUserId() &&
+        return (sfLI.ForecastOwner__c == UserInfo.getUserId() &&
             selectedFQ != QTR_ALL);
     }
 
-    /**
-     *  @return the list of fiscal quaters as a SelectOption[]
-     */
+    /** Returns the list of fiscal quaters as a SelectOption[] for VF page */
     public SelectOption[] getFiscalQuarters() {
-        if (this.fiscalQuarters == null) {
-            this.fiscalQuarters = new List<SelectOption>();
-            this.fiscalQuarters.add(new SelectOption(QTR_ALL, QTR_ALL));
+        if (fiscalQuarters == null) {
+            fiscalQuarters = new SelectOption[0];
+            fiscalQuarters.add(new SelectOption(QTR_ALL, QTR_ALL));
 
-            List<String> fQuarters = ForecastHelper.getSupportedFiscalQuarters();
-            for(String fQuarter : fQuarters) {
-                this.fiscalQuarters.add(new SelectOption(fQuarter, fQuarter));
+            String[] fQuarters = ForecastHelper.getSupportedFiscalQuarters();
+            for(String fq : fQuarters) {
+                fiscalQuarters.add(new SelectOption(fq, fq));
             }
         }
         return fiscalQuarters;
     }
 
-    /**
-     *  @return the list of selectable fiscal years
-     */
+    /**  Returns the list of selectable fiscal years for VF page  */
     public SelectOption[] getFiscalYears() {
-        if (this.fiscalYears == null) {
-            this.setFiscalYears();
-        }
-        return this.fiscalYears;
+        if (fiscalYears == null) { setFiscalYears(); }
+
+        return fiscalYears;
     }
 
-    /**
-     *  Reset fiscal year selections to the base supported years
-     */
+    /** Reset fiscal year selections to the base supported years */
     public void setFiscalYears() {
-        this.fiscalYears = new List<SelectOption>();
-        List<String> fYears = ForecastHelper.getSupportedFiscalYears();
+        fiscalYears = new SelectOption[0];
+        String[] fYears = ForecastHelper.getSupportedFiscalYears();
 
         for(String fYear : fYears) {
-            this.fiscalYears.add(new SelectOption(fYear, fYear));
+            fiscalYears.add(new SelectOption(fYear, fYear));
         }
     }
 
     /**  Set selectable fiscal years to FYEARS (SelectOption list) */
     public void setFiscalYears(SelectOption[] fYears) {
-        this.fiscalYears = fYears;
+        fiscalYears = fYears;
     }
 
     /** Returns the current forcast line item object */
@@ -169,37 +170,20 @@ public with sharing class SpecialistForecastController {
         return this.sfLI;
     }
 
-    /** Returns the current user working with forecasts */
-    public String getPreparedByUser() {
-        return preparedByUser;
-    }
-
-    /**
-     *  Close the override popup and set the values to defualt for next time.
-     */
-    public void closeOverridePopup() {
-        displayPopup = false;
-        initializeOverrideVariables();
-    }
-
-    /** */
-    public void showOverridePopup() {
-        displayPopup = true;
-    }
-
     //  View report button
     public PageReference viewSpecialistReport() {
-        isvalidated = true;
+        addRecentsList();
+        canView = true;
         allTotaluserIds.add(UserInfo.getUserId());
         try {
             getMappedUserInfoFromRoleHierarchy(UserInfo.getUserId());
             if (!allTotaluserIds.contains(sfLI.ForecastOwner__c)) {
-                isvalidated = false;
+                canView = false;
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
                     'You do not have permission to view reports for this user.'));
                 return null;
             }
-            isvalidated = true;
+            canView = true;
             if (sfLI.ForecastOwner__c != null) {
                 User usr = [SELECT Name FROM User
                     WHERE Id = :sfLI.ForecastOwner__c limit 1];
@@ -212,22 +196,18 @@ public with sharing class SpecialistForecastController {
         return null;
     }
 
-    /**
-     * Called from userlink for drildown
-     */
-    public PageReference reportDrildownByUser_Role() {
-        if (SelectedUserId != null && SelectedUserId.length() > 10) {
-            User usr = [SELECT Name FROM User WHERE Id = :SelectedUserId limit 1];
+    /** Called from userlink for drilldown */
+    public PageReference reportDrildownByUserRole() {
+        if (selectedUserId != null && selectedUserId.length() > 10) {
+            addRecentsList();
+            User usr = [SELECT Name FROM User WHERE Id = :selectedUserId limit 1];
             PreparedbyUser = usr.Name;
-
-            sfLI.ForecastOwner__c = SelectedUserId;
+            sfLI.ForecastOwner__c = selectedUserId;
         }
         return null;
     }
 
-    /**
-     * Called from submit button
-     */
+    /** Called from submit button */
     public PageReference submitReport() {
         if (selectedFQ != QTR_ALL) {
             String strMonth = ForecastHelper.getMonthsInQuarter(selectedFQ).get(0);
@@ -248,10 +228,8 @@ public with sharing class SpecialistForecastController {
        return null;
     }
 
-    /**
-     * Called from specialist forecast page to check if they have access to the button
-     */
-    public boolean getViewAccessToSyncButton() {
+    /** Called from VF page to check if user has access to the button */
+    public Boolean getViewAccessToSyncButton() {
         try {
             return ForecastHelper.checkForecastDataSyncAccessForCurrentUser();
         } catch (Exception ex) {
@@ -259,14 +237,38 @@ public with sharing class SpecialistForecastController {
         }
     }
 
+    /** Add a user to the view stack
+     *  Prevent dupes, and make sure list is < MAX_BACK_SIZE
+     */
+    private void addRecentsList() {
+        if (!ForecastHelper.listContains(recentIDs, sfLI.ForecastOwner__c)) {
+            recentIDs.add(sfLI.ForecastOwner__c);
+            recentsList.add(new SelectOption((String) sfLI.ForecastOwner__c,
+            [SELECT Name FROM User WHERE Id = :sfLI.ForecastOwner__c limit 1].Name));
+        }
+        if (recentsList.size() > MAX_BACK_SIZE) {
+            recentsList.remove(1); // Force item 0 to always be inital user
+        }
+    }
+
     /** Return true IFF the user has somewhere to go back to. */
     public boolean getCanGoBack() {
-        return !userStack.isEmpty();
+        return !recentsList.isEmpty();
+    }
+
+    /** Return the set of users to go back to. */
+    public SelectOption[] getrecentsList() {
+        return recentsList;
     }
 
     /** Returns the link of where the uder will go back to. */
-    public String backLink() {
-        return '/' + userStack.remove(userStack.size() - 1);
+    public PageReference backLink() {
+        if (!recentsList.isEmpty()) {
+            User usr = [SELECT Name FROM User WHERE Id = :selectedBackUser limit 1];
+            PreparedbyUser = usr.Name;
+            sfLI.ForecastOwner__c = selectedBackUser;
+        }
+        return null;
     }
 
     /**
@@ -286,7 +288,6 @@ public with sharing class SpecialistForecastController {
 
     /**
      *  TODO: REFACTOR REFACTOR REFACTOR
-     *
      */
     public SFcastLineItem[] getSFcastLineItemsData() {
         // Background check to make sure that we have the necessary data.
@@ -307,13 +308,7 @@ public with sharing class SpecialistForecastController {
             return null; // kill the method to prevent later exceptions
         }
 
-        // FIXME, not sure if this is the correct user being called.
-        // if (selectedUserID == null) {
-        //     userStack.add(sfLI.ForecastOwner__c);
-        // }
-        // else {
-        //     userStack.add(selectedUserID);
-        // }
+        addrecentsList();
 
         Decimal closedAmount                 = 0;
         Decimal commitAmount                 = 0;
@@ -341,8 +336,8 @@ public with sharing class SpecialistForecastController {
         Decimal subtotpipelineAmount         = 0;
         Decimal subtotQuotaAmount            = 0;
 
-        if (!isValidated ||
-        !ForecastHelper.checkFieldsSplForecastRepAccessibility()) {
+        // Access Check before grabbing forecasts
+        if (!canView || !ForecastHelper.canAccessForecasts()) {
             return null;
         }
 
@@ -356,7 +351,7 @@ public with sharing class SpecialistForecastController {
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
         // get the searchuser and all level reporting users
         mapSecondLeverUsersAndChild.clear();
-        // FIXME mapUsers.clear();
+        mapUsers.clear(); // FIXME
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
         SFcastLineItem sfLine = new SFcastLineItem();
@@ -386,8 +381,7 @@ public with sharing class SpecialistForecastController {
         // Consolidate data
         SFcastLineItem lineItem;
 
-        Map<Id,SFcastLineItem> ownerlineItemsMap = new
-        Map<Id,SFcastLineItem>();
+        Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
 
         /********************** consolidation Start *************************/
         // Agreegate the records by owner for display as we are having one
@@ -401,7 +395,7 @@ public with sharing class SpecialistForecastController {
             lineItem = ownerlineItemsMap.get(OwnerId);
 
             if (lineItem != null) {
-                lineItem.quotaAmount = tempAmount ;
+                lineItem.quotaAmount = tempAmount;
                 ownerlineItemsMap.put(OwnerId, lineItem);
             }
         }
@@ -515,7 +509,6 @@ public with sharing class SpecialistForecastController {
                     sfLIne.mgrBestCaseOverrideNotes = lineItem.mgrBestCaseOverrideNotes;
                     sfLIne.prevDirectRepCommitAmount = lineItem.prevDirectRepCommitAmount;
                     sfLIne.prevDirectRepBestcaseAmount = lineItem.prevDirectRepBestcaseAmount;
-
                 } else {
                     sfLIne.commitOverrideAmount = subtotcommitAmount;
                     sfLIne.bestCaseOverrideAmount = subtotbestCaseAmount;
@@ -610,7 +603,6 @@ public with sharing class SpecialistForecastController {
             splFClineItems.add(sfLIne);
         }
 
-
         // create total line items
         sfLIne = new SFcastLineItem();
         sfLIne.reportingUser          = true;
@@ -629,7 +621,7 @@ public with sharing class SpecialistForecastController {
         return splFClineItems;
     }
 
-    /** Return the Total line for the Forecasts table on the VF page. */
+    /** Return the "Total" line for the Forecasts table on the VF page. */
     public SFcastLineItem getTotalLine() {
         return splFClineItems[splFClineItems.size() - 1];
     }
@@ -637,7 +629,7 @@ public with sharing class SpecialistForecastController {
     /**
      *  Get all the users added into the  allUserIds and put the RoleInfo with
      *  UserId Key for each displayable user
-     *  @param UserID is a SFDC ID
+     *  @param UserID
      *  @throws SpecialistForecastException
      */
     private void getMappedUserInfoFromRoleHierarchy(Id userId) {
@@ -660,26 +652,24 @@ public with sharing class SpecialistForecastController {
             return;
         }
 
-        UserRole ruinfo;
+        UserInfoWrapper ruinfo;
         HierarchyUtil.RoleNodeWrapper[] lstchildUserNodes = rolwraps.myChildNodes;
 
         if (lstchildUserNodes != null) {
             for (HierarchyUtil.RoleNodeWrapper rolewrapper : lstchildUserNodes) {
-                if (roleWrapper.myUsers != null
-                && roleWrapper.myUsers.size() == 1) {
-                    alluserIds = new Set<Id>();
-                    ruinfo = new UserRole();
-                    ruinfo.roleId = rolewrapper.myRoleId;
+                if (roleWrapper.myUsers != null && roleWrapper.myUsers.size() == 1) {
+                    alluserIds      = new Set<Id>();
+                    ruinfo          = new UserInfoWrapper();
+                    ruinfo.roleId   = rolewrapper.myRoleId;
                     ruinfo.roleName = rolewrapper.myroleName;
-                    ruinfo.userId = rolewrapper.myUsers.get(0).Id;
+                    ruinfo.userId   = rolewrapper.myUsers.get(0).Id;
                     ruinfo.userName = rolewrapper.myUsers.get(0).Name;
-                    mapUsers.put(rolewrapper.myUsers.get(0).Id,ruinfo);
-                    /* Put the key with the child*/
+                    mapUsers.put(ruinfo.userId, ruinfo); // Put key with child
                     roleTraverse (rolewrapper);
 
-                    alluserIds.add(rolewrapper.myUsers.get(0).Id);
-                    allTotaluserIds.add(rolewrapper.myUsers.get(0).Id);
-                    mapSecondLeverUsersAndChild.put(rolewrapper.myUsers.get(0).Id,alluserIds);
+                    alluserIds.add(ruinfo.userId);
+                    allTotaluserIds.add(ruinfo.userId);
+                    mapSecondLeverUsersAndChild.put(ruinfo.userId, alluserIds);
 
                 }
                 // if manager and many users assigned to the role then get only mapped user
@@ -687,59 +677,54 @@ public with sharing class SpecialistForecastController {
                 && !roleWrapper.isLeafNode) {
                     alluserIds = new Set<Id>();
 
-                    ruinfo            = new UserRole();
+                    ruinfo            = new UserInfoWrapper();
                     ruinfo.roleId     = rolewrapper.myRoleId;
                     ruinfo.roleName   = rolewrapper.myroleName;
                     ruinfo.userId     = rolewrapper.myMappedUser.Id;
                     ruinfo.userName   = rolewrapper.myMappedUser.Name;
-                    mapUsers.put(rolewrapper.myMappedUser.Id,ruinfo);
-                    /* Put the key with the child*/
+                    mapUsers.put(ruinfo.userId, ruinfo); // Put key with child
                     roleTraverse(rolewrapper);
 
-                    alluserIds.add(rolewrapper.myMappedUser.Id);
-                    allTotaluserIds.add(rolewrapper.myMappedUser.Id);
-                    mapSecondLeverUsersAndChild.put(rolewrapper.myMappedUser.Id,
-                        alluserIds);
+                    alluserIds.add(ruinfo.userId);
+                    allTotaluserIds.add(ruinfo.userId);
+                    mapSecondLeverUsersAndChild.put(ruinfo.userId, alluserIds);
                 }
                 //if leafnode role then get all users
                 if (roleWrapper.myUsers != null && roleWrapper.myUsers.size() > 1
                 && roleWrapper.isLeafNode) {
                     for(User myusr : rolewrapper.myUsers) {
-                        alluserIds = new Set<Id>();
-                        ruinfo = new UserRole();
-                        ruinfo.roleId = rolewrapper.myRoleId;
+                        alluserIds      = new Set<Id>();
+                        ruinfo          = new UserInfoWrapper();
+                        ruinfo.roleId   = rolewrapper.myRoleId;
                         ruinfo.roleName = rolewrapper.myroleName;
-                        ruinfo.userId = myusr.Id;
+                        ruinfo.userId   = myusr.Id;
                         ruinfo.userName = myusr.Name;
-                        mapUsers.put(myusr.Id,ruinfo);
-                        /* Put the key with the child*/
-                        roleTraverse (rolewrapper);
+                        mapUsers.put(myusr.Id, ruinfo); // Put key with child
+                        roleTraverse(rolewrapper);
 
                         alluserIds.add(myusr.Id);
                         allTotaluserIds.add(myusr.Id);
-                        mapSecondLeverUsersAndChild.put(myusr.Id,alluserIds);
+                        mapSecondLeverUsersAndChild.put(myusr.Id, alluserIds);
 
-                    }//end for
-                }//end if
-            }//end for
-        }//end if
+                    } //end for
+                } //end if
+            } //end for
+        } //end if
 
         // mapped/search user
-        ruinfo = new UserRole();
-        ruinfo.roleId = usr.UserRoleId;
-        ruinfo.roleName = usr.userrole.Name;
-        ruinfo.userId = userId;
+        ruinfo           = new UserInfoWrapper();
+        ruinfo.roleId    = usr.UserRoleId;
+        ruinfo.roleName  = usr.UseRrole.Name;
+        ruinfo.userId    = userId;
         ruinfo.userName  = usr.Name;
-        mapUsers.put(userId,ruinfo);
+        mapUsers.put(userId, ruinfo);
     }
 
     /**
      * Recursively traverse a given roleId
-     *
      * @param rolewrapper user/role indicates the starting point of traversal
      */
     private void roleTraverse(HierarchyUtil.RoleNodeWrapper rolewrapper) {
-
          if (rolewrapper.myChildNodes != null) {
              for (HierarchyUtil.RoleNodeWrapper rw : rolewrapper.myChildNodes){
                  if (rw.myUsers != null && rw.myUsers.size() > 1 && rw.isLeafNode) {
@@ -882,30 +867,26 @@ public with sharing class SpecialistForecastController {
         return ownerlineItemsMap;
     }
 
-    /**
-     *
-     */
+    /** */
     private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper rolewrapper,
     User myusr) {
 
-        UserRole ruinfo = new UserRole();
-        ruinfo.roleId = rolewrapper.myRoleId;
+        UserInfoWrapper ruinfo = new UserInfoWrapper();
+        ruinfo.roleId   = rolewrapper.myRoleId;
         ruinfo.roleName = rolewrapper.myroleName;
-        ruinfo.userId = myusr.Id;
+        ruinfo.userId   = myusr.Id;
         ruinfo.userName = myusr.Name;
-        mapUsers.put(myusr.Id,ruinfo);
-        /* Put the key with the child */
+        mapUsers.put(myusr.Id, ruinfo); // Put the key with the child
+
         roleTraverse(rolewrapper);
         alluserIds.add(myusr.Id);
         allTotaluserIds.add(myusr.Id);
-        mapSecondLeverUsersAndChild.put(myusr.Id,alluserIds);
+        mapSecondLeverUsersAndChild.put(myusr.Id, alluserIds);
 
     }
 
     /***************    Specialist Forecast Override     **********************/
-    /**
-     *
-     */
+    /** */
     public PageReference saveOverride() {
 
         SpecialistForecastlineItem__c spc = new SpecialistForecastlineItem__c();
@@ -964,46 +945,54 @@ public with sharing class SpecialistForecastController {
         return null;
     }
 
-    /**
-     *
-     */
+    /** */
     private boolean isSelfOverride() {
         return UserInfo.getUserId() == lineItemOwnerId;
     }
 
-     /** Sets default values for all variables. */
-     private void initializeOverrideVariables() {
-         overrideAmount = null;
-         originalAmount = 0;
-         originalOldAmount = 0;
-         overrideComment = '';
-         strRecordId = '';
-         strField = '';
-         lineItemOwnerId = '';
-     }
-     /***************  Specialist Forecast Override End  **********************/
+    /** Sets default values for all variables. */
+    private void initializeOverrideVariables() {
+        overrideAmount = null;
+        originalAmount = 0;
+        originalOldAmount = 0;
+        overrideComment = '';
+        strRecordId = '';
+        strField = '';
+        lineItemOwnerId = '';
+    }
 
-     /***************    Specialist Forecast DrillDown   **********************/
-     /**
-      *
-      */
-     public void closeDrilDownPopup() {
-         displayDrilDownPopup = false;
-     }
+    /** Returns the current user working with forecasts */
+    public String getPreparedByUser() {
+        return preparedByUser;
+    }
 
-     /**
-      *
-      */
-     public void showDrilDownPopup() {
-         if (selectedFQ != null && selectedFY != null && lineItemOwnerId != null) {
-             this.getSpecialistForecastRecords();
-         }
-         displayDrilDownPopup = true;
-     }
+    /** */
+    public void showOverridePopup() {
+        displayPopup = true;
+    }
 
-    /**
-     *  Sets specialistForecastList to forecast records in selected FQ and FY.
-     */
+    /** Close the override popup and set the values to defualt for next time */
+    public void closeOverridePopup() {
+        displayPopup = false;
+        initializeOverrideVariables();
+    }
+    /***************  Specialist Forecast Override End   **********************/
+
+    /***************    Specialist Forecast DrillDown    **********************/
+    /** */
+    public void closeDrilDownPopup() {
+        displayDrilDownPopup = false;
+    }
+
+    /** */
+    public void showDrilDownPopup() {
+        if (selectedFQ != null && selectedFY != null && lineItemOwnerId != null) {
+            getSpecialistForecastRecords();
+        }
+        displayDrilDownPopup = true;
+    }
+
+    /** Sets specialistForecastList to forecast records in selected FQ and FY */
     private void getSpecialistForecastRecords() {
         String[] lstStatus = new String[]{};
         lstStatus.add(strField);
@@ -1014,14 +1003,15 @@ public with sharing class SpecialistForecastController {
 
         specialistForecastList = [SELECT Opportunity__C, Opportunity__r.Name,
                                     Account__c, FiscalYear__c, Month__c,
-                                    ForecastAmount__c, ForecastStatus__c,
+                                    ForecastAmount__c, ForecastCategory__c,
                                     ForecastCloseDate__c, ForecastStage__c
                                     FROM SpecialistForecast__c
                                     WHERE FiscalYear__c = :SelectedFY
                                     AND Month__c in :lstMonths
                                     AND OwnerId = :lineItemOwnerId
-                                    AND ForecastStatus__c in :lststatus];
+                                    AND ForecastCategory__c in :lststatus];
     }
+    /***************  Specialist Forecast DrillDown End  **********************/
 
     /** Return 0 if INP is null, else inp. */
     private static Integer defaultIfNull(Integer inp) {

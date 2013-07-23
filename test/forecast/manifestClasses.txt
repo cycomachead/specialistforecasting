@@ -4,4 +4,4 @@ class SpecForecastHelperTestclass
 class SpecForecastHierarchyHelperTestclass
 class SpecForecastSchedulerTestclass
 class SpecForecastTestclass
-class SpecForecastTestUtilclass
+class SpecForecastTestLabelclass

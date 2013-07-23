@@ -30,7 +30,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * Helper Class used for Forecast Hierarchy related functionalities
  *
  * @author mkatragadda
- * @since 180.store
  */
 public with sharing class HierarchyUtil {
 
@@ -38,12 +37,12 @@ public with sharing class HierarchyUtil {
     private static Map<Id, UserRole>  roleUsersMap;
 
     // map to hold child roles with parentRoleId as the key
-    private static Map<Id, List<UserRole>> parentChildRoleMap;
+    private static Map<Id, UserRole[]> parentChildRoleMap;
 
     // List holds all subordinates
-    private static List<User> allSubordinates;
+    private static User[] allSubordinates;
 
-    //Map to hole the role and forecast hierarchy configurations
+    // Map to hole the role and forecast hierarchy configurations
     private static Map<Id, Id>  forecastHierarchyConfigRoleUserMap;
 
     /** Standard error messages. */
@@ -56,9 +55,34 @@ public with sharing class HierarchyUtil {
     private static Final String CANT_FIND_USER =
         SpecialistForecastException.CANT_FIND_USER;
 
+    // Simple Wrapper Class for Roles in the hierarchy.
+    public class RoleNodeWrapper {
+
+        // Role info properties - begin
+        public String myRoleName             { get;set; }
+        public Id myRoleId                   { get;set; }
+        public Id myParentRoleId             { get;set; }
+
+        // Node children identifier properties - begin
+        public Boolean hasChildren           { get;set; }
+        public Boolean hasUsers              { get;set; }
+        public Boolean isLeafNode            { get;set; }
+
+        // Node children properties
+        public User[] myUsers                 { get;set; }
+        // mapped user FROM the forecast hierarchy configurations, if no mapping
+        //  exists, then it returns null
+        public User myMappedUser              { get;set; }
+        public RoleNodeWrapper[] myChildNodes { get;set; }
+
+        public RoleNodeWrapper() {
+            hasUsers = false;
+            hasChildren = false;
+        }
+    }
+
     /**
      *  public method to get all the subordinates
-     *
      *  @return TODO
      *  @throws SpecialistForecastException
      */
@@ -69,11 +93,10 @@ public with sharing class HierarchyUtil {
         if (type == null) {
             type = ForecastHelper.HIERARCHY_TYPE_ROLE;
         }
-        if (type == ForecastHelper.HIERARCHY_TYPE_ROLE) {
-            return getSubordinatesByRole(identifier);
-        } else if (type == ForecastHelper.HIERARCHY_TYPE_USER) {
+        if (type == ForecastHelper.HIERARCHY_TYPE_USER) {
             return getSubordinatesByUser(identifier);
         }
+        // Default, identifier is HIERARCHY_TYPE_ROLE
         return getSubordinatesByRole(identifier);
     }
 
@@ -83,7 +106,7 @@ public with sharing class HierarchyUtil {
     // if it is not defined there then null is returned
     public static Map<String,String> getSubordinatesWithMappedUsersAsMap(
     Id identifier, String type) {
-        Map<String,String> subOrdinates = new Map<String,String>();
+        Map<String, String> subOrdinates = new Map<String, String>();
         RoleNodeWrapper currentNode = getSubordinates(identifier, type);
         if (currentNode != null) {
             //get the current role and user
@@ -91,7 +114,7 @@ public with sharing class HierarchyUtil {
                 subOrdinates.put(currentNode.myRoleName, currentNode.myMappedUser.name);
             }
             //end of current node user info
-            List<RoleNodeWrapper> childNodes = currentNode.myChildNodes;
+            RoleNodeWrapper[] childNodes = currentNode.myChildNodes;
             if (childNodes != null) {
                 for (RoleNodeWrapper child : childNodes) {
                     if ((child.myUsers != null && child.myUsers.size() > 0) &&
@@ -104,7 +127,6 @@ public with sharing class HierarchyUtil {
         return subOrdinates;
     }
 
-    // FIXME role ID or user ID?
     /**
      *  public method to get all the direct subordinates by userId
      *  @throws SpecialistForecastException
@@ -131,12 +153,12 @@ public with sharing class HierarchyUtil {
             throw new SpecialistForecastException(PARENT_ID_NULL);
         }
 
-        allSubordinates = new List<User>();
+        allSubordinates = new User[0];
 
         // Get role to users mapping in a map with key as role id
         try {
-            roleUsersMap = new Map<Id, UserRole>([SELECT Id, Name, parentRoleId,
-                (SELECT id, name
+            roleUsersMap = new Map<Id, UserRole>([SELECT Id, name, parentRoleId,
+                (SELECT Id, name
                 FROM users WHERE isActive = true and usertype = 'STANDARD')
                 FROM UserRole WHERE parentRoleId = :parentRoleId]);
             //add the parent to the map as well to fetch the parent information
@@ -149,11 +171,11 @@ public with sharing class HierarchyUtil {
             throw new SpecialistForecastException(PARENT_ID_NULL);
         }
         // populate parent role - child roles map
-        parentChildRoleMap = new Map<Id, List<UserRole>>();
+        parentChildRoleMap = new Map<Id, UserRole[]>();
         for (UserRole r : roleUsersMap.values()) {
-            List<UserRole> childUserRoleList;
+            UserRole[] childUserRoleList;
             if (!parentChildRoleMap.containsKey(r.parentRoleId)){
-                childUserRoleList = new List<UserRole>();
+                childUserRoleList = new UserRole[0];
                 childUserRoleList.add(r);
                 parentChildRoleMap.put(r.parentRoleId, childUserRoleList);
             }
@@ -167,7 +189,6 @@ public with sharing class HierarchyUtil {
     }
 
     /**
-     *  TODO: Refactor, Better Exception Handling
      *  public method to get all the seven level subordinates by userId
      *  @return
      *  @throws SpecialistForecastException
@@ -198,8 +219,8 @@ public with sharing class HierarchyUtil {
             throw new SpecialistForecastException(PARENT_ID_NULL);
         }
 
-        allSubordinates = new List<User>();
-        parentChildRoleMap = new Map<Id, List<UserRole>>();
+        allSubordinates = new User[0];
+        parentChildRoleMap = new Map<Id, UserRole[]>();
 
         //fetch all the forecast hierarchy configurations Role/User Map
         if (forecastHierarchyConfigRoleUserMap == null) {
@@ -213,10 +234,10 @@ public with sharing class HierarchyUtil {
         parentRoleIds.add(parentRoleId);
 
         while (level < 7) {
-            List<UserRole> currentRoles = new List<UserRole>();
+            UserRole[] currentRoles = new UserRole[0];
             currentRoles = [SELECT id FROM UserRole
                             WHERE parentRoleId in :parentRoleIds];
-            for (UserRole role : currentRoles){
+            for (UserRole role : currentRoles) {
                 //check if mapping for this role exists, only if mapping exists
                 //  then we will query data, this is to avoid reaching SOQL
                 //  limits for users
@@ -248,7 +269,7 @@ public with sharing class HierarchyUtil {
         for (UserRole r : roleUsersMap.values()) {
             List<UserRole> childUserRoleList;
             if (!parentChildRoleMap.containsKey(r.parentRoleId)){
-                childUserRoleList = new List<UserRole>();
+                childUserRoleList = new UserRole[0];
                 childUserRoleList.add(r);
                 parentChildRoleMap.put(r.parentRoleId, childUserRoleList);
             } else {
@@ -260,7 +281,7 @@ public with sharing class HierarchyUtil {
         return createNode(parentRoleId);
     }
 
-    /* // createNode starts */
+    /* createNode starts */
     private static RoleNodeWrapper createNode(Id roleId) {
         if (roleID == null) {
             throw new SpecialistForecastException(ROLE_ID_NULL);
@@ -279,7 +300,7 @@ public with sharing class HierarchyUtil {
         if (parentChildRoleMap.containsKey(roleId)){
             n.hasChildren = true;
             n.isLeafNode = false;
-            List<RoleNodeWrapper> lst = new List<RoleNodeWrapper>();
+            List<RoleNodeWrapper> lst = new RoleNodeWrapper[0];
             for (UserRole r : parentChildRoleMap.get(roleId)) {
                 lst.add(createNode(r.Id));
             }
@@ -313,40 +334,6 @@ public with sharing class HierarchyUtil {
         return n;
     }
 
-    public class RoleNodeWrapper {
-
-        // Role info properties - begin
-        public String myRoleName {get; set;}
-
-        public Id myRoleId {get; set;}
-
-        public Id myParentRoleId {get; set;}
-        // Role info properties - end
-
-        // Node children identifier properties - begin
-        public Boolean hasChildren {get; set;}
-
-        public Boolean isLeafNode {get; set;}
-
-        public Boolean hasUsers {get; set;}
-        // Node children identifier properties - end
-
-        // Node children properties - begin
-        public List<User> myUsers {get; set;}
-
-        // mapped user FROM the forecast hierarchy configurations, if no mapping
-        //  exists, then it returns null
-        public User myMappedUser {get; set;}
-
-        public List<RoleNodeWrapper> myChildNodes {get; set;}
-        // Node children properties - end
-
-        public RoleNodeWrapper(){
-            hasUsers = false;
-            hasChildren = false;
-        }
-    }
-
     /**
      * This method will fetch Manager/Owner user as id FROM the forecast
      * hieararchy configurations
@@ -354,20 +341,19 @@ public with sharing class HierarchyUtil {
      */
     public static Map<Id, Id> getForecastHierarchyConfigurationsRoleUserMap() {
         forecastHierarchyConfigRoleUserMap = new Map<Id, Id>();
-        List<ForecastHierarchyConfigurations__c> configurationsList = new
-            List<ForecastHierarchyConfigurations__c>();
-        //fetch all the forecast hierarchy configurations
-           try {
-             configurationsList = [SELECT HierarchyRole__c,
-                                    HierarchyRoleUser__r.id, IsManager__c,
-                                    IsActive__c, Comment__c, HashForCheck__c
-                                    FROM ForecastHierarchyConfigurations__c
-                                    WHERE IsActive__c = true and
-                                    IsManager__c = true];
+        ForecastHierarchyConfigurations__c[] configurationsList = new
+            ForecastHierarchyConfigurations__c[0];
+        // fetch all the forecast hierarchy configurations
+        try {
+            configurationsList = [SELECT HierarchyRole__c,
+                HierarchyRoleUser__r.id, IsManager__c,
+                IsActive__c, Comment__c, HashForCheck__c
+                FROM ForecastHierarchyConfigurations__c
+                WHERE IsActive__c = true and IsManager__c = true];
         } catch (Exception ex) {
             return null;
         }
-        for(ForecastHierarchyConfigurations__c config : configurationsList){
+        for(ForecastHierarchyConfigurations__c config : configurationsList) {
             forecastHierarchyConfigRoleUserMap.put(config.HierarchyRole__c,
                 config.HierarchyRoleUser__r.id);
         }
@@ -377,17 +363,16 @@ public with sharing class HierarchyUtil {
     /**
      * This method is used to create a hash to validate duplicate records during
      * insert.  We need only one manager user assigned to a specific role. This
-     * is called FROM the trigger..
+     * is called FROM the trigger.
      * @return TODO
      */
     public static String createHash(ForecastHierarchyConfigurations__c fhc) {
-        String roleID;
-        String userID;
+        String roleID, userID;
         try {
             roleID = ('' + fhc.HierarchyRole__c).substring(0, 15);
             userID = ('' + fhc.HierarchyRoleUser__c).substring(0, 15);
         } catch (Exception ex) {
-            return ''; // FIXME: What should happen on bad inp?
+            return null;
         }
         Blob bPrehash = Blob.valueOf('FORECAST_HIERARCHY_CONFIG-' + roleId +
              userId);

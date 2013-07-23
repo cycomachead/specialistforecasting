@@ -67,11 +67,41 @@ public with sharing class SFcastLineItem {
        public String strLineItmId                 { get;set; }
        public String submittedDate                { get;set; }
 
+       // Basic Constructor, prevent null values.
+       public SFCastLineItem() {
+           reportingUser               = false;
+           forOverride                 = false;
+           myCommitOverridden          = false;
+           myBestCaseOverridden        = false;
+           mgrCommitOverridden         = false;
+           mgrBestCaseOverridden       = false;
+           isSubmitted                 = false;
+           isCommitOverridden          = false;
+           isBestcaseOverridden        = false;
+           searchUser                  = false;
+           closedAmount                = 0;
+           commitAmount                = 0;
+           bestCaseAmount              = 0;
+           commitOverrideAmount        = 0;
+           bestCaseOverrideAmount      = 0;
+           mgrbestCaseOverrideAmount   = 0;
+           mgrCommitOverrideAmount     = 0;
+           prevDirectRepCommitAmount   = 0;
+           prevDirectRepBestcaseAmount = 0;
+           quotaAmount                 = 0;
+           pipelineAmount              = 0;
+           roleName                    = '';
+           userName                    = '';
+           roleId                      = '';
+           userId                      = '';
+           mgrCommitOverrideNotes      = '';
+           mgrbestcaseOverrideNotes    = '';
+           strLineItmId                = '';
+           submittedDate               = '';
+       }
 
 
-       /**
-        *   Returns a string "UserName (RoleName)" if available or '' if not.
-        */
+       /** Returns string "UserName (RoleName)" if available. */
        public String getUserRoleName() {
             if (roleName != null && userName != null) {
                 return userName + ' (' + roleName  + ')';
@@ -79,6 +109,7 @@ public with sharing class SFcastLineItem {
             return '';
        }
 
+       // FIXME search user needs Init'd
        public Boolean getCommitPreviousAmountMatch() {
             return (searchUser != null  || !searchUser) &&
                 (prevDirectRepCommitAmount != null && (commitAmount != null
@@ -99,18 +130,19 @@ public with sharing class SFcastLineItem {
       }
 
       public String getPrevVFDirectRepBestcaseAmount() {
-          List<String> args = new String[] {'0','number','###,###,##0.00'};
+          String[]   args = new String[] {'0','number','###,###,##0.00'};
           String sCurrency;
           if (prevDirectRepBestcaseAmount != null) {
               prevDirectRepBestcaseAmount.setscale(2);
               sCurrency = String.format(prevDirectRepBestcaseAmount.format(), args);
               if (!sCurrency.contains('.')) {
-                  sCurrency = sCurrency + '.00';
+                  sCurrency += '.00';
               }
           }
           return sCurrency;
       }
 
+      // FIXME search user needs Init'd
       public boolean getBestCasePreviousAmountMatch() {
           return (searchUser != null || !searchUser) &&
               prevDirectRepBestcaseAmount != null && bestCaseAmount != null
@@ -121,26 +153,25 @@ public with sharing class SFcastLineItem {
      *  Create  displayble virtual LineItem for the VF page
      *  @param LineItem and User Map
      */
-    public void createEmptySFLineItem(Id lineItemOwnerId, Id searchUser,
-    Map<Id,SpecialistForecastController.UserRole> mapUsers, Decimal quotaAmt) {
+    public void createEmptySFLineItem(Id lineItemOwnerId, Id inpUser,
+    Map<Id,SpecialistForecastController.UserInfoWrapper> mapUsers, Decimal quotaAmt) {
 
-        this.forOverride            = (searchUser != UserInfo.getUserId());
-        this.userName               = mapUsers.get(lineItemOwnerId).userName;
-        this.roleName               = mapUsers.get(lineItemOwnerId).roleName;
-        this.userId                 = mapUsers.get(lineItemOwnerId).userID;
-        this.roleId                 = mapUsers.get(lineItemOwnerId).roleID;
-        this.quotaAmount            = quotaAmt;
-
-        this.closedAmount           = 0;
-        this.commitAmount           = 0;
-        this.commitOverrideAmount   = 0;
-        this.bestCaseOverrideAmount = 0;
-        this.bestCaseAmount         = 0;
-        this.pipelineAmount         = 0;
-        this.reportingUser          = false;
-        this.myCommitOverridden     = false;
-        this.myBestCaseOverridden   = false;
-        this.searchUser             = false;
+        forOverride            = (inpUser != UserInfo.getUserId());
+        userName               = mapUsers.get(lineItemOwnerId).userName;
+        roleName               = mapUsers.get(lineItemOwnerId).roleName;
+        userId                 = mapUsers.get(lineItemOwnerId).userID;
+        roleId                 = mapUsers.get(lineItemOwnerId).roleID;
+        quotaAmount            = quotaAmt;
+        closedAmount           = 0;
+        commitAmount           = 0;
+        commitOverrideAmount   = 0;
+        bestCaseOverrideAmount = 0;
+        bestCaseAmount         = 0;
+        pipelineAmount         = 0;
+        reportingUser          = false;
+        myCommitOverridden     = false;
+        myBestCaseOverridden   = false;
+        searchUser             = false;
     }
 
 }

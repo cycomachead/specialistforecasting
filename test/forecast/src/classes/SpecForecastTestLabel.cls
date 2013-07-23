@@ -32,7 +32,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * @author Bob
  * @since 178.store
  */
-public with sharing class SpecForecastTestUtil {
+
+@isTest
+public with sharing class SpecForecastTestLabel {
 
     public static final String UC_SALES_OUTLOOK_PLAN_REPORT =
         'Sales Forecast Report with Finance Outlook and Plan';

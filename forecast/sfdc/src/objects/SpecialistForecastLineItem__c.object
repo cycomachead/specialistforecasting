@@ -65,8 +65,8 @@
     <fields>
         <fullName>Month__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>The month the specialist forecast applies to</inlineHelpText>
-        <label>Fiscal Month Name</label>
+        <inlineHelpText>The month the specialist forecast applies to.</inlineHelpText>
+        <label>Month</label>
         <picklist>
             <picklistValues>
                 <fullName>April</fullName>
@@ -236,7 +236,7 @@
     </fields>
     <fields>
         <fullName>OriginalPipelineAmount__c</fullName>
-        <description>Specialist AE&apos;s forecasted opportunity pipeline amount for their specific products</description>
+        <description>AE&apos;s forecasted opportunity pipeline amount for their specific products</description>
         <externalId>false</externalId>
         <label>Original Pipeline Amount</label>
         <precision>16</precision>

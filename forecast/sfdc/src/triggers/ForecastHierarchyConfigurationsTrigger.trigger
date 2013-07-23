@@ -12,7 +12,7 @@ trigger ForecastHierarchyConfigurationsTrigger on ForecastHierarchyConfiguration
         if (Trigger.isInsert || Trigger.isUpdate) {
             for (ForecastHierarchyConfigurations__c forecastConfigurations : Trigger.new) {
                 if (forecastConfigurations.HierarchyRoleUser__c == null || forecastConfigurations.HierarchyRole__c == null) {
-                    forecastConfigurations.addError('Validation#1. User and Role is required.');
+                    forecastConfigurations.addError('Failed Validation #1. User and Role are required.');
                 }
                 if (forecastConfigurations.IsActive__c) {
                     //duplicate check
@@ -21,7 +21,7 @@ trigger ForecastHierarchyConfigurationsTrigger on ForecastHierarchyConfiguration
                         forecastConfigurations.HashForCheck__c = strHash;
                         mapForDupe.put(strHash, forecastConfigurations);
                     } else {
-                        forecastConfigurations.addError('Validation#2. Error while inserting or updating a duplicate record.');
+                        forecastConfigurations.addError('Failed Validation #2. Error while inserting or updating a duplicate record.');
                     }
                 }
             }
@@ -33,7 +33,10 @@ trigger ForecastHierarchyConfigurationsTrigger on ForecastHierarchyConfiguration
                     FROM ForecastHierarchyConfigurations__c
                     WHERE HashForCheck__c IN : mapForDupe.keySet()];
             for (ForecastHierarchyConfigurations__c hashCfr : existingCfrs) {
-                mapForDupe.get(hashCfr.HashForCheck__c).addError('Validation#3. Duplicate record exists in database where Role = ' + hashCfr.HierarchyRole__c + ' and User = ' + hashCfr.HierarchyRoleUser__r.id);
+                mapForDupe.get(hashCfr.HashForCheck__c).addError('Failed ' +
+                    'Validation #3. Duplicate record exists in database where Role is: '
+                    + hashCfr.HierarchyRole__c + ', and User is: ' +
+                    hashCfr.HierarchyRoleUser__r.id + '.');
             }
         }
 

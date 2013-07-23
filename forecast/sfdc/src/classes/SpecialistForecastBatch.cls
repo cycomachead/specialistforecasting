@@ -46,7 +46,6 @@ global with sharing class SpecialistForecastBatch implements
     public Boolean isRunningByUser = false;
 
     /**
-     *
      * @return TODO
      */
     global Iterable<AggregateResult> start(Database.BatchableContext context) {
@@ -113,7 +112,7 @@ global with sharing class SpecialistForecastBatch implements
             item.FiscalYear__c = (String)ar.get('FiscalYear__c');
             temp = (String) ar.get('Month__c');
             item.Month__c =  temp;
-            temp = (String) ar.get('ForecastStatus__c');
+            temp = (String) ar.get('ForecastCategory__c');
             Decimal tempAmount = (Decimal) ar.get('amnt');
 
             if (temp == 'Closed Won' || temp == 'Closed' ) {
@@ -169,8 +168,8 @@ global with sharing class SpecialistForecastBatch implements
      * update all the line items amount to 0 those are not updated by
      * current process
      */
-    private void updateSFLineItems(){
-        List<SpecialistForecastLineItem__c> spllist = [SELECT Id,
+    private void updateSFLineItems() {
+        SpecialistForecastLineItem__c[] spllist = [SELECT Id,
                             OriginalPipelineAmount__c, OriginalClosedAmount__c,
                             OriginalBestCaseAmount__c, OriginalCommitAmount__c
                             FROM SpecialistForecastLineItem__c

@@ -30,14 +30,13 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  Class Name : SpecForecastHelperTest
  *  Description: Contains test cases to test utility methods for forecast
  *  @author Michael Ball
- *  @since
  */
 
+@isTest
 public class SpecForecastHelperTest {
 
     private static testMethod void testGetMonthsInQuarter() {
         String[] months = ForecastHelper.getMonthsInQuarter('Q1');
-        System.debug('####TEST####\n' + months);
         System.assertEquals('February', months.get(0));
         System.assertEquals('March', months.get(1));
         System.assertEquals('April', months.get(2));
@@ -57,7 +56,7 @@ public class SpecForecastHelperTest {
 
     private static testMethod void testGetCurrentQuarter() {
         String curQrtr = ForecastHelper.getCurrentQuarter();
-        System.assert(curQrtr == 'Q1' || curQrtr == 'Q2' || 
+        System.assert(curQrtr == 'Q1' || curQrtr == 'Q2' ||
             curQrtr == 'Q3' || curQrtr == 'Q4');
     }
 
@@ -69,8 +68,7 @@ public class SpecForecastHelperTest {
 
     // update the assert of FY12 every year (1st February)
     private static testMethod void testGetLastFiscalYear() {
-        String lastFY = ForecastHelper.getLastFiscalYear();
-        System.assertEquals('FY13', lastFY);
+        System.assertEquals('FY13', ForecastHelper.getLastFiscalYear());
     }
 
     private static testMethod void testGetPreviousFiscalYear() {
@@ -84,17 +82,17 @@ public class SpecForecastHelperTest {
         System.assertEquals('FY19', previousFY);
         previousFY = ForecastHelper.getPreviousFiscalYear('FY00');
         System.assertEquals('FY99', previousFY);
-        //not expected, but these should work.
+        // not expected, but these should work.
         previousFY = ForecastHelper.getPreviousFiscalYear('FY100');
         System.assertEquals('FY99', previousFY);
         previousFY = ForecastHelper.getPreviousFiscalYear('FY103');
         System.assertEquals('FY02', previousFY);
     }
-    
+
     // MUST be updated every year!!
     // TODO Fix for testing with Data and without
     private static testMethod void testGetSupportedFiscalYears() {
-        List<String> supportedFYs = ForecastHelper.getSupportedFiscalYears();
+        String[] supportedFYs = ForecastHelper.getSupportedFiscalYears();
         Boolean deOrg = 'FY14' == supportedFYs.get(0);
         Boolean aps1Test = 'FY13' == supportedFYs.get(0);
         System.assert(deOrg || aps1Test, 'Failed supported FYs.');
@@ -104,7 +102,7 @@ public class SpecForecastHelperTest {
     }
 
     private static testMethod void testGetSupportedFiscalQuarters() {
-        List<String> supportedFQs = ForecastHelper.getSupportedFiscalQuarters();
+        String[] supportedFQs = ForecastHelper.getSupportedFiscalQuarters();
         System.assertEquals('Q1', supportedFQs.get(0));
         System.assertEquals('Q2', supportedFQs.get(1));
         System.assertEquals('Q3', supportedFQs.get(2));
@@ -309,59 +307,59 @@ public class SpecForecastHelperTest {
         System.assertEquals('December', monthAndFiscalYear[0]);
         System.assertEquals('FY12', monthAndFiscalYear[1]);
     }
-    
+
     // TODO: Is this necessary?
-    private static testMethod void testApplyMonthsFromQuarter() {
-        Date myDate = Date.newInstance(2012, 4, 17);
-        Map<String, Boolean> showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-        System.assert(showHideMap.get('hideFirstMonth'));
-        System.assert(showHideMap.get('hideSecondMonth'));
-        System.assert(! showHideMap.get('hideThirdMonth'));
-        // myDate = Date.newInstance(2012, 4, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q2', showHideMap, myDate);
-        System.assert(! showHideMap.get('hideFirstMonth'));
-        System.assert(! showHideMap.get('hideSecondMonth'));
-        System.assert(! showHideMap.get('hideThirdMonth'));
-        myDate = Date.newInstance(2012, 3, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-        System.assert(showHideMap.get('hideFirstMonth'));
-        System.assert(! showHideMap.get('hideSecondMonth'));
-        System.assert(! showHideMap.get('hideThirdMonth'));
-        myDate = Date.newInstance(2012, 5, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-        System.assert(showHideMap.get('hideFirstMonth'));
-        System.assert(showHideMap.get('hideSecondMonth'));
-        System.assert(showHideMap.get('hideThirdMonth'));
-        
-        myDate = Date.newInstance(2012, 6, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q2', showHideMap, myDate);
-        System.assert(showHideMap.get('hideFirstMonth'));
-        System.assert(! showHideMap.get('hideSecondMonth'));
-        System.assert(! showHideMap.get('hideThirdMonth'));
-
-        myDate = Date.newInstance(2012, 2, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-        System.assert(! showHideMap.get('hideThirdMonth'));
-
-        myDate = Date.newInstance(2012, 8, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q3', showHideMap, myDate);
-        System.assert(! showHideMap.get('hideFirstMonth'));
-        System.assert(! showHideMap.get('hideSecondMonth'));
-        System.assert(! showHideMap.get('hideThirdMonth'));
-
-        myDate = Date.newInstance(2012, 11, 17);
-        showHideMap = new Map<String, Boolean>();
-        ForecastHelper.applyMonthsFromQuarter('Q4', showHideMap, myDate);
-        System.assert(!showHideMap.get('hideFirstMonth'));
-        System.assert(!showHideMap.get('hideSecondMonth'));
-        System.assert(!showHideMap.get('hideThirdMonth'));
-    }
+    // private static testMethod void testApplyMonthsFromQuarter() {
+//         Date myDate = Date.newInstance(2012, 4, 17);
+//         Map<String, Boolean> showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
+//         System.assert(showHideMap.get('hideFirstMonth'));
+//         System.assert(showHideMap.get('hideSecondMonth'));
+//         System.assert(! showHideMap.get('hideThirdMonth'));
+//         // myDate = Date.newInstance(2012, 4, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q2', showHideMap, myDate);
+//         System.assert(! showHideMap.get('hideFirstMonth'));
+//         System.assert(! showHideMap.get('hideSecondMonth'));
+//         System.assert(! showHideMap.get('hideThirdMonth'));
+//         myDate = Date.newInstance(2012, 3, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
+//         System.assert(showHideMap.get('hideFirstMonth'));
+//         System.assert(! showHideMap.get('hideSecondMonth'));
+//         System.assert(! showHideMap.get('hideThirdMonth'));
+//         myDate = Date.newInstance(2012, 5, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
+//         System.assert(showHideMap.get('hideFirstMonth'));
+//         System.assert(showHideMap.get('hideSecondMonth'));
+//         System.assert(showHideMap.get('hideThirdMonth'));
+//
+//         myDate = Date.newInstance(2012, 6, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q2', showHideMap, myDate);
+//         System.assert(showHideMap.get('hideFirstMonth'));
+//         System.assert(! showHideMap.get('hideSecondMonth'));
+//         System.assert(! showHideMap.get('hideThirdMonth'));
+//
+//         myDate = Date.newInstance(2012, 2, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
+//         System.assert(! showHideMap.get('hideThirdMonth'));
+//
+//         myDate = Date.newInstance(2012, 8, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q3', showHideMap, myDate);
+//         System.assert(! showHideMap.get('hideFirstMonth'));
+//         System.assert(! showHideMap.get('hideSecondMonth'));
+//         System.assert(! showHideMap.get('hideThirdMonth'));
+//
+//         myDate = Date.newInstance(2012, 11, 17);
+//         showHideMap = new Map<String, Boolean>();
+//         ForecastHelper.applyMonthsFromQuarter('Q4', showHideMap, myDate);
+//         System.assert(!showHideMap.get('hideFirstMonth'));
+//         System.assert(!showHideMap.get('hideSecondMonth'));
+//         System.assert(!showHideMap.get('hideThirdMonth'));
+//     }
 
 }

@@ -30,19 +30,14 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *
  *  Description: Contains test cases to test utility methods for special forecast
  *  batch processor
- *  @since 178.store
  */
 
+@isTest
 public class SpecForecastTest {
 
-    /*
-    Method Name: testGetFiscalYears
-    Parameters : None
-    Description: f-test utility that is used to assert special forecast getFiscalYears
-    */
     private static testMethod void testGetFiscalYears() {
         SpecialistForecastController specialistController = new SpecialistForecastController();
-        List<SelectOption> fiscalYears = specialistController.getFiscalYears();
+        SelectOption[] fiscalYears = specialistController.getFiscalYears();
         String optionValue;
         for(SelectOption option : fiscalYears) {
             optionValue = optionValue + option.getValue() + ' ';
@@ -57,9 +52,9 @@ public class SpecForecastTest {
     Description: f-test utility that is used to assert special forecast getFiscalQuarters
     */
     private static testMethod void testGetFiscalQuarters() {
-        SpecialistForecastController specialistController = new 
+        SpecialistForecastController specialistController = new
             SpecialistForecastController();
-        List<SelectOption> fiscalQuarters = specialistController.getFiscalQuarters();
+        SelectOption[] fiscalQuarters = specialistController.getFiscalQuarters();
         String optionValue;
         for(SelectOption option : fiscalQuarters) {
             optionValue = optionValue + option.getValue() + ' ';
@@ -69,15 +64,15 @@ public class SpecForecastTest {
     }
 
     /*
-    Method Name: testGetSpecialistforecastLineItemsData
+    Method Name: testgetSFcastLineItemsData
     Parameters : None
-    Description: f-test utility that is used to assert special forecast getSpecialistforecastLineItemsData with the user and entry data
+    Description: f-test utility that is used to assert special forecast getSFcastLineItemsData with the user and entry data
     */
-    private static testMethod void testGetSpecialistforecastLineItemsData() {
+    private static testMethod void testgetSFcastLineItemsData() {
         //insert data if not exist
         User u = createOrGetUser();
 
-        SpecialistForecastLineItem__c specItem = new 
+        SpecialistForecastLineItem__c specItem = new
             SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
             FiscalYear__c = 'FY13', FYMonth__c = 'August', OwnerId = u.Id);
 
@@ -88,20 +83,20 @@ public class SpecForecastTest {
 
         System.runAs(u) {
             // The following code runs as user 'u'
-            SpecialistForecastController specialistController = new 
+            SpecialistForecastController specialistController = new
                 SpecialistForecastController();
-            SFcastLineItem[] specialistVO = 
-                specialistController.getSpecialistforecastLineItemsData();
-            System.assert(specialistVO.size() > 0); //FIXME 
+            SFcastLineItem[] specialistVO =
+                specialistController.getSFcastLineItemsData();
+            System.assert(specialistVO.size() > 0); //FIXME
         }
     }
 
     /*
-    Method Name: testGetSpecialistforecastLineItemsDataNoEntry
+    Method Name: testgetSFcastLineItemsDataNoEntry
     Parameters : None
-    Description: f-test utility that is used to assert special forecast getSpecialistforecastLineItemsData with the user and no entry
+    Description: f-test utility that is used to assert special forecast getSFcastLineItemsData with the user and no entry
     */
-    private static testMethod void testGetSpecialistforecastLineItemsDataNoEntry() {
+    private static testMethod void testgetSFcastLineItemsDataNoEntry() {
         //insert data if not exist
         User u = createOrGetUser();
 
@@ -117,21 +112,21 @@ public class SpecForecastTest {
 
         System.runAs(u) {
             // The following code runs as user 'u'
-            SpecialistForecastController specialistController = new 
+            SpecialistForecastController specialistController = new
                 SpecialistForecastController();
-            List<SFcastLineItem> specialistVO = 
-                specialistController.getSpecialistforecastLineItemsData();
+            List<SFcastLineItem> specialistVO =
+                specialistController.getSFcastLineItemsData();
             System.assert(specialistVO.size() > 0);
         }
     }
 
     /*
-    Method Name: testReportDrildownByUser_Role
+    Method Name: testreportDrildownByUserRole
     Parameters : None
-    Description: f-test utility that is used to assert special forecast 
-        reportDrildownByUser_Role
+    Description: f-test utility that is used to assert special forecast
+        reportDrildownByUserRole
     */
-    private static testMethod void testReportDrildownByUser_Role() {
+    private static testMethod void testreportDrildownByUserRole() {
           //insert data if not exist
           User u = createOrGetUser();
 
@@ -146,7 +141,7 @@ public class SpecForecastTest {
              SpecialistForecastController specialistController = new SpecialistForecastController();
 
              specialistController.selectedUserId = u.Id;
-             PageReference drillDownPage = specialistController.reportDrildownByUser_Role();
+             PageReference drillDownPage = specialistController.reportDrildownByUserRole();
 
              System.assert(drillDownPage == null);
          }
@@ -157,33 +152,33 @@ public class SpecForecastTest {
     Parameters : None
     Description: f-test utility that is used to assert special forecast override
     */
-    private static testMethod void testOverride() {
-        //insert data if not exist
-        User u = createOrGetUser();
-
-        SpecialistForecastOverride__c overrideItem =new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c=6000,
-                                        PeriodType__c='Q3',OwnerId=u.Id);
-
-        insert overrideItem;
-
-        setUpPageRef('6000', overrideItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
-
-        SpecialistForecastOverrideController overrideController = new
-            SpecialistForecastOverrideController();
-        overrideController.saveOverride();
-
-        SpecialistForecastOverride__c aSpecialistForecastOverride = (
-            [SELECT Id, IsDeleted, LastActivityDate, LastModifiedById,
-                LastModifiedDate, ManagerOverridenCommitAmount__c, Name,
-                OwnerId, OwnOverridenBestCaseAmount__c,SystemModstamp,
-                OwnOverridenCommitAmount__c, OwnOverrideNotes__c, PeriodType__c
-            FROM SpecialistForecastOverride__c WHERE Id = :overrideItem.id]);
-
-        //check override amount
-        System.debug('after override bestcase ' +
-            aSpecialistForecastOverride.OwnOverridenBestCaseAmount__c);
-        System.assertEquals(aSpecialistForecastOverride.OwnOverridenBestCaseAmount__c, 6000);
-    }
+    // private static testMethod void testOverride() {
+//         //insert data if not exist
+//         User u = createOrGetUser();
+//
+//         SpecialistForecastOverride__c overrideItem = new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c=6000,
+//                                         PeriodType__c='Q3',OwnerId=u.Id);
+//
+//         insert overrideItem;
+//
+//         setUpPageRef('6000', overrideItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
+//
+//         SpecialistForecastOverrideController overrideController = new
+//             SpecialistForecastOverrideController();
+//         overrideController.saveOverride();
+//
+//         SpecialistForecastOverride__c aSpecialistForecastOverride = (
+//             [SELECT Id, IsDeleted, LastActivityDate, LastModifiedById,
+//                 LastModifiedDate, ManagerOverridenCommitAmount__c, Name,
+//                 OwnerId, OwnOverridenBestCaseAmount__c,SystemModstamp,
+//                 OwnOverridenCommitAmount__c, OwnOverrideNotes__c, PeriodType__c
+//             FROM SpecialistForecastOverride__c WHERE Id = :overrideItem.id]);
+//
+//         //check override amount
+//         System.debug('after override bestcase ' +
+//             aSpecialistForecastOverride.OwnOverridenBestCaseAmount__c);
+//         System.assertEquals(aSpecialistForecastOverride.OwnOverridenBestCaseAmount__c, 6000);
+//     }
 
     /*
     Method Name: testGetSpecialistForecastQuota

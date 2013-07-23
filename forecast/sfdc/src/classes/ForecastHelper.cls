@@ -30,7 +30,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * Helper Class used for Forecast related functionalities
  *
  * @author Michael Ball
- * @since
  */
 public with sharing class ForecastHelper {
 
@@ -94,10 +93,10 @@ public with sharing class ForecastHelper {
             Map<String, String> strBatches =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 batchName);
-            if (strBatches == null || strBatches.size() == 0
-            || strBatches.get(ACTIVE) != 'true') {
-                continue;
-            }
+            // if (strBatches == null || strBatches.size() == 0
+            // || strBatches.get(ACTIVE) != 'true') {
+            //     continue;
+            // }
             batchJobs.put(strBatches.get(NAME), strBatches.get(CONFIG_VAL));
         }
 
@@ -148,7 +147,7 @@ public with sharing class ForecastHelper {
         return BATCH_RUN_DEF_DAY;
     }
 
-
+    /** */
     public static String getRecordTypeName(Id rtId) {
         if (rtName == null) {
             RecordType rt = [SELECT DeveloperName FROM RecordType
@@ -158,104 +157,104 @@ public with sharing class ForecastHelper {
         return rtName;
     }
 
-    public static void applyMonthsFromQuarter(String fQuarter,
-    Map<String, Boolean> showHideMap) {
-        applyMonthsFromQuarter(fQuarter, showHideMap, System.today());
-    }
+    // public static void applyMonthsFromQuarter(String fQuarter,
+    // Map<String, Boolean> showHideMap) {
+    //     applyMonthsFromQuarter(fQuarter, showHideMap, System.today());
+    // }
 
     /**
      *  TODO IS THIS EVEN USEFUL?!
      *
      *  @return TODO
      */
-    public static void applyMonthsFromQuarter(String fQuarter,
-    Map<String, Boolean> showHideMap, Date now) {
-        List<String> monthsInQrtr = getMonthsInQuarter(fQuarter);
-        Set<String> monthsInQrtrSet = new Set<String>();
-        monthsInQrtrSet.addAll(monthsInQrtr);
-
-        if (monthsInQrtrSet.contains('February')) {
-            if (now.month() > 4 || now.month() == 1) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', true);
-            } else if (now.month() == 4) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', false);
-            } else if (now.month() == 3) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            } else if (now.month() == 2) {
-                showHideMap.put('hideFirstMonth', false);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            }
-        } else if (monthsInQrtrSet.contains('May')) {
-            if (now.month() > 7 || now.month() == 1) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', true);
-            } else if (now.month() == 7) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', false);
-            } else if (now.month() == 6) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            } else { // 2, 3, 4, 5
-                showHideMap.put('hideFirstMonth', false);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            }
-        } else if (monthsInQrtrSet.contains('August')) {
-            if (now.month() > 10 || now.month() == 1) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', true);
-            } else if (now.month() == 10) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', false);
-            } else if (now.month() == 9) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            } else { // 2, 3, 4, 5, 6, 7, 8
-                showHideMap.put('hideFirstMonth', false);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            }
-        } else if (monthsInQrtrSet.contains('November')) {
-            if (now.month() == 11) {
-                showHideMap.put('hideFirstMonth', false);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            } else if (now.month() == 12) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            } else if (now.month() == 1) {
-                showHideMap.put('hideFirstMonth', true);
-                showHideMap.put('hideSecondMonth', true);
-                showHideMap.put('hideThirdMonth', false);
-            } else { // 2, 3, 4, 5, 6, 7, 8, 9, 10
-                showHideMap.put('hideFirstMonth', false);
-                showHideMap.put('hideSecondMonth', false);
-                showHideMap.put('hideThirdMonth', false);
-            }
-        }
-
-        if (showHideMap.get('hideFirstMonth')
-        && showHideMap.get('hideSecondMonth')
-        && showHideMap.get('hideThirdMonth')) {
-            showHideMap.put('hideQrtrTotal', true);
-        } else {
-            showHideMap.put('hideQrtrTotal', false);
-        }
-    }
+ //  public static void applyMonthsFromQuarter(String fQuarter,
+ //    Map<String, Boolean> showHideMap, Date now) {
+ //        String[] monthsInQrtr = getMonthsInQuarter(fQuarter);
+ //        Set<String> monthsInQrtrSet = new Set<String>();
+ //        monthsInQrtrSet.addAll(monthsInQrtr);
+ //
+ //        if (monthsInQrtrSet.contains('February')) {
+ //            if (now.month() > 4 || now.month() == 1) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', true);
+ //            } else if (now.month() == 4) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else if (now.month() == 3) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else if (now.month() == 2) {
+ //                showHideMap.put('hideFirstMonth', false);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            }
+ //        } else if (monthsInQrtrSet.contains('May')) {
+ //            if (now.month() > 7 || now.month() == 1) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', true);
+ //            } else if (now.month() == 7) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else if (now.month() == 6) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else { // 2, 3, 4, 5
+ //                showHideMap.put('hideFirstMonth', false);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            }
+ //        } else if (monthsInQrtrSet.contains('August')) {
+ //            if (now.month() > 10 || now.month() == 1) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', true);
+ //            } else if (now.month() == 10) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else if (now.month() == 9) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else { // 2, 3, 4, 5, 6, 7, 8
+ //                showHideMap.put('hideFirstMonth', false);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            }
+ //        } else if (monthsInQrtrSet.contains('November')) {
+ //            if (now.month() == 11) {
+ //                showHideMap.put('hideFirstMonth', false);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else if (now.month() == 12) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else if (now.month() == 1) {
+ //                showHideMap.put('hideFirstMonth', true);
+ //                showHideMap.put('hideSecondMonth', true);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            } else { // 2, 3, 4, 5, 6, 7, 8, 9, 10
+ //                showHideMap.put('hideFirstMonth', false);
+ //                showHideMap.put('hideSecondMonth', false);
+ //                showHideMap.put('hideThirdMonth', false);
+ //            }
+ //        }
+ //
+ //        if (showHideMap.get('hideFirstMonth')
+ //        && showHideMap.get('hideSecondMonth')
+ //        && showHideMap.get('hideThirdMonth')) {
+ //            showHideMap.put('hideQrtrTotal', true);
+ //        } else {
+ //            showHideMap.put('hideQrtrTotal', false);
+ //        }
+ //    }
 
     /**
      *  @return TODO
@@ -315,8 +314,8 @@ public with sharing class ForecastHelper {
                             Order By ForecastOwner__c
                       ];
 
-         return lineItemsData;
-     }
+        return lineItemsData;
+    }
 
 
     /**
@@ -343,15 +342,14 @@ public with sharing class ForecastHelper {
 
     /**
      *  A common FLS check for Company Specialist Forecasting
-     *  @return
+     *  @return true IFF user has access to all necessary forecast objects
      */
-    public static Boolean checkFieldsSplForecastRepAccessibility() {
+    public static Boolean canAccessForecasts() {
         return (Schema.SObjectType.SpecialistForecast__c.isAccessible() &&
             Schema.SObjectType.SpecialistForecastLineItem__c.isAccessible() &&
             Schema.SObjectType.SpecialistForecastQuota__c.isAccessible() &&
             Schema.SObjectType.SpecialistForecastOverride__c.isAccessible());
     }
-
 
      /**
       *  This method is used to check access for the page exists for data sync
@@ -378,13 +376,21 @@ public with sharing class ForecastHelper {
         return hasAccess;
 
     }
+
+    /** Simple method because Apex is missing it.... #TODO - TEST */
+    public static Boolean listContains(Object[] lst, Object search) {
+        for (Object item : lst) {
+            if (item == search) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**************************************************************************/
 
     /**************************************************************************/
     /**               FISCAL YEAR CALCUATION UTIL METHODS                    **/
     /**************************************************************************/
-
-    /**                     STRING BASED METHODS                             **/
     /**
      * @return current fiscal quarter as a string, 'Q#', based on system time.
      */

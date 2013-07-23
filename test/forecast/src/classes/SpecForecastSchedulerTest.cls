@@ -28,43 +28,29 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *
- *  Description: Contains test cases to test utility methods for special 
+ *  Description: Contains test cases to test utility methods for special
  *  forecast scheduler
  *  @since 178.store
  */
 
+@isTest
 public class SpecForecastSchedulerTest {
 
-
-    /*
-    Method Name: testStoreScheduler
-    Parameters : None
-    Description: f-test utility that is used to assert special forecast store 
-        scheduler
-    */
     private static testMethod void testStoreScheduler() {
         try{
             String sch = '0 50 * * * ?';
             System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
-
             System.assert(true);
         } catch(Exception e) {
             System.assert(false, 'Test failed. ' + e.getMessage());
         }
     }
 
-    /*
-    Method Name: testStartScheduledJob
-    Parameters : None
-    Description: f-test utility that is used to test startScheduledJob of 
-        StoreBatchAdminController.cls
-    */
     private static testMethod void testStartScheduledJob() {
         try {
             StoreBatchAdminController storeBatchAdmin = new StoreBatchAdminController();
             storeBatchAdmin.setNotificationMinute('50');
             storeBatchAdmin.startScheduledJob();
-
             System.assert(true);
         } catch (Exception e) {
             System.assert(false, 'Test Failed. ' + e.getMessage());

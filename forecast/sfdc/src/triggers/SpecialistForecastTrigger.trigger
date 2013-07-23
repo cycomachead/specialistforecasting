@@ -25,7 +25,7 @@ trigger SpecialistForecastTrigger on SpecialistForecast__c bulk(before insert,
                 specForecast.ForecastAmount__c < 0) {
                     specForecast.ForecastAmount__c = 0;
                 }
-                // @TODO consider ForecastStage__c and ForecastStatus__c validation that are done through dependent picklist in UI now
+                // @TODO consider ForecastStage__c and ForecastCategory__c validation that are done through dependent picklist in UI now
             }
         }
     }

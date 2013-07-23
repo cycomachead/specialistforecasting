@@ -29,11 +29,12 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *
  * Class Name : TestSpecialistForecastBatch
- * Description: Contains test cases to test utility methods for special 
+ * Description: Contains test cases to test utility methods for special
  * forecast batch processor
  * @since 178.store
  */
 
+@isTest
 public class SpecForecastBatchTest {
 
     /*
@@ -48,7 +49,7 @@ public class SpecForecastBatchTest {
         System.debug('specialistForecastBatchID = ' + batchProcessId);
 
         System.assert(batchProcessId != null);
-        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors 
+        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors
             FROM AsyncApexJob WHERE Id = :batchProcessId];
         System.debug('aaj for SpecialistForecastBatch = ' + aaj);
 

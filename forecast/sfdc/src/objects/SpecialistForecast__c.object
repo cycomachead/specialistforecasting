@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Specialist Forecast Objects List</label>
+    <label>Specialist Forecast</label>
     <pluralLabel>Specialist Forecasts</pluralLabel>
     <description>Primary Custom Object for Specialist Forecasting</description>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -265,29 +265,13 @@
         <trackHistory>true</trackHistory>
     </fields>
     <fields>
-        <fullName>ForecastStatus__c</fullName>
+        <fullName>ForecastCategory__c</fullName>
         <externalId>false</externalId>
-        <!-- <required>true</required> FIXME -->
+        <!-- <required>true</required> -->
         <label>Forecast Category</label>
         <trackHistory>true</trackHistory>
         <picklist>
             <controllingField>ForecastStage__c</controllingField>
-            <picklistValues>
-                <fullName>--None--</fullName>
-                <controllingFieldValues>01 - Identifying an Opportunity</controllingFieldValues>
-                <controllingFieldValues>02 - Determining Problem, Impact, Ideal</controllingFieldValues>
-                <controllingFieldValues>03 - Validating Benefits &amp; Value</controllingFieldValues>
-                <controllingFieldValues>04 - Confirming Value With Power</controllingFieldValues>
-                <controllingFieldValues>05 - Negotiating &amp; Mutual Plan</controllingFieldValues>
-                <controllingFieldValues>06 - Finalizing Closure</controllingFieldValues>
-                <controllingFieldValues>07 - Pending</controllingFieldValues>
-                <controllingFieldValues>08 - Closed</controllingFieldValues>
-                <controllingFieldValues>Dead - Duplicate</controllingFieldValues>
-                <controllingFieldValues>Dead - Lost</controllingFieldValues>
-                <controllingFieldValues>Dead - No Opportunity</controllingFieldValues>
-                <controllingFieldValues>Dead - No Decision</controllingFieldValues>
-                <default>false</default>
-            </picklistValues>
             <picklistValues>
                 <fullName>Omitted</fullName>
                 <controllingFieldValues>01 - Identifying an Opportunity</controllingFieldValues>
@@ -358,6 +342,7 @@
     </fields>
     <fields>
         <fullName>ForecastAmount__c</fullName>
+        <required>true</required>
         <label>AE Opportunity Amount</label>
         <inlineHelpText>AE's forecast amount for his/her part of the opportunity.</inlineHelpText>
         <precision>16</precision>
@@ -424,7 +409,7 @@
         <columns>ForecastCloseDate__c</columns>
         <columns>FiscalYear__c</columns>
         <columns>Month__c</columns>
-        <columns>ForecastStatus__c</columns>
+        <columns>ForecastCategory__c</columns>
         <columns>ForecastStage__c</columns>
         <columns>ForecastAmount__c</columns>
         <columns>ForecastNotes__c</columns>

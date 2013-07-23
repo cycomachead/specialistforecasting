@@ -33,6 +33,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  @since 180.store
  */
 
+@isTest
 public class SpecForecastHierarchyUtilTest {
 
     public class HierarchyTestData {
@@ -59,11 +60,14 @@ public class SpecForecastHierarchyUtilTest {
     public static Map<Id, HierarchyTestData> userTestDataMap = new Map<Id, HierarchyTestData>();
 
     public static Map<Id, Map<String,String>> testDataAsMap = new Map<Id, Map<String,String>>();
-    
+
     /** Standard error messages. */
-    private static Final String ROLE_ID_NULL   = HierarchyUtil.ROLE_ID_NULL;
-    private static Final String USER_ID_NULL   = HierarchyUtil.USER_ID_NULL;
-    private static Final String PARENT_ID_NULL = HierarchyUtil.PARENT_ID_NULL;
+    private static Final String ROLE_ID_NULL =
+        SpecialistForecastException.ROLE_ID_NULL;
+    private static Final String USER_ID_NULL =
+        SpecialistForecastException.USER_ID_NULL;
+    private static Final String PARENT_ID_NULL =
+        SpecialistForecastException.PARENT_ID_NULL;
 
     static {
         //EVP WW Corporate Sales Hillary's level by role
@@ -86,7 +90,7 @@ public class SpecForecastHierarchyUtilTest {
                                                                         );
 
         testDataAsMap.put('00E00000006DERY', new Map<String,String>{'EMEA - CS - VP'=>'Rob Acker'
-                                        
+
                                                       });
     }
 
@@ -152,8 +156,8 @@ public class SpecForecastHierarchyUtilTest {
             System.debug('myUsers:' + usersInRole.get(0).name);
         }
 
-        List<HierarchyUtil.RoleNodeWrapper> childNodes = new 
-            List<HierarchyUtil.RoleNodeWrapper>();
+        HierarchyUtil.RoleNodeWrapper[] childNodes = new
+            HierarchyUtil.RoleNodeWrapper[0];
         childNodes = roleNode.myChildNodes;
         if (childNodes != null) {
             System.assertEquals(childNodes.size(), expectedNumberOfChildren);

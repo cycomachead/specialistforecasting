@@ -30,8 +30,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * Test class for MonthUtil class in SpecialistForecasting Package
  *
  * @author Michael Ball
- * @since
  */
+
+@isTest
 public with sharing class SpecForecastMonthUtilTest {
 
     /** Static Variables Setup */
