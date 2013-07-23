@@ -29,7 +29,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *  A class for dealing with the months of the year and retaions to fiscal years.
  *  @author Michael Ball
- *  @since
  */
 
 public with sharing class MonthUtil {
@@ -55,7 +54,7 @@ public with sharing class MonthUtil {
      *  in MonthUtil.
      *  without sharing is required if the user doesn't have permission to view
      *  org settings, but the class is setup to make everything private.
-     *  NOTE: Also designed for @ovveride for testing w/o org dependenices.
+     *  NOTE: Also designed for @override for testing w/o org dependenices.
      *  @see SpecForecastMonthUtilTest for example of how to use.
      */
     private without sharing class OrgData {
@@ -103,7 +102,7 @@ public with sharing class MonthUtil {
      *  NOTE: Uses only the first 3 characters to find a match.
      *  So, "JanZZZZZ" would still return 1.
      *  @param mon is a month name or abbreviation
-     *  @return [1, 121] if a valid moth is found, else -1
+     *  @return [1, 12] if a valid moth is found, else -1
      */
     public static Integer getMonthNumber(String mon) {
         try {
@@ -149,7 +148,6 @@ public with sharing class MonthUtil {
 
     /**************************************************************************/
     /*                  FISCAL YEAR/MONTH UTILITIES                           */
-
     /**
      *  Gives the months of the year so the FY start month is first in the list.
      *  @param start is the number of the first month of the FY
@@ -191,7 +189,6 @@ public with sharing class MonthUtil {
 
     /**************************************************************************/
     /*                        INTEGER UTILITIES                               */
-
     /**
      *  TODO: Add Test Method
      *  Given a month, and a FY starting month, determin the fiscal month

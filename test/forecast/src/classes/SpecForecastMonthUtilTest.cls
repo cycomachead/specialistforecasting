@@ -78,16 +78,16 @@ public with sharing class SpecForecastMonthUtilTest {
     public static Final String[] ROT_DEC = new String[]
         { DEC, JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV };
 
+    /** Override the builtin OrgData class to allow setting variables.
+     *  MonthUtil keeps the same name just to make things simple for texting */
+    private with sharing class MonthUtil extends MonthUtil {
+        //Override the org data subclass
+        private without sharing class OrgData extends OrgData {
+            public void setFYStart(Integer fy) { ORG_FY_MON = fy; }
+            public void setFYIsStart(Boolean bool) { FY_IS_START = bool; }
 
-    /**    METHOD List **/
-    /*
-    static String abbrev(String mon)
-    static LIST getAll()
-    static Integer getFiscalMonthNum(Integer month, Integer start)
-    static String getMonthName(Integer i)
-    Integer getMonthNumber(String mon)
-    static LIST rotatedFrom(Integer start)
-    */
+        }
+    }
 
     /**
      *  Test simple getter methods that returns ALL.
