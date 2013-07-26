@@ -5,3 +5,4 @@ tools/ant
 tools/automation
 pull/*
 pull.xml
+forecast/data/*

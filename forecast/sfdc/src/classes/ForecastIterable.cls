@@ -34,8 +34,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 global with sharing class ForecastIterable implements Iterator<AggregateResult> {
 
-    global Integer count {get; set;}
-    global AggregateResult[] ownerMap {get; set;}
+    global Integer count { get;set; }
+    global AggregateResult[] ownerMap { get;set; }
 
     global ForecastIterable() {
         count = 0;

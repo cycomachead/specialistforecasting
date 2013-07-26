@@ -35,7 +35,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * System.debug('\n\n ==> Done');
  *
  * @author auzzaman
- * @since 180.store
  */
 
 global with sharing class StoreScheduleWrapper {

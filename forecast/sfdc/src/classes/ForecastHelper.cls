@@ -104,7 +104,7 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     *  @return SOMETHING
+     *  @return current 'cron' style expr. for scheduled jobs.
      *  @throws SpecialistForecastException
      */
     public static String getCronExpression() {
@@ -130,7 +130,7 @@ public with sharing class ForecastHelper {
 
     /**
      *  TODO THIS NEEDS ACTUAL CONTENT TO WORK.
-     *  @oaram EMAIL is an adress to be checked.
+     *  @oaram email is an adress to be checked.
      *  @return true IFF the email is valid.
      */
     private static boolean emailIsValid(String addr) {
@@ -151,125 +151,24 @@ public with sharing class ForecastHelper {
     public static String getRecordTypeName(Id rtId) {
         if (rtName == null) {
             RecordType rt = [SELECT DeveloperName FROM RecordType
-                WHERE Id = : rtId LIMIT 1];
+                WHERE Id = :rtId limit 1];
             rtName = rt.DeveloperName;
         }
         return rtName;
     }
-
-    // public static void applyMonthsFromQuarter(String fQuarter,
-    // Map<String, Boolean> showHideMap) {
-    //     applyMonthsFromQuarter(fQuarter, showHideMap, System.today());
-    // }
-
-    /**
-     *  TODO IS THIS EVEN USEFUL?!
-     *
-     *  @return TODO
-     */
- //  public static void applyMonthsFromQuarter(String fQuarter,
- //    Map<String, Boolean> showHideMap, Date now) {
- //        String[] monthsInQrtr = getMonthsInQuarter(fQuarter);
- //        Set<String> monthsInQrtrSet = new Set<String>();
- //        monthsInQrtrSet.addAll(monthsInQrtr);
- //
- //        if (monthsInQrtrSet.contains('February')) {
- //            if (now.month() > 4 || now.month() == 1) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', true);
- //            } else if (now.month() == 4) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else if (now.month() == 3) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else if (now.month() == 2) {
- //                showHideMap.put('hideFirstMonth', false);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            }
- //        } else if (monthsInQrtrSet.contains('May')) {
- //            if (now.month() > 7 || now.month() == 1) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', true);
- //            } else if (now.month() == 7) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else if (now.month() == 6) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else { // 2, 3, 4, 5
- //                showHideMap.put('hideFirstMonth', false);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            }
- //        } else if (monthsInQrtrSet.contains('August')) {
- //            if (now.month() > 10 || now.month() == 1) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', true);
- //            } else if (now.month() == 10) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else if (now.month() == 9) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else { // 2, 3, 4, 5, 6, 7, 8
- //                showHideMap.put('hideFirstMonth', false);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            }
- //        } else if (monthsInQrtrSet.contains('November')) {
- //            if (now.month() == 11) {
- //                showHideMap.put('hideFirstMonth', false);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else if (now.month() == 12) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else if (now.month() == 1) {
- //                showHideMap.put('hideFirstMonth', true);
- //                showHideMap.put('hideSecondMonth', true);
- //                showHideMap.put('hideThirdMonth', false);
- //            } else { // 2, 3, 4, 5, 6, 7, 8, 9, 10
- //                showHideMap.put('hideFirstMonth', false);
- //                showHideMap.put('hideSecondMonth', false);
- //                showHideMap.put('hideThirdMonth', false);
- //            }
- //        }
- //
- //        if (showHideMap.get('hideFirstMonth')
- //        && showHideMap.get('hideSecondMonth')
- //        && showHideMap.get('hideThirdMonth')) {
- //            showHideMap.put('hideQrtrTotal', true);
- //        } else {
- //            showHideMap.put('hideQrtrTotal', false);
- //        }
- //    }
 
     /**
      *  @return TODO
      *  @throws SpecialistForecastException
      */
     public static User getDetailsByUserId(Id userId) {
-        if (userId == null) {
-            return null;
-        }
-        User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
+        try {
+            User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
                 IsActive, Alias FROM User WHERE Id = :userId]);
-
-        if (aUser == null) {
+        } catch (Exception ex) {
             throw new SpecialistForecastException(CANT_FIND_USER + userID + '.');
         }
+
         return aUser;
     }
 
@@ -282,7 +181,6 @@ public with sharing class ForecastHelper {
             WHERE id = :aUser.UserRoleId];
         return aRole;
     }
-
 
     /**
      *   gets all the line items by Year, Month and owners of lineitems
@@ -327,15 +225,13 @@ public with sharing class ForecastHelper {
     ForecastReportQueryParam queryParam) {
         AggregateResult[] quotasListData;
         quotasListData = [SELECT SpecialistForecastuser__c,
-                        FiscalYear__c,
-                        sum(QuotaAmount__c) amnt
-              FROM SpecialistForecastQuota__c
-                        WHERE FiscalYear__c = :queryParam.getFiscalYear()
-                        AND Month__c IN : queryParam.getMonthsInQrtr()
-                        AND SpecialistForecastuser__c IN :queryParam.getOwnerIds()
-                        GROUP BY  SpecialistForecastuser__c,FiscalYear__c
-                        ORDER BY SpecialistForecastuser__c
-                      ];
+                        FiscalYear__c, sum(QuotaAmount__c) amnt
+              FROM SpecialistForecastQuota__c WHERE 
+                FiscalYear__c = :queryParam.getFiscalYear()
+                AND Month__c IN : queryParam.getMonthsInQrtr()
+                AND SpecialistForecastuser__c IN :queryParam.getOwnerIds()
+                GROUP BY  SpecialistForecastuser__c,FiscalYear__c
+                ORDER BY SpecialistForecastuser__c];
 
          return quotasListData;
     }
@@ -377,20 +273,18 @@ public with sharing class ForecastHelper {
 
     }
 
-    /** Simple method because Apex is missing it.... #TODO - TEST */
-    public static Boolean listContains(Object[] lst, Object search) {
-        for (Object item : lst) {
-            if (item == search) {
+    /** Simple method to search a selectOption list */
+    public static Boolean listContains(SelectOption[] lst, String search) {
+        for (SelectOption item : lst) {
+            if (item.getValue() == search) {
                 return true;
             }
         }
         return false;
     }
-    /**************************************************************************/
 
     /**************************************************************************/
     /**               FISCAL YEAR CALCUATION UTIL METHODS                    **/
-    /**************************************************************************/
     /**
      * @return current fiscal quarter as a string, 'Q#', based on system time.
      */

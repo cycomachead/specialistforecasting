@@ -34,30 +34,29 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class StoreBatchAdminController {
 
+    public String jobName;
     public String notificationMinute;
 
     public String getNotificationMinute() {
-        return this.notificationMinute;
+        return notificationMinute;
     }
 
     public void setNotificationMinute(String notifMinute) {
-        this.notificationMinute = notifMinute;
+        notificationMinute = notifMinute;
     }
 
-    public String jobName;
-
     public String getJobName() {
-        return this.jobName;
+        return jobName;
     }
 
     public void setJobName(String job) {
-        this.jobName = job;
+        jobName = job;
     }
 
     public PageReference startScheduledJob() {
         Integer minOfHour = 0;
         try {
-            minOfHour = Integer.valueOf(this.notificationMinute);
+            minOfHour = Integer.valueOf(notificationMinute);
         } catch (Exception e) {
             minOfHour = 0;
         }
@@ -71,7 +70,7 @@ public with sharing class StoreBatchAdminController {
 
     //runs the batch job now to process report records
     public PageReference startScheduledJobNow() {
-        Integer  BATCH_SIZE = 400;
+        Integer BATCH_SIZE = 400;
         Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), BATCH_SIZE);
 
         return null;

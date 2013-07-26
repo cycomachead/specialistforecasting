@@ -127,58 +127,22 @@ public class SpecForecastTest {
         reportDrildownByUserRole
     */
     private static testMethod void testreportDrildownByUserRole() {
-          //insert data if not exist
-          User u = createOrGetUser();
+        User u = createOrGetUser();
 
-         SpecialistForecastLineItem__c specItem = new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c=6000,
-                                        FiscalYear__c='FY13',FYMonth__c='August',OwnerId=u.Id);
+        SpecialistForecastLineItem__c specItem = new SpecialistForecastLineItem__c(
+            OriginalBestCaseAmount__c = 6000, FiscalYear__c = 'FY13',
+            Month__c = 'August', OwnerId = u.Id);
+        INSERT specItem;
+        setUpPageRef('6000', specItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
+        System.runAs(u) {
+            SpecialistForecastController specialistController = new SpecialistForecastController();
 
-         insert specItem;
+            specialistController.selectedUserId = u.Id;
+            PageReference drillDownPage = specialistController.reportDrildownByUserRole();
 
-         setUpPageRef('6000', specItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
-
-         System.runAs(u) {
-             SpecialistForecastController specialistController = new SpecialistForecastController();
-
-             specialistController.selectedUserId = u.Id;
-             PageReference drillDownPage = specialistController.reportDrildownByUserRole();
-
-             System.assert(drillDownPage == null);
-         }
-     }
-
-    /*
-    Method Name: testOverride
-    Parameters : None
-    Description: f-test utility that is used to assert special forecast override
-    */
-    // private static testMethod void testOverride() {
-//         //insert data if not exist
-//         User u = createOrGetUser();
-//
-//         SpecialistForecastOverride__c overrideItem = new SpecialistForecastOverride__c(OwnOverridenBestCaseAmount__c=6000,
-//                                         PeriodType__c='Q3',OwnerId=u.Id);
-//
-//         insert overrideItem;
-//
-//         setUpPageRef('6000', overrideItem.Id, 'mybestcase', u.Id, 'Q3', 'FY13');
-//
-//         SpecialistForecastOverrideController overrideController = new
-//             SpecialistForecastOverrideController();
-//         overrideController.saveOverride();
-//
-//         SpecialistForecastOverride__c aSpecialistForecastOverride = (
-//             [SELECT Id, IsDeleted, LastActivityDate, LastModifiedById,
-//                 LastModifiedDate, ManagerOverridenCommitAmount__c, Name,
-//                 OwnerId, OwnOverridenBestCaseAmount__c,SystemModstamp,
-//                 OwnOverridenCommitAmount__c, OwnOverrideNotes__c, PeriodType__c
-//             FROM SpecialistForecastOverride__c WHERE Id = :overrideItem.id]);
-//
-//         //check override amount
-//         System.debug('after override bestcase ' +
-//             aSpecialistForecastOverride.OwnOverridenBestCaseAmount__c);
-//         System.assertEquals(aSpecialistForecastOverride.OwnOverridenBestCaseAmount__c, 6000);
-//     }
+            System.assert(drillDownPage == null);
+        }
+    }
 
     /*
     Method Name: testGetSpecialistForecastQuota
@@ -189,8 +153,10 @@ public class SpecForecastTest {
         //insert data if not exist
         User u = createOrGetUser();
 
-        SpecialistForecastLineItem__c specItem =new SpecialistForecastLineItem__c(OriginalBestCaseAmount__c=6000,
-             FiscalYear__c='FY13',FYMonth__c='August',OwnerId=u.Id);
+        SpecialistForecastLineItem__c specItem =
+            new SpecialistForecastLineItem__c(
+            OriginalBestCaseAmount__c = 6000,
+            FiscalYear__c = 'FY13', Month__c = 'August', OwnerId = u.Id);
 
         insert specItem;
 
@@ -203,7 +169,7 @@ public class SpecForecastTest {
 
             SpecialistForecastLineItem__c  sfLI = new SpecialistForecastLineItem__c();
             sfLI.ForecastOwner__c = UserInfo.getUserId();
-            Set<id> ownerIdsforQuery = new Set<Id>();
+            Set<Id> ownerIdsforQuery = new Set<Id>();
 
             ownerIdsforQuery.add(sfLI.ForecastOwner__c);
             //set the query parameters
@@ -213,13 +179,13 @@ public class SpecForecastTest {
             queryParam.setOwnerIds(ownerIdsforQuery);
 
             //get Quota information for all the users
-            AggregateResult[] listSplFCastQuotas=ForecastHelper.getSpecialistForecastQuota(queryParam );
+            AggregateResult[] listSplFCastQuotas = ForecastHelper.getSpecialistForecastQuota(queryParam );
 
             for (Sobject so : listSplFCastQuotas)  {
                 AggregateResult ar = (AggregateResult) so;
                 Id OwnerId = (Id) ar.get('SpecialistForecastUser__c');
                 Decimal tempAmount = (Decimal) ar.get('amnt');
-                System.assert(tempAmount !=null);
+                System.assert(tempAmount != null);
             }
         }
     }
@@ -238,17 +204,11 @@ public class SpecForecastTest {
         pageRef.getParameters().put('fy', fy);
     }
 
+    /**
+     *  Returns the current user who must have permissions to work with forecasts.
+     */
     private static User createOrGetUser() {
-        User u;
-        try {
-            u = [SELECT Id FROM User WHERE UserName='srikanta.mohapatra@salesforce.com']   ;
-        } catch (Exception ex) {
-            u = new User(Email='srikanta.mohapatra@salesforce.com', FirstName='Srikanta', LastName='Mohapatra', IsActive=true,
-                Username='srikanta.mohapatra@salesforce.com', Alias='sm', CommunityNickname='srmo', TimeZoneSidKey='America/Los_Angeles', LocaleSidKey='en_US', EmailEncodingKey='ISO-8859-1',
-                ProfileId='00e30000000brH1', LanguageLocaleKey='en_US');
-            // INSERT u;
-        }
-        return u;
+        return [ select Id from User where Id = :UserInfo.getUserId() ];
     }
 
 }

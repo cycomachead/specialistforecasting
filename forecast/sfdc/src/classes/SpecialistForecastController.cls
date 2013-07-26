@@ -172,7 +172,7 @@ public with sharing class SpecialistForecastController {
 
     //  View report button
     public PageReference viewSpecialistReport() {
-        addRecentsList();
+        // addRecentsList();
         canView = true;
         allTotaluserIds.add(UserInfo.getUserId());
         try {
@@ -187,7 +187,7 @@ public with sharing class SpecialistForecastController {
             if (sfLI.ForecastOwner__c != null) {
                 User usr = [SELECT Name FROM User
                     WHERE Id = :sfLI.ForecastOwner__c limit 1];
-                PreparedbyUser = usr.Name;
+                PreparedByUser = usr.Name;
             }
         } catch (Exception ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
@@ -199,7 +199,7 @@ public with sharing class SpecialistForecastController {
     /** Called from userlink for drilldown */
     public PageReference reportDrildownByUserRole() {
         if (selectedUserId != null && selectedUserId.length() > 10) {
-            addRecentsList();
+            // addRecentsList();
             User usr = [SELECT Name FROM User WHERE Id = :selectedUserId limit 1];
             PreparedbyUser = usr.Name;
             sfLI.ForecastOwner__c = selectedUserId;
@@ -241,10 +241,10 @@ public with sharing class SpecialistForecastController {
      *  Prevent dupes, and make sure list is < MAX_BACK_SIZE
      */
     private void addRecentsList() {
-        if (!ForecastHelper.listContains(recentIDs, sfLI.ForecastOwner__c)) {
-            recentIDs.add(sfLI.ForecastOwner__c);
-            recentsList.add(new SelectOption((String) sfLI.ForecastOwner__c,
-            [SELECT Name FROM User WHERE Id = :sfLI.ForecastOwner__c limit 1].Name));
+        String uid = (String) sfLI.ForecastOwner__c;
+        if (!ForecastHelper.listContains(recentsList, uid)) {
+            recentsList.add(new SelectOption(uid,
+            [SELECT Name FROM User WHERE Id = :uid limit 1].Name));
         }
         if (recentsList.size() > MAX_BACK_SIZE) {
             recentsList.remove(1); // Force item 0 to always be inital user
@@ -257,7 +257,7 @@ public with sharing class SpecialistForecastController {
     }
 
     /** Return the set of users to go back to. */
-    public SelectOption[] getrecentsList() {
+    public SelectOption[] getRecentsList() {
         return recentsList;
     }
 
@@ -299,7 +299,7 @@ public with sharing class SpecialistForecastController {
             }
             if (sfLI.ForecastOwner__c == null || usr == null ||
             usr.UserRoleId == null) {
-                String uid = (usr.Id == null) ? 'unknown.' : (usr.Id + '.');
+                String uid = (usr.Id == null) ? 'unknown user.' : (usr.Id + '.');
                 throw new SpecialistForecastException(ROLE_ID_NULL + uid);
             }
         } catch (Exception ex) {
@@ -351,7 +351,7 @@ public with sharing class SpecialistForecastController {
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
         // get the searchuser and all level reporting users
         mapSecondLeverUsersAndChild.clear();
-        mapUsers.clear(); // FIXME
+        mapUsers.clear();
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
         SFcastLineItem sfLine = new SFcastLineItem();

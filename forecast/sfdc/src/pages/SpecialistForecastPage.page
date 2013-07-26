@@ -120,7 +120,7 @@
 
         <!-- Main Page -->
         <div id="blur">
-            <apex:pageBlock rendered="true" title="Specialist Forecast Reports"> <!-- id="pgBlock" -->
+            <apex:pageBlock rendered="true" title="Specialist Forecast Reports" id="pgBlock"> <!--  -->
                 <apex:pageMessages />
                 <!-- Forecasts data/user select section -->
                 <apex:pageBlockSection collapsible="true" title="Find a Forecast">
@@ -156,20 +156,25 @@
 
                     <apex:outputPanel>
                         <apex:commandButton rendered="{!canSubmit}" Id="SubmitReport"
-                            title="Submit Report" value="Submit" action="{!submitReport}" status="counterStatus" rerender="" />
+                            title="Submit Report" value="Submit" action="{!submitReport}"
+                            status="counterStatus" rerender="" />
                         <apex:commandButton rendered="{!(viewAccessToSyncButton)}"
-                            Id="RefreshReportNow" title="Refresh report data now" value="Refresh Now" action="{!refreshSpecialistForecastDataNow}" status="counterStatus" rerender="" />
+                            Id="RefreshReportNow" title="Refresh report data now"
+                            value="Refresh Now" action="{!refreshSpecialistForecastDataNow}"
+                            status="counterStatus" rerender="" />
                     </apex:outputPanel>
 
                     <apex:outputPanel>
                         <apex:outputText rendered="{!canGoBack}">
                             <strong>Recent Reports:</strong>&nbsp;&nbsp;
                         </apex:outputText>
-                        <apex:selectList rendered="{!canGoBack}" value="{!selectedBackUser}" multiselect="false" size="1">
+                        <apex:selectList  Id="back" rendered="{!canGoBack}"
+                            value="{!selectedBackUser}" multiselect="false" size="1">
                             <apex:selectOptions value="{!recentsList}"/>
                         </apex:selectList>&nbsp;&nbsp;
                         <apex:commandButton Id="backButton" title="Go Back to a Previous Report"
-                            value="View Report" action="{!backLink}" rendered="{!canGoBack}"/>
+                            value="View Report" action="{!backLink}" status=""
+                            rendered="{!canGoBack}"/>
                     </apex:outputPanel>
                 </apex:pageBlockSection>
 

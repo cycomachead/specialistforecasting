@@ -41,13 +41,13 @@ global with sharing class SpecialistForecastSubmitBatch implements
     public static final String DONT_SEND_EMAIL = ForecastHelper.DONT_SEND_EMAIL;
 
     /** */
-    global List<SpecialistForecastLineItem__c> lineItemRecords {get; set;}
+    global SpecialistForecastLineItem__c[] lineItemRecords { get;set; }
 
     /**
      *
      * @return
      */
-    global List<SpecialistForecastLineItem__c>  start(
+    global SpecialistForecastLineItem__c[]  start(
     Database.BatchableContext context) {
         lineItemRecords =[SELECT id, SubmittedDate__C FROM
             SpecialistForecastLineItem__c WHERE SubmittedDate__c != null];
@@ -90,7 +90,7 @@ global with sharing class SpecialistForecastSubmitBatch implements
         }
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
-        mail.setToAddresses(new String[]{gackEmailIds});
+        mail.setToAddresses(new String[] {gackEmailIds});
         mail.setSubject(subject);
         mail.setPlainTextBody(formattedBody);
 

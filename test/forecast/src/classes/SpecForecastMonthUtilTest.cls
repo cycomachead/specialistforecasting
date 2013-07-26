@@ -78,17 +78,6 @@ public with sharing class SpecForecastMonthUtilTest {
     public static Final String[] ROT_DEC = new String[]
         { DEC, JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV };
 
-    /** Override the builtin OrgData class to allow setting variables.
-     *  MonthUtil keeps the same name just to make things simple for texting */
-    private with sharing class MonthUtil extends MonthUtil {
-        //Override the org data subclass
-        private without sharing class OrgData extends OrgData {
-            public void setFYStart(Integer fy) { ORG_FY_MON = fy; }
-            public void setFYIsStart(Boolean bool) { FY_IS_START = bool; }
-
-        }
-    }
-
     /**
      *  Test simple getter methods that returns ALL.
      *  Test Names and Numbers methods for moths (not super comprehensive)
@@ -153,30 +142,67 @@ public with sharing class SpecForecastMonthUtilTest {
     }
 
     /** Postive/Neg Tests of expected values for adjusted fiscal months */
-    public static testMethod void testAjdFiscalMonths() {
+    public static testMethod void testFiscalMonthNum() {
         // Jan, FY starting in Jan is Jan
         System.assertEquals(MonthUtil.getFiscalMonthNum(1, 1), 1);
-        //
         System.assertEquals(MonthUtil.getFiscalMonthNum(5, 1), 5);
-        //
         System.assertEquals(MonthUtil.getFiscalMonthNum(1, 2), 12);
-        //
         System.assertEquals(MonthUtil.getFiscalMonthNum(10, 3), 8);
-        //
         System.assertEquals(MonthUtil.getFiscalMonthNum(11, 10), 2);
-        //
         System.assertEquals(MonthUtil.getFiscalMonthNum(7, 9), 11);
-        //
         System.assertEquals(MonthUtil.getFiscalMonthNum(6, 4), 3);
-        // NEGATIVE TESTS (Testing +/- error cases)
-        //
+        // Few tests just to check off by one cases.
         System.assertNotEquals(MonthUtil.getFiscalMonthNum(1, 2), 1);
-        //
         System.assertNotEquals(MonthUtil.getFiscalMonthNum(7, 5), 4);
-        //
         System.assertNotEquals(MonthUtil.getFiscalMonthNum(12, 12), 0);
     }
 
+    /** Test to make sure months are in the correct quarters */
+    public static testMethod void testQtrNumber() {
+        System.assertEquals(MonthUtil.getQtrOfMonth(1), 1);
+        System.assertEquals(MonthUtil.getQtrOfMonth(3), 1);
+        System.assertEquals(MonthUtil.getQtrOfMonth(6), 2);
+        System.assertEquals(MonthUtil.getQtrOfMonth(9), 3);
+        System.assertEquals(MonthUtil.getQtrOfMonth(11), 4);
+    }
+
+    /** Test to get the correct fiscal year */
+    public static testMethod void testFY() {
+        // setup basic properites for testing to mirror SFDC
+        // FY starts in Feb and is based on the ending month year
+        MonthUtil.reset(2, false);
+        System.assertEquals(MonthUtil.getFY(2015, 7), 16);
+        System.assertEquals(MonthUtil.getFY(1896, 3), 97);
+        System.assertEquals(MonthUtil.getFY(1896, 2), 97);
+        System.assertEquals(MonthUtil.getFY(2000, 1), 00);
+        System.assertEquals(MonthUtil.getFY(1776, 2), 77);
+        // FY starts in July and is based on starting month year
+        MonthUtil.reset(7, true);
+        System.assertEquals(MonthUtil.getFY(2015, 7), 15);
+        System.assertEquals(MonthUtil.getFY(1896, 3), 95);
+        System.assertEquals(MonthUtil.getFY(1896, 6), 95);
+        System.assertEquals(MonthUtil.getFY(2000, 1), 99);
+        System.assertEquals(MonthUtil.getFY(1776, 2), 75);
+        MonthUtil.resetFromOrg(); // precaution for future tests.
+    }
+
+    /** The the normalize method for 2 digit years. */
+    public static testMethod void testNorm() {
+        System.assertEquals(MonthUtil.normalizeYr(2000), 0);
+        System.assertEquals(MonthUtil.normalizeYr(0000), 0);
+        System.assertEquals(MonthUtil.normalizeYr(1999), 99);
+        System.assertEquals(MonthUtil.normalizeYr(2013), 13);
+        System.assertEquals(MonthUtil.normalizeYr(-001), 99);
+    }
+
+    /** Make sure the proper year strings are displayed. */
+    public static testMethod void testNromString() {
+        System.assertEquals(MonthUtil.normalizeYrToStr(2000), '00');
+        System.assertEquals(MonthUtil.normalizeYrToStr(1999), '99');
+        System.assertEquals(MonthUtil.normalizeYrToStr(0000), '00');
+        System.assertEquals(MonthUtil.normalizeYrToStr(2013), '13');
+        System.assertEquals(MonthUtil.normalizeYrToStr(-001), '99');
+    }
 
 }
 

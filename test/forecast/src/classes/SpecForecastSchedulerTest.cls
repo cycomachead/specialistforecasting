@@ -30,7 +30,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *
  *  Description: Contains test cases to test utility methods for special
  *  forecast scheduler
- *  @since 178.store
  */
 
 @isTest
@@ -39,7 +38,7 @@ public class SpecForecastSchedulerTest {
     private static testMethod void testStoreScheduler() {
         try{
             String sch = '0 50 * * * ?';
-            System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
+            System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());       
             System.assert(true);
         } catch(Exception e) {
             System.assert(false, 'Test failed. ' + e.getMessage());
