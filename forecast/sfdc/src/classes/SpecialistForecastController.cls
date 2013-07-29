@@ -293,13 +293,9 @@ public with sharing class SpecialistForecastController {
      */
     public SFcastLineItem[] getSFcastLineItemsData() {
         // Background check to make sure that we have the necessary data.
-        try {
-            if (UserInfo.getUserRoleId() == null) {
-                throw new SpecialistForecastException(USER_MISSING_ID);
-            }
-        } catch (Exception ex) {
+        if (UserInfo.getUserRoleId() == null) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                'Unexpected Error: ' + ex.getMessage()));
+                USER_MISSING_ID));
             return null; // kill the method to prevent later exceptions
         }
 

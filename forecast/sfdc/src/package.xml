@@ -32,11 +32,6 @@
         <members>ForecastHierarchyConfigurationsTrigger</members>
         <name>ApexTrigger</name>
     </types>
-    <!-- <types>
-        <members>detailView</members>
-        <members>overrideView</members>
-        <name>ApexComponent</name>
-    </types> -->
     <types>
         <members>ForecastConfigurations__c</members>
         <members>ForecastHierarchyConfigurations__c</members>
@@ -44,6 +39,7 @@
         <members>SpecialistForecastLineItem__c</members>
         <members>SpecialistForecastOverride__c</members>
         <members>SpecialistForecastQuota__c</members>
+        <members>User</members>
         <name>CustomObject</name>
     </types>
     <types>

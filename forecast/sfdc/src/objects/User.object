@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <namedFilters>
+        <fullName>nf_01Ii0000000XHi0EAG_00Ni00000058pvTEAQ</fullName>
+        <active>true</active>
+        <errorMessage>A Role ID is required for Specialist Forecasting. Users must be in a standard role hierarchy.</errorMessage>
+        <field>SpecialistForecastLineItem__c.ForecastOwner__c</field>
+        <filterItems>
+            <field>User.UserRoleId</field>
+            <operation>notEqual</operation>
+            <value></value>
+        </filterItems>
+        <infoMessage>Searching for users is restricted only to users who have a Role assigned.</infoMessage>
+        <isOptional>false</isOptional>
+        <name>Specialist Forecast Line Item_Forecast O</name>
+    </namedFilters>
+</CustomObject>

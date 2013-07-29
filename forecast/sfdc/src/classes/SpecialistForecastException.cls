@@ -57,9 +57,9 @@ public with sharing class SpecialistForecastException extends Exception {
     public static Final String PARENT_ID_NULL =
         'A required Parent User ID could be found';
     public static Final String USER_MISSING_ID =
-        'The current user is missing a Role ID and cannot access forecasts. \n'
-        + 'Please add a User Role to the current user profile to use specialist'
-        + 'forecasting.';
+        'The current user is missing a Role ID and cannot access forecasts.'
+        + '<br /> Please add a User Role to the current user profile to use '
+        + 'Specialist Forecasting.';
 
     // Sentence Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';
