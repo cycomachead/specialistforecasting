@@ -30,9 +30,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * Batch job for processing Specialist Forecast amounts to Specialist Forecast Reports
  *
  * To Run this Class from the Console:
- *
- * @author auzzaman,smohapatra
- * @since 180.store
  */
 
 global with sharing class SpecialistForecastBatch implements
@@ -109,7 +106,7 @@ global with sharing class SpecialistForecastBatch implements
             item = processedRecords.get(external_Key);
             item.ForecastOwner__c = (Id) ar.get('OwnerId');
             item.OwnerId = (Id) ar.get('OwnerId');
-            item.FiscalYear__c = (String)ar.get('FiscalYear__c');
+            item.FiscalYear__c = (String) ar.get('FiscalYear__c');
             temp = (String) ar.get('Month__c');
             item.Month__c =  temp;
             temp = (String) ar.get('ForecastCategory__c');

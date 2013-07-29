@@ -33,8 +33,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  String sch = '0 50 * * * ?';
  *  System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
  *  System.debug('\n\n ==> Done');
- *
- *  @author auzzaman
  */
 global with sharing class StoreScheduler implements Schedulable {
 

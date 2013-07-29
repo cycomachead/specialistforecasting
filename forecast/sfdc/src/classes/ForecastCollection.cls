@@ -28,9 +28,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  * Custom Collection Iterable for Specialist Forecast Batch Job
- *
- * @author auzzaman
- * @since 180.store
  */
 global with sharing class ForecastCollection implements Iterable<AggregateResult> {
 

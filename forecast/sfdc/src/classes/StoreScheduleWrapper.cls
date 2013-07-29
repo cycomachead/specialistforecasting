@@ -29,12 +29,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  * ScheduleWrapper to use for StoreScheduler
  *
- * To run it FROM developer console, use the below code snippet
+ * To run it from developer console, use the below code snippet
  * String sch = '0 50 * * * ?';
  * System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
  * System.debug('\n\n ==> Done');
  *
- * @author auzzaman
  */
 
 global with sharing class StoreScheduleWrapper {

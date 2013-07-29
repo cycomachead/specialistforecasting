@@ -52,7 +52,7 @@ public with sharing class SpecialistForecastController {
     // Access Check if user can view forecast reports
     private Boolean canView = true;
 
-    private Map<Id,Set<Id>> mapSecondLeverUsersAndChild = new Map<Id,Set<Id>>();
+    private Map<Id,Set<Id>> mapSecondLevelUsersAndChild = new Map<Id,Set<Id>>();
     private Map<Id,UserInfoWrapper> mapUsers = new Map<Id,UserInfoWrapper>();
 
     // A list to be used for back button users
@@ -291,72 +291,73 @@ public with sharing class SpecialistForecastController {
     /**
      *  TODO: REFACTOR REFACTOR REFACTOR
      */
+    ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
+    Set<Id> ownerIdsforQuery = new Set<Id>();
+
     public SFcastLineItem[] getSFcastLineItemsData() {
-        // Background check to make sure that we have the necessary data.
+        // Background checks to make sure that we have the necessary perms.
         if (UserInfo.getUserRoleId() == null) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
                 USER_MISSING_ID));
             return null; // kill the method to prevent later exceptions
         }
+        if (!canView || !ForecastHelper.canAccessForecasts()) {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
+                'TODO')); // FIXME
+            return null;
+        }
 
         addrecentsList(); // Keep track of forecasts viewed for dropdown menu
 
-        Decimal closedAmount                 = 0;
-        Decimal commitAmount                 = 0;
-        Decimal bestCaseAmount               = 0;
-        Decimal commitOvrrideAmount          = 0;
-        Decimal bestCaseOverrideAmount       = 0;
-        Decimal commitMgrOvrrideAmount       = 0;
-        Decimal bestCaseMgrOverrideAmount    = 0;
-        Decimal pipelineAmount               = 0;
-        Decimal quotaAmount                  = 0;
-
-        Decimal totclosedAmount              = 0;
-        Decimal totcommitAmount              = 0;
-        Decimal totbestCaseAmount            = 0;
-        Decimal totcommitOvrrideAmount       = 0;
-        Decimal totbestCaseOverrideAmount    = 0;
-        Decimal totpipelineAmount            = 0;
-        Decimal totQuotaAmount               = 0;
-
-        Decimal subtotclosedAmount           = 0;
-        Decimal subtotcommitAmount           = 0;
-        Decimal subtotbestCaseAmount         = 0;
-        Decimal subtotcommitOvrrideAmount    = 0;
-        Decimal subtotbestCaseOverrideAmount = 0;
-        Decimal subtotpipelineAmount         = 0;
-        Decimal subtotQuotaAmount            = 0;
-
-        // Access Check before grabbing forecasts
-        if (!canView || !ForecastHelper.canAccessForecasts()) {
-            return null;
-        }
+        Decimal closedAmount                 = 0,
+                commitAmount                 = 0,
+                bestCaseAmount               = 0,
+                commitOvrrideAmount          = 0,
+                bestCaseOverrideAmount       = 0,
+                commitMgrOvrrideAmount       = 0,
+                bestCaseMgrOverrideAmount    = 0,
+                pipelineAmount               = 0,
+                quotaAmount                  = 0,
+                totclosedAmount              = 0, //Move to total method at end.
+                totcommitAmount              = 0,
+                totbestCaseAmount            = 0,
+                totcommitOvrrideAmount       = 0,
+                totbestCaseOverrideAmount    = 0,
+                totpipelineAmount            = 0,
+                totQuotaAmount               = 0,
+                subtotclosedAmount           = 0, // FIXME
+                subtotcommitAmount           = 0,
+                subtotbestCaseAmount         = 0,
+                subtotcommitOvrrideAmount    = 0,
+                subtotbestCaseOverrideAmount = 0,
+                subtotpipelineAmount         = 0,
+                subtotQuotaAmount            = 0;
 
         // map used for setting the user and role as key and
         // SpecialistForecastlineItem as the value
         Map<String,SFcastLineItem> mapUserRolelineItems = new
         Map<String,SFcastLineItem>();
 
+        // Represents a single line in the forecasts table
         SFcastLineItem   sfLine       = new SFcastLineItem();
         // This is the item returned and the main set of data on the VF page.
         SFcastLineItem[] lineItemList = new SFcastLineItem[0];
 
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
         // get the searchuser and all level reporting users
-        mapSecondLeverUsersAndChild.clear();
+        mapSecondLevelUsersAndChild.clear();
         mapUsers.clear();
+        // Add users back to mapSecondLevelUsersAndChild
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
-        Set<Id> ownerIdsforQuery = new Set<Id>();
 
-        for (Id id : mapSecondLeverUsersAndChild.keyset()) {
-            ownerIdsforQuery.addAll(mapSecondLeverUsersAndChild.get(id));
-        }
 
         ownerIdsforQuery.add(sfLI.ForecastOwner__c);
+        for (Set<Id> idSet : mapSecondLevelUsersAndChild.values()) {
+            ownerIdsforQuery.addAll(idSet);
+        }
 
         // set the query parameters
-        ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
         queryParam.setFiscalYear(selectedFY);
         queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(selectedFQ));
         queryParam.setOwnerIds(ownerIdsforQuery);
@@ -369,7 +370,7 @@ public with sharing class SpecialistForecastController {
         AggregateResult[] listSplFCastQuotas =
         ForecastHelper.getSpecialistForecastQuota(queryParam);
 
-        // Consolidate data
+        // Consolidate data TODO -
         SFcastLineItem lineItem;
 
         Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
@@ -377,7 +378,6 @@ public with sharing class SpecialistForecastController {
         /********************** consolidation Start *************************/
         // Agreegate the records by owner for display as we are having one
         //  record for a quater and we store as months
-
         ownerlineItemsMap = aggregatelineItemsByOwner(listSplFCastlineItems);
         for (Sobject so : listSplFCastQuotas) {
             AggregateResult ar = (AggregateResult) so;
@@ -392,22 +392,21 @@ public with sharing class SpecialistForecastController {
         }
         // ********************** consolidation End ***************************
 
-        boolean haslineItemstoDisplay = false;
+        Boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
-        for (Id lineItemOwnerId : mapSecondLeverUsersAndChild.keySet()) {
+        for (Id lineItemOwnerId : mapSecondLevelUsersAndChild.keySet()) {
             sfLIne = new SFcastLineItem();
             Boolean mgrCommitOverride = false;
             Boolean mgrBestCaseOverride = false;
 
             // TODO Refactor nested loops?
-            for (Id childLinesOwnerId : mapSecondLeverUsersAndChild.get(lineItemOwnerId)) {
+            for (Id childLinesOwnerId : mapSecondLevelUsersAndChild.get(lineItemOwnerId)) {
                 lineItem = ownerlineItemsMap.get(childLinesOwnerId);
                 if (lineItem != null) {
                     haslineItemstoDisplay = true;
                     closedAmount = defaultIfNull(lineItem.closedAmount);
                     // if manager override amount exists then display mgroverrideamt
                     commitAmount = defaultIfNull(lineItem.commitAmount);
-
                     commitOvrrideAmount = (lineItem.mgrCommitOverrideAmount !=
                         null ? lineItem.mgrCommitOverrideAmount : commitAmount);
                     bestCaseAmount = defaultIfNull(lineItem.bestCaseAmount);
@@ -664,7 +663,7 @@ public with sharing class SpecialistForecastController {
 
                     alluserIds.add(ruinfo.userId);
                     allTotaluserIds.add(ruinfo.userId);
-                    mapSecondLeverUsersAndChild.put(ruinfo.userId, alluserIds);
+                    mapSecondLevelUsersAndChild.put(ruinfo.userId, alluserIds);
 
                 }
                 // if manager and many users assigned to the role then get only mapped user
@@ -682,7 +681,7 @@ public with sharing class SpecialistForecastController {
 
                     alluserIds.add(ruinfo.userId);
                     allTotaluserIds.add(ruinfo.userId);
-                    mapSecondLeverUsersAndChild.put(ruinfo.userId, alluserIds);
+                    mapSecondLevelUsersAndChild.put(ruinfo.userId, alluserIds);
                 }
                 //if leafnode role then get all users
                 if (roleWrapper.myUsers != null && roleWrapper.myUsers.size() > 1
@@ -699,7 +698,7 @@ public with sharing class SpecialistForecastController {
 
                         alluserIds.add(myusr.Id);
                         allTotaluserIds.add(myusr.Id);
-                        mapSecondLeverUsersAndChild.put(myusr.Id, alluserIds);
+                        mapSecondLevelUsersAndChild.put(myusr.Id, alluserIds);
 
                     } //end for
                 } //end if
@@ -876,7 +875,7 @@ public with sharing class SpecialistForecastController {
         roleTraverse(rolewrapper);
         alluserIds.add(myusr.Id);
         allTotaluserIds.add(myusr.Id);
-        mapSecondLeverUsersAndChild.put(myusr.Id, alluserIds);
+        mapSecondLevelUsersAndChild.put(myusr.Id, alluserIds);
 
     }
 

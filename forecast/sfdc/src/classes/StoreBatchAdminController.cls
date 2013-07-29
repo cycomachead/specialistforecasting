@@ -28,9 +28,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *  Controller to display and override Special AE Forecast
- *
- *  @author auzzaman
- *  @since
  */
 public with sharing class StoreBatchAdminController {
 

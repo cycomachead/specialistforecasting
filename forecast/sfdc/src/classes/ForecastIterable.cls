@@ -29,8 +29,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  * Custom Iterator for Specialist Forecast Batch Job
  *
- * @author auzzaman
- * @since 180.store
  */
 global with sharing class ForecastIterable implements Iterator<AggregateResult> {
 
@@ -39,10 +37,9 @@ global with sharing class ForecastIterable implements Iterator<AggregateResult> 
 
     global ForecastIterable() {
         count = 0;
-//      List<String> supportFYs = ForecastHelper.getSupportedFiscalYearsForForecast();
         ownerMap = [SELECT OwnerId, ForecastCategory__c, FiscalYear__c, Month__c,
                      SUM(ForecastAmount__c) amnt FROM SpecialistForecast__c
-                    WHERE  ExcludeFROMCalculation__c != true Group By OwnerId,
+                    WHERE  ExcludeFromCalculation__c != true GROUP By OwnerId,
                     ForecastCategory__c, FiscalYear__c, Month__c Order by OwnerID,
                     FiscalYear__c, Month__c];
     }

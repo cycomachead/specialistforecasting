@@ -28,9 +28,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  * Util Class used for Forecast Test
- *
- * @author Bob
- * @since 178.store
  */
 
 @isTest

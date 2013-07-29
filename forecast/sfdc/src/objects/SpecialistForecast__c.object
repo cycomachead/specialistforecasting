@@ -53,7 +53,7 @@
         <fullName>Account__c</fullName>
         <label>Account</label>
         <formula>
-            Opportunity__r.Account.Name &amp; ' - ' &amp; 'https://login.salesforce.com/' &amp; Opportunity__r.Account.Id
+            Opportunity__r.Account.Name
         </formula>
         <type>Text</type>
     </fields>
