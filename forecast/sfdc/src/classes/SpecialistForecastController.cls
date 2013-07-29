@@ -44,6 +44,8 @@ public with sharing class SpecialistForecastController {
             SpecialistForecastException.USER_ID_NULL + FOR_ID;
     private static final String ROLE_ID_NULL =
             SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
+    private static final String USER_MISSING_ID =
+            SpecialistForecastException.USER_MISSING_ID;
 
     // The max size of the recent users list, mostly to keep things manageable.
     private static final Integer MAX_BACK_SIZE = 16;
@@ -77,7 +79,7 @@ public with sharing class SpecialistForecastController {
 
     public SpecialistForecast__c[] specialistforecastList { get;set; }
     public SpecialistForecastlineItem__c sfLI;
-    public SFcastLineItem[] splFClineItems;
+    public SFcastLineItem[] lineItemList;
 
     public String overrideComment       { get;set; }
     public String strRecordId           { get;set; }
@@ -292,15 +294,8 @@ public with sharing class SpecialistForecastController {
     public SFcastLineItem[] getSFcastLineItemsData() {
         // Background check to make sure that we have the necessary data.
         try {
-            User usr;
-            if (sfLI.ForecastOwner__c != null) {
-                usr = [SELECT Id, UserRoleId FROM User
-                    WHERE Id = :sfLI.ForecastOwner__c limit 1];
-            }
-            if (sfLI.ForecastOwner__c == null || usr == null ||
-            usr.UserRoleId == null) {
-                String uid = (usr.Id == null) ? 'unknown user.' : (usr.Id + '.');
-                throw new SpecialistForecastException(ROLE_ID_NULL + uid);
+            if (UserInfo.getUserRoleId() == null) {
+                throw new SpecialistForecastException(USER_MISSING_ID);
             }
         } catch (Exception ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
@@ -308,7 +303,7 @@ public with sharing class SpecialistForecastController {
             return null; // kill the method to prevent later exceptions
         }
 
-        addrecentsList();
+        addrecentsList(); // Keep track of forecasts viewed for dropdown menu
 
         Decimal closedAmount                 = 0;
         Decimal commitAmount                 = 0;
@@ -346,15 +341,15 @@ public with sharing class SpecialistForecastController {
         Map<String,SFcastLineItem> mapUserRolelineItems = new
         Map<String,SFcastLineItem>();
 
-        splFClineItems = new SFcastLineItem[0];
+        SFcastLineItem   sfLine       = new SFcastLineItem();
+        // This is the item returned and the main set of data on the VF page.
+        SFcastLineItem[] lineItemList = new SFcastLineItem[0];
 
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
         // get the searchuser and all level reporting users
         mapSecondLeverUsersAndChild.clear();
         mapUsers.clear();
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
-
-        SFcastLineItem sfLine = new SFcastLineItem();
 
         Set<Id> ownerIdsforQuery = new Set<Id>();
 
@@ -517,7 +512,7 @@ public with sharing class SpecialistForecastController {
                     sfLIne.strLineItmId = '';
                 }
 
-                splFClineItems.add(sfLIne);
+                lineItemList.add(sfLIne);
 
                 totcommitAmount           += sfLIne.commitAmount;
                 totclosedAmount           += sfLIne.closedAmount;
@@ -533,7 +528,7 @@ public with sharing class SpecialistForecastController {
                     sfLI.ForecastOwner__c,mapUsers,quotaAmount);
                 sfLIne.forOverride = (selectedFQ != ForecastHelper.QTR_ALL
                     ? sfLIne.forOverride : false);
-                splFClineItems.add(sfLIne);
+                lineItemList.add(sfLIne);
             } //end if
 
             haslineItemstoDisplay        = false;
@@ -585,7 +580,7 @@ public with sharing class SpecialistForecastController {
             sfLIne.searchUser             = true;
 
             //add the total amounts to the list
-            splFClineItems.add(sfLIne);
+            lineItemList.add(sfLIne);
 
             totcommitAmount           += commitAmount;
             totclosedAmount           += closedAmount;
@@ -600,30 +595,34 @@ public with sharing class SpecialistForecastController {
             sfLIne.createEmptySFLineItem(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
             sfLIne.forOverride = (selectedFQ != QTR_ALL ? sfLIne.forOverride : false);
-            splFClineItems.add(sfLIne);
+            lineItemList.add(sfLIne);
         }
 
         // create total line items
+        // FIXME add assignmets in constructor
         sfLIne = new SFcastLineItem();
-        sfLIne.reportingUser          = true;
-        sfLIne.userName               = GRAND_TOTAL;
-        sfLIne.closedAmount           = totclosedAmount;
-        sfLIne.commitAmount           = totcommitAmount;
-        sfLIne.bestCaseAmount         = totbestCaseAmount;
-        sfLIne.commitOverrideAmount   = totcommitOvrrideAmount ;
-        sfLIne.bestCaseOverrideAmount = totbestCaseOverrideAmount;
-        sfLIne.pipelineAmount         = totpipelineAmount;
-        sfLIne.quotaAmount            = totQuotaAmount;
+        sfLine.reportingUser          = true;
+        sfLine.userName               = GRAND_TOTAL;
+        sfLine.closedAmount           = totclosedAmount;
+        sfLine.commitAmount           = totcommitAmount;
+        sfLine.bestCaseAmount         = totbestCaseAmount;
+        sfLine.commitOverrideAmount   = totcommitOvrrideAmount ;
+        sfLine.bestCaseOverrideAmount = totbestCaseOverrideAmount;
+        sfLine.pipelineAmount         = totpipelineAmount;
+        sfLine.quotaAmount            = totQuotaAmount;
 
         //add the total amounts Line to the list
-        splFClineItems.add(sfLIne);
+        lineItemList.add(sfLIne);
 
-        return splFClineItems;
+        return lineItemList;
     }
 
     /** Return the "Total" line for the Forecasts table on the VF page. */
     public SFcastLineItem getTotalLine() {
-        return splFClineItems[splFClineItems.size() - 1];
+        if (lineItemList != null) {
+            return lineItemList[lineItemList.size() - 1];
+        }
+        return null;
     }
 
     /**

@@ -34,7 +34,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 public with sharing class SpecialistForecastException extends Exception {
 
-    /** These are basic labels which are meant to be shared thoughout the \
+    /** These are basic labels which are meant to be shared thoughout the
      *  SpecialistForecasting Package. If they are meant to be appended to,
      *  then the label should end in a space, otherwise labels should be complete
      *  sentences whereever possible, and should avoid overly technical terms.
@@ -51,34 +51,22 @@ public with sharing class SpecialistForecastException extends Exception {
     public static Final String EMPTY_CAT =
         'Cannot get forecast configurations for an empty category';
     public static Final String ROLE_ID_NULL =
-        'A required User Role ID could be found.';
+        'A required User Role ID could be found';
     public static Final String USER_ID_NULL =
-        'A required User ID could not be found.';
+        'A required User ID could not be found';
     public static Final String PARENT_ID_NULL =
-        'A required Parent User ID could be found.';
+        'A required Parent User ID could be found';
+    public static Final String USER_MISSING_ID =
+        'The current user is missing a Role ID and cannot access forecasts. \n'
+        + 'Please add a User Role to the current user profile to use specialist'
+        + 'forecasting.';
 
-
-
-    // Beginigging Fragments, meant to have something appended when used
+    // Sentence Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';
     public static Final String NO_DATA_CAT =
         'Unable to get forecast configurations for ';
     public static final String CANT_FIND_USER =
-        'Unable able for find a user for userID: ';
-    public static final String FOR_ID = ' For ID: ';
-
-    private PageReference errorPage(String msg) {
-        ApexPages.addmessage(
-            new ApexPages.message(ApexPages.severity.ERROR, msg));
-        return null;
-    }
-
-
-
-
-
-
-
-
+        'Unable able for find a user for UserID: ';
+    public static final String FOR_ID = ' for ID: ';
 
 }

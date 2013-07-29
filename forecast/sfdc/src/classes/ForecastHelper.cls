@@ -165,11 +165,10 @@ public with sharing class ForecastHelper {
         try {
             User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
                 IsActive, Alias FROM User WHERE Id = :userId]);
+            return aUser;
         } catch (Exception ex) {
             throw new SpecialistForecastException(CANT_FIND_USER + userID + '.');
         }
-
-        return aUser;
     }
 
     /**
@@ -226,7 +225,7 @@ public with sharing class ForecastHelper {
         AggregateResult[] quotasListData;
         quotasListData = [SELECT SpecialistForecastuser__c,
                         FiscalYear__c, sum(QuotaAmount__c) amnt
-              FROM SpecialistForecastQuota__c WHERE 
+              FROM SpecialistForecastQuota__c WHERE
                 FiscalYear__c = :queryParam.getFiscalYear()
                 AND Month__c IN : queryParam.getMonthsInQrtr()
                 AND SpecialistForecastuser__c IN :queryParam.getOwnerIds()

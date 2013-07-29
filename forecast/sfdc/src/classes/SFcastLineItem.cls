@@ -78,26 +78,26 @@ public with sharing class SFcastLineItem {
            isSubmitted                 = false;
            isCommitOverridden          = false;
            isBestcaseOverridden        = false;
-           searchUser                  = false;
-           closedAmount                = 0;
-           commitAmount                = 0;
-           bestCaseAmount              = 0;
-           commitOverrideAmount        = 0;
-           bestCaseOverrideAmount      = 0;
-           mgrbestCaseOverrideAmount   = 0;
-           mgrCommitOverrideAmount     = 0;
-           prevDirectRepCommitAmount   = 0;
-           prevDirectRepBestcaseAmount = 0;
-           quotaAmount                 = 0;
-           pipelineAmount              = 0;
-           roleName                    = '';
-           userName                    = '';
-           roleId                      = '';
-           userId                      = '';
-           mgrCommitOverrideNotes      = '';
-           mgrbestcaseOverrideNotes    = '';
-           strLineItmId                = '';
-           submittedDate               = '';
+           searchUser                  = true; //FIXME
+           // closedAmount                = 0;
+//            commitAmount                = 0;
+//            bestCaseAmount              = 0;
+//            commitOverrideAmount        = 0;
+//            bestCaseOverrideAmount      = 0;
+//            mgrbestCaseOverrideAmount   = 0;
+//            mgrCommitOverrideAmount     = 0;
+//            prevDirectRepCommitAmount   = 0;
+//            prevDirectRepBestcaseAmount = 0;
+//            quotaAmount                 = 0;
+//            pipelineAmount              = 0;
+//            roleName                    = '';
+//            userName                    = '';
+//            roleId                      = '';
+//            userId                      = '';
+//            mgrCommitOverrideNotes      = '';
+//            mgrbestcaseOverrideNotes    = '';
+//            strLineItmId                = '';
+//            submittedDate               = '';
        }
 
 
@@ -171,7 +171,7 @@ public with sharing class SFcastLineItem {
         reportingUser          = false;
         myCommitOverridden     = false;
         myBestCaseOverridden   = false;
-        searchUser             = false;
+        searchUser             = true; //FIXME
     }
 
 }

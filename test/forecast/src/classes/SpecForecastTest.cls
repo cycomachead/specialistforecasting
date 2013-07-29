@@ -74,7 +74,7 @@ public class SpecForecastTest {
 
         SpecialistForecastLineItem__c specItem = new
             SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 6000,
-            FiscalYear__c = 'FY13', FYMonth__c = 'August', OwnerId = u.Id);
+            FiscalYear__c = 'FY13', Month__c = 'August', OwnerId = u.Id);
 
         INSERT specItem;
 
@@ -102,7 +102,7 @@ public class SpecForecastTest {
 
         SpecialistForecastLineItem__c specItem = new
             SpecialistForecastLineItem__c(OriginalBestCaseAmount__c = 5000,
-            FiscalYear__c = 'FY10', FYMonth__c = 'March', OwnerId = u.Id);
+            FiscalYear__c = 'FY10', Month__c = 'March', OwnerId = u.Id);
 
         INSERT specItem;
 
