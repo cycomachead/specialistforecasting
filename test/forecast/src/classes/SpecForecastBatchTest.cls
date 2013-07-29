@@ -31,10 +31,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * Class Name : TestSpecialistForecastBatch
  * Description: Contains test cases to test utility methods for special
  * forecast batch processor
- * @since 178.store
  */
 
-@isTest
+@isTest(SeeAllData = true)
 public class SpecForecastBatchTest {
 
     /*

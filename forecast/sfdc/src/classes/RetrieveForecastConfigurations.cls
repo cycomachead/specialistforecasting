@@ -28,9 +28,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  * To retrieve forecast configurations
- *
- * @author Michael Ball
- * @since
  */
 
 public with sharing class RetrieveForecastConfigurations {
@@ -130,7 +127,7 @@ public with sharing class RetrieveForecastConfigurations {
                     currentValues.add(config.Name);
                 } else {
                     Set<String> newValues = new Set<String>();
-                    newValues.add(config.name);
+                    newValues.add(c onfig.name);
                     forecastConfigNames.put(config.ConfigurationCategory__c, newValues);
                 }
             }

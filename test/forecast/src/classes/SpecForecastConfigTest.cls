@@ -30,8 +30,13 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  * Class for testing forecast configurations custom settings
  */
 
-@isTest
+@isTest(SeeAllData = true)
 public class SpecForecastConfigTest {
+
+    // Fill in SFCast Custom Settings.
+    private static testMethod void createTestData() {
+        // New forecast config objects
+    }
 
     // Test the data Retrieval from ForecastConfigurations custom settings
     private static testMethod void testRetrieveForecastConfigurations() {
@@ -47,7 +52,9 @@ public class SpecForecastConfigTest {
             Set<String> valuesForEcommMember = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestLabel.CAT_ECOMM_MEMBER);
             System.assert(false); // should have thrown exception
         } catch(SpecialistForecastException ex) {
-            System.assert(ex.getMessage().contains('There is no category as '));
+            System.assert(true);
+        } catch(Exception ex) {
+            System.assert(false, 'An uxpected exception has occurred. ' + ex.getMessage());
         }
 
 

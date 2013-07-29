@@ -32,13 +32,13 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  forecast scheduler
  */
 
-@isTest
+@isTest(SeeAllData = true)
 public class SpecForecastSchedulerTest {
 
     private static testMethod void testStoreScheduler() {
         try{
             String sch = '0 50 * * * ?';
-            System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());       
+            System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
             System.assert(true);
         } catch(Exception e) {
             System.assert(false, 'Test failed. ' + e.getMessage());

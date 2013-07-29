@@ -318,9 +318,9 @@ public with sharing class SpecialistForecastController {
                 bestCaseMgrOverrideAmount    = 0,
                 pipelineAmount               = 0,
                 quotaAmount                  = 0,
-                totclosedAmount              = 0, //Move to total method at end.
-                totcommitAmount              = 0,
-                totbestCaseAmount            = 0,
+                totclosedAmount              = 0, // Variables used to hold the
+                totcommitAmount              = 0, // total values and are calc.
+                totbestCaseAmount            = 0, // as table lines are created
                 totcommitOvrrideAmount       = 0,
                 totbestCaseOverrideAmount    = 0,
                 totpipelineAmount            = 0,
@@ -594,7 +594,6 @@ public with sharing class SpecialistForecastController {
         }
 
         // create total line items
-        // FIXME add assignmets in constructor
         sfLIne = new SFcastLineItem();
         sfLine.reportingUser          = true;
         sfLine.userName               = GRAND_TOTAL;
@@ -988,7 +987,7 @@ public with sharing class SpecialistForecastController {
 
     /** Sets specialistForecastList to forecast records in selected FQ and FY */
     private void getSpecialistForecastRecords() {
-        String[] lstStatus = new String[]{};
+        String[] lstStatus = new String[0];
         lstStatus.add(strField);
 
         if (strField == CLOSED) { lstStatus.add(CLOSED_WON); }
