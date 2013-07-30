@@ -127,7 +127,7 @@ public with sharing class RetrieveForecastConfigurations {
                     currentValues.add(config.Name);
                 } else {
                     Set<String> newValues = new Set<String>();
-                    newValues.add(c onfig.name);
+                    newValues.add(config.name);
                     forecastConfigNames.put(config.ConfigurationCategory__c, newValues);
                 }
             }

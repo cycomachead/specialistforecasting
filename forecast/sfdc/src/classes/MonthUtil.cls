@@ -86,9 +86,9 @@ public with sharing class MonthUtil {
     /**
      *  Use this method to override the base FY properties.
      *  Meant only to be used for testing, though may have other uses.
-     *  @param mon is the start month of a FY, in range [1, 12]
-     *  @param isStart is true IFF the year of FY is based on year of the start month
-     *  @throws SpecialistForecastException
+     *  param mon is the start month of a FY, in range [1, 12]
+     *  param isStart is true IFF the year of FY is based on year of the start month
+     *  throws SpecialistForecastException
      */
     public static void reset(Integer mon, Boolean isStart) {
         if (mon < 1 || mon > 12) {
@@ -104,8 +104,8 @@ public with sharing class MonthUtil {
     /*                          BASE MONTH UTILITIES                          */
     /**
      *  Gives an English name of a month, based on any integer,uses mod 12.
-     *  @param i is an integer.
-     *  @return An American/English month name.
+     *  param i is an integer.
+     *  return An American/English month name.
      */
     public static String getMonthName(Integer i) {
         if (i > 0) {
@@ -117,8 +117,8 @@ public with sharing class MonthUtil {
 
     /**
      *  NOTE: Uses only the first 3 characters to find a match.
-     *  @param mon is a month name or abbreviation
-     *  @return [1, 12] if a valid moth is found, else -1
+     *  param mon is a month name or abbreviation
+     *  return [1, 12] if a valid moth is found, else -1
      */
     public static Integer getMonthNumber(String mon) {
         try {
@@ -134,7 +134,7 @@ public with sharing class MonthUtil {
     }
 
     /**
-     *  @return the list of the months of the year, as a String[]
+     *  return the list of the months of the year, as a String[]
      */
     public static String[] getAll() {
         return ALL;
@@ -142,8 +142,8 @@ public with sharing class MonthUtil {
 
     /**
      *  Gives a simple abbreviation for a month, could really be any word.
-     *  @param mon is a string, at least 3 characters expected
-     *  @return an all caps string
+     *  param mon is a string, at least 3 characters expected
+     *  return an all caps string
      */
     public static String abbrev(String mon) {
         try {
@@ -157,8 +157,8 @@ public with sharing class MonthUtil {
     /*                  FISCAL YEAR/MONTH UTILITIES                           */
     /**
      *  Gives the months of the year so the FY start month is first in the list.
-     *  @param start is the number of the first month of the FY
-     *  @return String[] of month names
+     *  param start is the number of the first month of the FY
+     *  return String[] of month names
      */
     public static String[] rotatedFrom(Integer start) {
         String[] rotated = new String[12];
@@ -172,8 +172,8 @@ public with sharing class MonthUtil {
     }
 
     /**
-     *  @param qtr is an int in [1, 4].
-     *  @return a list of the months in the specified quarter.
+     *  param qtr is an int in [1, 4].
+     *  return a list of the months in the specified quarter.
      */
     public static String[] getMonthsInQtr(Integer qtr) {
         if (qtr < 1 || qtr > 4) {
@@ -188,7 +188,7 @@ public with sharing class MonthUtil {
     }
 
     /**
-     *  @return Months of the fiscal year, in order Q1, month 1 ... Q4, month 3.
+     *  return Months of the fiscal year, in order Q1, month 1 ... Q4, month 3.
      */
     public static String[] getOrderedFiscalMonths() {
         return ORDERED_MONTHS;
@@ -200,9 +200,9 @@ public with sharing class MonthUtil {
      *  Given a month, and a FY starting month, determin the fiscal month
      *  If fiscal year starts in March, March is month 1, Feb is 12.
      *
-     *  @param MONTH is a normal month integer in [1, 12]
-     *  @param START is a month integer that is the start of a fiscal year.
-     *  @return the adjusted m`onth FROM the start of the fiscal year.
+     *  param MONTH is a normal month integer in [1, 12]
+     *  param START is a month integer that is the start of a fiscal year.
+     *  return the adjusted m`onth FROM the start of the fiscal year.
      */
     public static Integer getFiscalMonthNum(Integer month, Integer start) {
         return (Math.mod((month + (NUM - start)), NUM) + 1);
@@ -210,8 +210,8 @@ public with sharing class MonthUtil {
 
     /**
      *  Given a month, return the quarter it falls into.
-     *  @param fiscalMon is the fiscal month number expcted to be in [1, 12]
-     *  @return an integer in [1, 4],
+     *  param fiscalMon is the fiscal month number expcted to be in [1, 12]
+     *  return an integer in [1, 4],
      */
     public static Integer getQtrOfMonth(Integer fiscalMon) {
         return (fiscalMon + 2) / 3;
@@ -223,9 +223,9 @@ public with sharing class MonthUtil {
      *  getFYFromYearAndMo(2013, 6) returns 14
      *  [getFYFromYearAndMo(13, 6) also works]
      *  NOTE: Settings are determined based on the current Org.
-     *  @param year is an Integer
-     *  @param month is an Integer expected to be in [1, 12]
-     *  @return a two-digit (Integer) year.
+     *  param year is an Integer
+     *  param month is an Integer expected to be in [1, 12]
+     *  return a two-digit (Integer) year.
      */
     public static Integer getFY(Integer year, Integer mon) {
         Integer adjust;
@@ -238,14 +238,14 @@ public with sharing class MonthUtil {
     }
 
     /**
-     * @return The current fiscal year as a two-digit integer.
+     * return The current fiscal year as a two-digit integer.
      */
     public static Integer getCurrentFY() {
         return getFYFromDate(System.today());
     }
 
     /**
-     * @return The fiscal year from the INPDATE provided.
+     * return The fiscal year from the INPDATE provided.
      */
     public static Integer getFYFromDate(Date inpDate) {
         return getFY(inpDate.year(), inpDate.month());
@@ -253,15 +253,15 @@ public with sharing class MonthUtil {
 
     /**
      *  Given a (non-adjusted) month it will return the fiscal quarter it is in
-     *  @param MONTH is an integer in [1, 12] WHERE 1 represents Janurary
-     *  @return The fiscal quarter of the given month
+     *  param MONTH is an integer in [1, 12] WHERE 1 represents Janurary
+     *  return The fiscal quarter of the given month
      */
     public static Integer getFiscalQtrOfMon(Integer mon) {
         return getQtrOfMonth(getFiscalMonthNum(mon, FY_START));
     }
 
     /**
-     * @return current fiscal quarter as a string, 'Q#', based on system time.
+     * return current fiscal quarter as a string, 'Q#', based on system time.
      */
     public static Integer getCurrentFiscalQtr() {
         return getFiscalQtrOfMon(System.today().month());

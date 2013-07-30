@@ -93,6 +93,7 @@ public with sharing class SpecForecastMonthUtilTest {
         System.assertEquals(JUN, MonthUtil.getMonthName(6));
         System.assertEquals(DEC, MonthUtil.getMonthName(12));
         System.assertEquals(OCT, MonthUtil.getMonthName(10));
+        System.assert(MonthUtil.getOrderedFiscalMonths().size() == 12);
         // Expect Error Results and weird cases.
         System.assertEquals(-1, MonthUtil.getMonthNumber('WOOT!'));
         System.assertEquals(-1, MonthUtil.getMonthNumber(':D'));
@@ -120,6 +121,8 @@ public with sharing class SpecForecastMonthUtilTest {
         System.assert(!'may'.equals(MonthUtil.abbrev(MAY)));
         System.assert(!'jun'.equals(MonthUtil.abbrev(JUN)));
         System.assert(!'jul'.equals(MonthUtil.abbrev(JUL)));
+        // check error handling
+        System.assert('Ja'.equals(MonthUtil.abbrev('Ja')));
     }
 
     /** Positive Tests for all 12 cases of fiscal month rotation */
@@ -204,5 +207,17 @@ public with sharing class SpecForecastMonthUtilTest {
         System.assertEquals(MonthUtil.normalizeYrToStr(-001), '99');
     }
 
+    /** Test the ability to reset Month Settings */
+    public static testMethod void testReset() {
+        try {
+            MonthUtil.reset(31, false);
+            System.assert(false, 'Invalid months should cause exceptions.');
+        } catch (SpecialistForecastException ex) {
+            System.assert(true);
+        }
+        // Run a couple times to make sure there aren't errors.
+        MonthUtil.reset(3, true);
+        MonthUtil.reset(2, false); // SFDC fiscal settings.
+    }
 }
 
