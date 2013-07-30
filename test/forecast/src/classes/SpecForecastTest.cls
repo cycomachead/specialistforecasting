@@ -145,11 +145,11 @@ public class SpecForecastTest {
     }
 
     /*
-    Method Name: testGetSpecialistForecastQuota
+    Method Name: testgetAllQuotas
     Parameters : None
-    Description: f-test utility that is used to assert special forecast getSpecialistForecastQuota with the user and entry data
+    Description: f-test utility that is used to assert special forecast getAllQuotas with the user and entry data
     */
-    private static testMethod void testGetSpecialistForecastQuota() {
+    private static testMethod void testgetAllQuotas() {
         //insert data if not exist
         User u = createOrGetUser();
 
@@ -179,7 +179,7 @@ public class SpecForecastTest {
             queryParam.setOwnerIds(ownerIdsforQuery);
 
             //get Quota information for all the users
-            AggregateResult[] listSplFCastQuotas = ForecastHelper.getSpecialistForecastQuota(queryParam );
+            AggregateResult[] listSplFCastQuotas = ForecastHelper.getAllQuotas(queryParam );
 
             for (Sobject so : listSplFCastQuotas)  {
                 AggregateResult ar = (AggregateResult) so;

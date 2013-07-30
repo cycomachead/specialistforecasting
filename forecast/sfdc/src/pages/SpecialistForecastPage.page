@@ -315,8 +315,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                                     value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>
+                                <!-- FIXME -->
                                 <apex:outputText
-                                    rendered="{!(NOT(forecast.searchUser && forecast.commitAmount>0) && NOT(forecast.MycommitOverridden && forecast.commitPreviousAmountMatch))}"
+                                    title=""
+                                    rendered="{!(NOT(forecast.searchUser && forecast.commitAmount > 0) && NOT(forecast.MycommitOverridden && forecast.commitPreviousAmountMatch))}"
                                     value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>

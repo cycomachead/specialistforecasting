@@ -79,8 +79,8 @@ global with sharing class SpecialistForecastBatch implements
      */
     global void execute(Database.BatchableContext context, List<Sobject> items) {
         // upsert to SpecialistForecastLineItem  based on input map.
-        List<SpecialistForecastLineItem__c> allLineItems = new
-            List<SpecialistForecastLineItem__c>();
+        SpecialistForecastLineItem__c[] allLineItems = new
+            SpecialistForecastLineItem__c[0];
 
         SpecialistForecastLineItem__c item;
         processedRecords = new Map<String, SpecialistForecastLineItem__c>();
@@ -146,7 +146,6 @@ global with sharing class SpecialistForecastBatch implements
     }
 
     /**
-     *  FIXME, need try/catch
      *  @return TODO
      */
     global void finish(Database.BatchableContext context) {

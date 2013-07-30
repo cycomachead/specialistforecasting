@@ -121,20 +121,10 @@ public with sharing class ForecastHelper {
         Map<String, String> email =
         RetrieveForecastConfigurations.getForecastConfigurationsByName(
             BATCH_COMPLETED);
-        if (email != null && email.get(ACTIVE) == 'true' &&
-        emailIsValid(email.get(CONFIG_VAL))) {
+        if (email != null && email.get(ACTIVE) == 'true') {
             return email.get(CONFIG_VAL);
         }
         return DONT_SEND_EMAIL;
-    }
-
-    /**
-     *  TODO THIS NEEDS ACTUAL CONTENT TO WORK.
-     *  @oaram email is an adress to be checked.
-     *  @return true IFF the email is valid.
-     */
-    private static boolean emailIsValid(String addr) {
-        return true;
     }
 
     public static String getCronRunDay() {
@@ -182,16 +172,17 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     *   gets all the line items by Year, Month and owners of lineitems
-     *   results used by SpecialistForecastController
-     *   @return
+     *   gets all Specialist Forecast line items by matching
+     *   Year, Month and owners of lineitems
+     *   @param fy is the fiscal year (String) to search for
+     *   @param mons is a String[] are the months to search on
+     *   @param owners is a Set<Id> are the owners to search from.
+     *   @return a list of all line item records matching the search terms.
      */
-    public static SpecialistForecastLineItem__c[] getSpecialistForecastLinesTable(
-    ForecastReportQueryParam queryParam) {
-
-        SpecialistForecastLineItem__c[] lineItemsData;
-
-        lineItemsData = [SELECT Id,ForecastOwner__c, FiscalYear__c, Month__c,
+    public static SpecialistForecastLineItem__c[] getAllLineItems(String fy,
+    String[] mons, Set<Id> owners) {
+        try {
+            return [SELECT Id, ForecastOwner__c, FiscalYear__c, Month__c,
             OriginalBestcaseAmount__c, OriginalClosedAmount__c,
             OriginalCommitAmount__c, OriginalPipelineAmount__c,
             SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c,
@@ -203,36 +194,42 @@ public with sharing class ForecastHelper {
             SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c,
             SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c,
             SpecialistForecastOverride__c, SubmittedDate__c
-                        FROM SpecialistForecastLineItem__c
-                        WHERE ExcludeFromCalculation__c = false
-                            AND FiscalYear__c = :queryParam.getFiscalYear()
-                            AND Month__c IN : queryParam.getMonthsInQrtr()
-                            AND ForecastOwner__c IN :queryParam.getOwnerIds()
-                            Order By ForecastOwner__c
-                      ];
-
-        return lineItemsData;
+            FROM SpecialistForecastLineItem__c
+            WHERE ExcludeFromCalculation__c = false
+            AND FiscalYear__c = :fy AND Month__c IN :mons
+            AND ForecastOwner__c IN :owners ORDER By ForecastOwner__c];
+        } catch (Exception ex) { // FIXME granular exception and error label
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
+            'An error occurred while trying to access Specialist Forecast ' +
+            'line items. <br /> ' + ex.getMessage()));
+            return null;
+        }
     }
 
 
     /**
-     * gets all the quota amount by Year, Month and owners results used by
-     * SpecialistForecastController to display quota amount for AE
-     * @return TODO
+     *  gets all the quota amount by Year, Month and owners results used by
+     *  SpecialistForecastController to display quota amount for AE
+     *  @param fy is the fiscal year (String) to search for
+     *  @param mons is a String[] are the months to search on
+     *  @param owners is a Set<Id> are the owners to search from.
+     *  @return a list of all quota records matching the search terms.
      */
-    public static AggregateResult[] getSpecialistForecastQuota(
-    ForecastReportQueryParam queryParam) {
-        AggregateResult[] quotasListData;
-        quotasListData = [SELECT SpecialistForecastuser__c,
-                        FiscalYear__c, sum(QuotaAmount__c) amnt
-              FROM SpecialistForecastQuota__c WHERE
-                FiscalYear__c = :queryParam.getFiscalYear()
-                AND Month__c IN : queryParam.getMonthsInQrtr()
-                AND SpecialistForecastuser__c IN :queryParam.getOwnerIds()
-                GROUP BY  SpecialistForecastuser__c,FiscalYear__c
-                ORDER BY SpecialistForecastuser__c];
-
-         return quotasListData;
+    public static AggregateResult[] getAllQuotas(String fy, String[] mons,
+    Set<Id> owners) {
+        try {
+            return [SELECT SpecialistForecastUser__c, FiscalYear__c,
+            SUM(QuotaAmount__c) amnt FROM SpecialistForecastQuota__c
+            WHERE FiscalYear__c = :fy AND Month__c IN :mons
+            AND SpecialistForecastuser__c IN :owners
+            GROUP BY  SpecialistForecastuser__c,FiscalYear__c
+            ORDER BY SpecialistForecastuser__c];
+        } catch (Exception ex) { // FIXME granular exception and error label
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
+            'An error occurred while trying to access Specialist Forecast ' +
+            'quotas. <br /> ' + ex.getMessage()));
+            return null;
+        }
     }
 
     /**
@@ -267,17 +264,13 @@ public with sharing class ForecastHelper {
                 hasAccess = false;
             }
         }
-
         return hasAccess;
-
     }
 
     /** Simple method to search a selectOption list */
     public static Boolean listContains(SelectOption[] lst, String search) {
         for (SelectOption item : lst) {
-            if (item.getValue() == search) {
-                return true;
-            }
+            if (item.getValue() == search) { return true; }
         }
         return false;
     }

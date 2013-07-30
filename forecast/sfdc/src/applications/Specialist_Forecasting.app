@@ -10,5 +10,4 @@
     <tab>SpecialistForecastLineItem__c</tab>
     <tab>SpecialistForecastQuota__c</tab>
     <tab>ForecastHierarchyConfigurations__c</tab>
-    <tab>StoreBatchAdminTab</tab>
 </CustomApplication>

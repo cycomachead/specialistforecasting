@@ -13,13 +13,11 @@
         <members>SpecialistForecastException</members>
         <members>SpecialistForecastSubmitBatch</members>
         <members>SFcastLineItem</members>
-        <members>StoreBatchAdminController</members>
         <members>StoreScheduler</members>
         <members>StoreScheduleWrapper</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>StoreBatchAdminPage</members>
         <members>SpecialistForecastPage</members>
         <name>ApexPage</name>
     </types>

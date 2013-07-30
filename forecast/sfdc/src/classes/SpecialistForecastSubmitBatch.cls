@@ -31,8 +31,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *
  * To Run this Class FROM the Console:
  *
- * @author smohapatra
- * @since 180.store
  */
 
 global with sharing class SpecialistForecastSubmitBatch implements
@@ -59,8 +57,8 @@ global with sharing class SpecialistForecastSubmitBatch implements
      * @return
      */
     global void execute(Database.BatchableContext context,
-    List<SpecialistForecastLineItem__c> items) {
-        List<SpecialistForecastLineItem__c> updatebleRecords = new
+    SpecialistForecastLineItem__c[] items) {
+        SpecialistForecastLineItem__c[] updatebleRecords = new
             List<SpecialistForecastLineItem__c>();
 
         for(SpecialistForecastLineItem__c line : items){

@@ -169,12 +169,11 @@ public with sharing class SpecialistForecastController {
 
     /** Returns the current forcast line item object */
     public SpecialistForecastlineItem__c getSfLI() {
-        return this.sfLI;
+        return sfLI;
     }
 
     //  View report button
     public PageReference viewSpecialistReport() {
-        // addRecentsList();
         canView = true;
         allTotaluserIds.add(UserInfo.getUserId());
         try {
@@ -187,9 +186,8 @@ public with sharing class SpecialistForecastController {
             }
             canView = true;
             if (sfLI.ForecastOwner__c != null) {
-                User usr = [SELECT Name FROM User
-                    WHERE Id = :sfLI.ForecastOwner__c limit 1];
-                PreparedByUser = usr.Name;
+                PreparedByUser = [SELECT Name FROM User
+                    WHERE Id = :sfLI.ForecastOwner__c limit 1].Name;
             }
         } catch (Exception ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
@@ -201,7 +199,6 @@ public with sharing class SpecialistForecastController {
     /** Called from userlink for drilldown */
     public PageReference reportDrildownByUserRole() {
         if (selectedUserId != null && selectedUserId.length() > 10) {
-            // addRecentsList();
             User usr = [SELECT Name FROM User WHERE Id = :selectedUserId limit 1];
             PreparedbyUser = usr.Name;
             sfLI.ForecastOwner__c = selectedUserId;
@@ -291,8 +288,6 @@ public with sharing class SpecialistForecastController {
     /**
      *  TODO: REFACTOR REFACTOR REFACTOR
      */
-    ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
-    Set<Id> ownerIdsforQuery = new Set<Id>();
 
     public SFcastLineItem[] getSFcastLineItemsData() {
         // Background checks to make sure that we have the necessary perms.
@@ -303,14 +298,15 @@ public with sharing class SpecialistForecastController {
         }
         if (!canView || !ForecastHelper.canAccessForecasts()) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                'TODO')); // FIXME
+            'The current user doesn\'t have access to view Specialist'
+            + 'Forecasts')); // FIXME - make label
             return null;
         }
 
         addrecentsList(); // Keep track of forecasts viewed for dropdown menu
 
-        Decimal closedAmount                 = 0,
-                commitAmount                 = 0,
+        Decimal closedAmount                 = 0, // hold the data for each
+                commitAmount                 = 0, // line in the table.
                 bestCaseAmount               = 0,
                 commitOvrrideAmount          = 0,
                 bestCaseOverrideAmount       = 0,
@@ -333,47 +329,43 @@ public with sharing class SpecialistForecastController {
                 subtotpipelineAmount         = 0,
                 subtotQuotaAmount            = 0;
 
-        // map used for setting the user and role as key and
-        // SpecialistForecastlineItem as the value
+        // String represents "User (Role)"
         Map<String,SFcastLineItem> mapUserRolelineItems = new
         Map<String,SFcastLineItem>();
+        // TODO
+        Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
 
         // Represents a single line in the forecasts table
         SFcastLineItem   sfLine       = new SFcastLineItem();
-        // This is the item returned and the main set of data on the VF page.
+        // This is returned and the main set of data on the VF page.
+        // The last element in the list represents the "Total" line.
         SFcastLineItem[] lineItemList = new SFcastLineItem[0];
 
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
+        // Consolidate data TODO -
+        SFcastLineItem lineItem;
+
         // get the searchuser and all level reporting users
+        // TODO - searchuser??
         mapSecondLevelUsersAndChild.clear();
         mapUsers.clear();
         // Add users back to mapSecondLevelUsersAndChild
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
 
-
-
-        ownerIdsforQuery.add(sfLI.ForecastOwner__c);
+        // Set Query paramaters and query for line items and quotas
+        // Months based on selected fiscal quarter
+        String[] queryMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
+        // Create a set of all users to query, starting with the forecast owner
+        Set<Id> queryOwnerIds = new Set<Id>() { sfLI.ForecastOwner__c };
         for (Set<Id> idSet : mapSecondLevelUsersAndChild.values()) {
-            ownerIdsforQuery.addAll(idSet);
+            queryOwnerIds.addAll(idSet);
         }
-
-        // set the query parameters
-        queryParam.setFiscalYear(selectedFY);
-        queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter(selectedFQ));
-        queryParam.setOwnerIds(ownerIdsforQuery);
-
         // get the data from the table as a list
-        SpecialistForecastlineItem__c[] listSplFCastlineItems =
-        ForecastHelper.getSpecialistForecastLinesTable(queryParam);
-
-        // get Quota information for all the users
-        AggregateResult[] listSplFCastQuotas =
-        ForecastHelper.getSpecialistForecastQuota(queryParam);
-
-        // Consolidate data TODO -
-        SFcastLineItem lineItem;
-
-        Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
+        // SpecialistForecastlineItem__c[] listSplFCastlineItems =
+//         ForecastHelper.getAllLineItems(selectedFY, queryMonths, queryOwnerIds);
+//         // get Quota information for all the users
+        // AggregateResult[] listSplFCastQuotas = ForecastHelper.getAllQuotas(
+//             selectedFY, queryMonths, queryOwnerIds);
 
         /********************** consolidation Start *************************/
         // Agreegate the records by owner for display as we are having one
@@ -390,7 +382,7 @@ public with sharing class SpecialistForecastController {
                 ownerlineItemsMap.put(OwnerId, lineItem);
             }
         }
-        // ********************** consolidation End ***************************
+        /********************** consolidation End *****************************/
 
         Boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
@@ -456,7 +448,7 @@ public with sharing class SpecialistForecastController {
                             <= 0 ? bestCaseAmount : bestCaseOverrideAmount);
                     }
                 }
-                closedAmount           = 0;
+                closedAmount           = 0; // reset line values.
                 commitAmount           = 0;
                 bestCaseAmount         = 0;
                 commitOvrrideAmount    = 0;
