@@ -51,7 +51,7 @@ public with sharing class SFcastLineItem {
        public Decimal bestCaseAmount              { get;set; }
        public Decimal commitOverrideAmount        { get;set; }
        public Decimal bestCaseOverrideAmount      { get;set; }
-       public Decimal mgrbestCaseOverrideAmount   { get;set; }
+       public Decimal mgrBestCaseOverrideAmount   { get;set; }
        public Decimal mgrCommitOverrideAmount     { get;set; }
        public Decimal prevDirectRepCommitAmount   { get;set; }
        public Decimal prevDirectRepBestcaseAmount { get;set; }
@@ -79,17 +79,17 @@ public with sharing class SFcastLineItem {
            isCommitOverridden          = false;
            isBestcaseOverridden        = false;
            searchUser                  = true; //FIXME
-           // closedAmount                = 0;
-//            commitAmount                = 0;
-//            bestCaseAmount              = 0;
-//            commitOverrideAmount        = 0;
-//            bestCaseOverrideAmount      = 0;
-//            mgrbestCaseOverrideAmount   = 0;
-//            mgrCommitOverrideAmount     = 0;
-//            prevDirectRepCommitAmount   = 0;
-//            prevDirectRepBestcaseAmount = 0;
-//            quotaAmount                 = 0;
-//            pipelineAmount              = 0;
+           closedAmount                = 0;
+           commitAmount                = 0;
+           bestCaseAmount              = 0;
+           commitOverrideAmount        = 0;
+           bestCaseOverrideAmount      = 0;
+           mgrBestCaseOverrideAmount   = 0;
+           mgrCommitOverrideAmount     = 0;
+           prevDirectRepCommitAmount   = 0;
+           prevDirectRepBestcaseAmount = 0;
+           quotaAmount                 = 0;
+           pipelineAmount              = 0;
 //            roleName                    = '';
 //            userName                    = '';
 //            roleId                      = '';
@@ -174,4 +174,16 @@ public with sharing class SFcastLineItem {
         searchUser             = true; //FIXME
     }
 
+    // Increment the values used in the total line for the VF page.
+    public void increment(Decimal commitAmt, Decimal closedAmt,
+    Decimal bestCaseAmt, Decimal pipelineAmt, Decimal quotaAmt,
+    Decimal bestCaseOverrideAmt, Decimal commitOverrideAmt) {
+        commitAmount           += commitAmt;
+        closedAmount           += closedAmt;
+        bestCaseAmount         += bestCaseAmt;
+        pipelineAmount         += pipelineAmt;
+        quotaAmount            += quotaAmt;
+        bestCaseOverrideAmount += bestCaseOverrideAmt;
+        commitOverrideAmount   += commitOverrideAmt;
+    }
 }

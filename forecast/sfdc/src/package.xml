@@ -3,7 +3,6 @@
     <types>
         <members>ForecastHelper</members>
         <members>HierarchyUtil</members>
-        <members>ForecastReportQueryParam</members>
         <members>ForecastCollection</members>
         <members>ForecastIterable</members>
         <members>MonthUtil</members>
