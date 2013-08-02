@@ -266,7 +266,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                             </td>
                         </tr>
                     </tfoot>
-                    <apex:repeat value="{!SFcastLineItemsData}" var="forecast" rows="{! SFcastLineItemsData.size - 1}">
+                    <apex:repeat value="{!SFcastLineItemsData}" var="forecast" rows="{! SFcastLineItemsData.size}">
                         <tr class="dataRow">
                             <td class="cell center"><!-- User -->
                                 <apex:commandLink value="{!forecast.UserRoleName}" action="{!reportDrildownByUserRole}">

@@ -29,43 +29,49 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *  Class used as value object for Specialist Forecast Lineitem
  *
- *  @author smohapatra
- *  @since 180.store
  */
 
 public with sharing class SFcastLineItem {
+    /** Total constant for the last line in the VF table. */
+    private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
+    /** "All" const picklist value, controls override options. */
+    private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
 
-       public Boolean reportingUser               { get;set; }
-       public Boolean forOverride                 { get;set; }
-       public Boolean myCommitOverridden          { get;set; }
-       public Boolean myBestCaseOverridden        { get;set; }
-       public Boolean mgrCommitOverridden         { get;set; }
-       public Boolean mgrBestCaseOverridden       { get;set; }
-       public Boolean isSubmitted                 { get;set; }
-       public Boolean isCommitOverridden          { get;set; }
-       public Boolean isBestcaseOverridden        { get;set; }
-       public Boolean searchUser                  { get;set; }
+    // TODO
+    public Boolean forOverride                 { get;set; }
+    public Boolean isSubmitted                 { get;set; }
+    public Boolean isCommitOverridden          { get;set; }
+    public Boolean isBestcaseOverridden        { get;set; }
+    public Boolean myCommitOverridden          { get;set; }
+    public Boolean myBestCaseOverridden        { get;set; }
+    public Boolean mgrCommitOverridden         { get;set; }
+    public Boolean mgrBestCaseOverridden       { get;set; }
+    // TODO
+    public Boolean reportingUser               { get;set; }
+    // The true if line item is the forecast of the user being viewed
+    public Boolean searchUser                  { get;set; }
 
-       public Decimal closedAmount                { get;set; }
-       public Decimal commitAmount                { get;set; }
-       public Decimal bestCaseAmount              { get;set; }
-       public Decimal commitOverrideAmount        { get;set; }
-       public Decimal bestCaseOverrideAmount      { get;set; }
-       public Decimal mgrBestCaseOverrideAmount   { get;set; }
-       public Decimal mgrCommitOverrideAmount     { get;set; }
-       public Decimal prevDirectRepCommitAmount   { get;set; }
-       public Decimal prevDirectRepBestcaseAmount { get;set; }
-       public Decimal quotaAmount                 { get;set; }
-       public Decimal pipelineAmount              { get;set; }
+    public Decimal closedAmount                { get;set; }
+    public Decimal commitAmount                { get;set; }
+    public Decimal bestCaseAmount              { get;set; }
+    public Decimal commitOverrideAmount        { get;set; }
+    public Decimal bestCaseOverrideAmount      { get;set; }
+    public Decimal mgrBestCaseOverrideAmount   { get;set; }
+    public Decimal mgrCommitOverrideAmount     { get;set; }
+    public Decimal prevDirectRepCommitAmount   { get;set; }
+    public Decimal prevDirectRepBestcaseAmount { get;set; }
+    public Decimal quotaAmount                 { get;set; }
+    public Decimal pipelineAmount              { get;set; }
 
-       public String roleName                     { get;set; }
-       public String userName                     { get;set; }
-       public String roleId                       { get;set; }
-       public String userId                       { get;set; }
-       public String mgrCommitOverrideNotes       { get;set; }
-       public String mgrbestcaseOverrideNotes     { get;set; }
-       public String strLineItmId                 { get;set; }
-       public String submittedDate                { get;set; }
+    public String roleName                     { get;set; }
+    public String userName                     { get;set; }
+    public String roleId                       { get;set; }
+    public String userId                       { get;set; }
+    public String mgrCommitOverrideNotes       { get;set; }
+    public String mgrbestcaseOverrideNotes     { get;set; }
+    public String strLineItmId                 { get;set; }
+    public String submittedDate                { get;set; }
+
 
        // Basic Constructor, prevent null values.
        public SFCastLineItem() {
@@ -78,18 +84,8 @@ public with sharing class SFcastLineItem {
            isSubmitted                 = false;
            isCommitOverridden          = false;
            isBestcaseOverridden        = false;
-           searchUser                  = true; //FIXME
-           closedAmount                = 0;
-           commitAmount                = 0;
-           bestCaseAmount              = 0;
-           commitOverrideAmount        = 0;
-           bestCaseOverrideAmount      = 0;
-           mgrBestCaseOverrideAmount   = 0;
-           mgrCommitOverrideAmount     = 0;
-           prevDirectRepCommitAmount   = 0;
-           prevDirectRepBestcaseAmount = 0;
-           quotaAmount                 = 0;
-           pipelineAmount              = 0;
+           searchUser                  = false; //FIXME
+
 //            roleName                    = '';
 //            userName                    = '';
 //            roleId                      = '';
@@ -116,30 +112,14 @@ public with sharing class SFcastLineItem {
                     && prevDirectRepCommitAmount != commitAmount));
        }
 
+       /** TODO */
        public String getPrevVFDirectRepCommitAmount() {
-           String[] args = new String[] {'0','number','###,###,##0.00'};
-           String sCurrency;
-           if (prevDirectRepCommitAmount != null) {
-               prevDirectRepCommitAmount.setscale(2);
-               sCurrency = String.format(prevDirectRepCommitAmount.format(), args);
-               if ( !sCurrency.contains('.' ) ) {
-                   sCurrency = sCurrency + '.00';
-              }
-          }
-          return sCurrency;
+           return ForecastHelper.formatAsDollar(prevDirectRepCommitAmount);
       }
 
+      /** TODO */
       public String getPrevVFDirectRepBestcaseAmount() {
-          String[]   args = new String[] {'0','number','###,###,##0.00'};
-          String sCurrency;
-          if (prevDirectRepBestcaseAmount != null) {
-              prevDirectRepBestcaseAmount.setscale(2);
-              sCurrency = String.format(prevDirectRepBestcaseAmount.format(), args);
-              if (!sCurrency.contains('.')) {
-                  sCurrency += '.00';
-              }
-          }
-          return sCurrency;
+          return ForecastHelper.formatAsDollar(prevDirectRepBestcaseAmount);
       }
 
       // FIXME search user needs Init'd
@@ -151,16 +131,18 @@ public with sharing class SFcastLineItem {
 
     /**
      *  Create  displayble virtual LineItem for the VF page
-     *  @param LineItem and User Map
+     *  @param
+     *  @param
+     *  @param
      */
-    public void createEmptySFLineItem(Id lineItemOwnerId, Id inpUser,
-    Map<Id,SpecialistForecastController.UserInfoWrapper> mapUsers, Decimal quotaAmt) {
-
-        forOverride            = (inpUser != UserInfo.getUserId());
-        userName               = mapUsers.get(lineItemOwnerId).userName;
-        roleName               = mapUsers.get(lineItemOwnerId).roleName;
-        userId                 = mapUsers.get(lineItemOwnerId).userID;
-        roleId                 = mapUsers.get(lineItemOwnerId).roleID;
+    public void createEmptyLineItem(Id inpUser, String selFQ,
+    SpecialistForecastController.UserWrapper info, Decimal quotaAmt) {
+        forOverride            = (inpUser != UserInfo.getUserId() &&
+                                   selFQ  != QTR_ALL); // FIXME
+        userName               = info.userName;
+        roleName               = info.roleName;
+        userId                 = info.userID;
+        roleId                 = info.roleID;
         quotaAmount            = quotaAmt;
         closedAmount           = 0;
         commitAmount           = 0;
@@ -171,7 +153,7 @@ public with sharing class SFcastLineItem {
         reportingUser          = false;
         myCommitOverridden     = false;
         myBestCaseOverridden   = false;
-        searchUser             = true; //FIXME
+        searchUser             = false; //FIXME
     }
 
     // Increment the values used in the total line for the VF page.
@@ -186,4 +168,22 @@ public with sharing class SFcastLineItem {
         bestCaseOverrideAmount += bestCaseOverrideAmt;
         commitOverrideAmount   += commitOverrideAmt;
     }
+
+    /** Set the basic properties of an instant to be like the "Total" line. */
+    public void makeTotalLine() {
+        reportingUser               = false;
+        userName                    = GRAND_TOTAL;
+        closedAmount                = 0;
+        commitAmount                = 0;
+        bestCaseAmount              = 0;
+        commitOverrideAmount        = 0;
+        bestCaseOverrideAmount      = 0;
+        mgrBestCaseOverrideAmount   = 0;
+        mgrCommitOverrideAmount     = 0;
+        prevDirectRepCommitAmount   = 0;
+        prevDirectRepBestcaseAmount = 0;
+        quotaAmount                 = 0;
+        pipelineAmount              = 0;
+    }
+
 }

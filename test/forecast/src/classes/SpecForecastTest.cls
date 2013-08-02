@@ -172,14 +172,10 @@ public class SpecForecastTest {
             Set<Id> ownerIdsforQuery = new Set<Id>();
 
             ownerIdsforQuery.add(sfLI.ForecastOwner__c);
-            //set the query parameters
-            ForecastReportQueryParam queryParam = new ForecastReportQueryParam();
-            queryParam.setFiscalYear('FY13');
-            queryParam.setMonthsInQrtr(ForecastHelper.getMonthsInQuarter('Q3'));
-            queryParam.setOwnerIds(ownerIdsforQuery);
-
+            String[] searchMons = ForecastHelper.getMonthsInQuarter('Q3');
             //get Quota information for all the users
-            AggregateResult[] listSplFCastQuotas = ForecastHelper.getAllQuotas(queryParam );
+            AggregateResult[] listSplFCastQuotas = ForecastHelper.getAllQuotas(
+                'FY13', searchMons, ownerIdsforQuery);
 
             for (Sobject so : listSplFCastQuotas)  {
                 AggregateResult ar = (AggregateResult) so;
@@ -208,7 +204,7 @@ public class SpecForecastTest {
      *  Returns the current user who must have permissions to work with forecasts.
      */
     private static User createOrGetUser() {
-        return [ select Id from User where Id = :UserInfo.getUserId() ];
+        return [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() limit 1];
     }
 
 }

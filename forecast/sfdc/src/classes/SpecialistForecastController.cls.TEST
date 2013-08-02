@@ -53,7 +53,7 @@ public with sharing class SpecialistForecastController {
     private Boolean canView = true;
 
     private Map<Id,Set<Id>> mapSecondLevelUsersAndChild = new Map<Id,Set<Id>>();
-    private Map<Id,UserInfoWrapper> mapUsers = new Map<Id,UserInfoWrapper>();
+    private Map<Id,UserWrapper> mapUsers = new Map<Id,UserWrapper>();
 
     // A list to be used for back button users
     // Note: Cannot use a set for a VF picklist.
@@ -94,7 +94,7 @@ public with sharing class SpecialistForecastController {
     public String selectedRoleId        { get;set; }
 
     // Simple wrapper for role and user info, mostly for use in maps.
-    public with sharing class UserInfoWrapper {
+    public with sharing class UserWrapper {
         public Id     roleId   { get;set; }
         public Id     userId   { get;set; }
         public String roleName { get;set; }
@@ -519,7 +519,7 @@ public with sharing class SpecialistForecastController {
 
             } else if (mapUsers.size() > 0 && !haslineItemstoDisplay &&
             mapUsers.containsKey(lineItemOwnerId)) {
-                sfLIne.createEmptySFLineItem(lineItemOwnerId,
+                sfLIne.createEmptyLineItem(lineItemOwnerId,
                     sfLI.ForecastOwner__c,mapUsers,quotaAmount);
                 sfLIne.forOverride = (selectedFQ != ForecastHelper.QTR_ALL
                     ? sfLIne.forOverride : false);
@@ -587,7 +587,7 @@ public with sharing class SpecialistForecastController {
 
         } else {
             sfLIne = new SFcastLineItem();
-            sfLIne.createEmptySFLineItem(sfLI.ForecastOwner__c,
+            sfLIne.createEmptyLineItem(sfLI.ForecastOwner__c,
                 sfLI.ForecastOwner__c, mapUsers, quotaAmount);
             sfLIne.forOverride = (selectedFQ != QTR_ALL ? sfLIne.forOverride : false);
             lineItemList.add(sfLIne);
@@ -645,14 +645,14 @@ public with sharing class SpecialistForecastController {
             return;
         }
 
-        UserInfoWrapper ruinfo;
+        UserWrapper ruinfo;
         HierarchyUtil.RoleNodeWrapper[] lstchildUserNodes = rolwraps.myChildNodes;
 
         if (lstchildUserNodes != null) {
             for (HierarchyUtil.RoleNodeWrapper rolewrapper : lstchildUserNodes) {
                 if (roleWrapper.myUsers != null && roleWrapper.myUsers.size() == 1) {
                     alluserIds      = new Set<Id>();
-                    ruinfo          = new UserInfoWrapper();
+                    ruinfo          = new UserWrapper();
                     ruinfo.roleId   = rolewrapper.myRoleId;
                     ruinfo.roleName = rolewrapper.myroleName;
                     ruinfo.userId   = rolewrapper.myUsers.get(0).Id;
@@ -670,7 +670,7 @@ public with sharing class SpecialistForecastController {
                 && !roleWrapper.isLeafNode) {
                     alluserIds = new Set<Id>();
 
-                    ruinfo            = new UserInfoWrapper();
+                    ruinfo            = new UserWrapper();
                     ruinfo.roleId     = rolewrapper.myRoleId;
                     ruinfo.roleName   = rolewrapper.myroleName;
                     ruinfo.userId     = rolewrapper.myMappedUser.Id;
@@ -687,7 +687,7 @@ public with sharing class SpecialistForecastController {
                 && roleWrapper.isLeafNode) {
                     for(User myusr : rolewrapper.myUsers) {
                         alluserIds      = new Set<Id>();
-                        ruinfo          = new UserInfoWrapper();
+                        ruinfo          = new UserWrapper();
                         ruinfo.roleId   = rolewrapper.myRoleId;
                         ruinfo.roleName = rolewrapper.myroleName;
                         ruinfo.userId   = myusr.Id;
@@ -705,7 +705,7 @@ public with sharing class SpecialistForecastController {
         } //end if
 
         // mapped/search user
-        ruinfo           = new UserInfoWrapper();
+        ruinfo           = new UserWrapper();
         ruinfo.roleId    = usr.UserRoleId;
         ruinfo.roleName  = usr.UseRrole.Name;
         ruinfo.userId    = userId;
@@ -864,7 +864,7 @@ public with sharing class SpecialistForecastController {
     private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper rolewrapper,
     User myusr) {
 
-        UserInfoWrapper ruinfo = new UserInfoWrapper();
+        UserWrapper ruinfo = new UserWrapper();
         ruinfo.roleId   = rolewrapper.myRoleId;
         ruinfo.roleName = rolewrapper.myroleName;
         ruinfo.userId   = myusr.Id;

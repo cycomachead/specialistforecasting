@@ -83,7 +83,7 @@ public with sharing class ForecastHelper {
 
     public static Map<String, String> getBatchJobs() {
         Set<String> batchJobNames =
-        RetrieveForecastConfigurations.getForecastConfigurationNames(
+            RetrieveForecastConfigurations.getForecastConfigurationNames(
             ForecastHelper.CAT_STORE_BATCH_JOB);
         if (batchJobNames == null || batchJobNames.size() == 0) {
             return null;
@@ -91,7 +91,7 @@ public with sharing class ForecastHelper {
         batchJobs = new Map<String, String>();
         for(String batchName : batchJobNames) {
             Map<String, String> strBatches =
-            RetrieveForecastConfigurations.getForecastConfigurationsByName(
+                RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 batchName);
             // if (strBatches == null || strBatches.size() == 0
             // || strBatches.get(ACTIVE) != 'true') {
@@ -99,7 +99,6 @@ public with sharing class ForecastHelper {
             // }
             batchJobs.put(strBatches.get(NAME), strBatches.get(CONFIG_VAL));
         }
-
         return batchJobs;
     }
 
@@ -109,7 +108,7 @@ public with sharing class ForecastHelper {
      */
     public static String getCronExpression() {
         Map<String, String> expression =
-        RetrieveForecastConfigurations.getForecastConfigurationsByName(
+            RetrieveForecastConfigurations.getForecastConfigurationsByName(
             SCHEDULER_FREQUENCY);
         if (expression != null && expression.get(ACTIVE) == 'true') {
             return expression.get(CONFIG_VAL);
@@ -119,7 +118,7 @@ public with sharing class ForecastHelper {
 
     public static String getCronEmail() {
         Map<String, String> email =
-        RetrieveForecastConfigurations.getForecastConfigurationsByName(
+            RetrieveForecastConfigurations.getForecastConfigurationsByName(
             BATCH_COMPLETED);
         if (email != null && email.get(ACTIVE) == 'true') {
             return email.get(CONFIG_VAL);
@@ -130,14 +129,14 @@ public with sharing class ForecastHelper {
     public static String getCronRunDay() {
         Map<String, String> runday =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
-                ForecastHelper.SUBMIT_BATCH_RUN);
+            ForecastHelper.SUBMIT_BATCH_RUN);
         if (runday != null && runday.get(ACTIVE) == 'true' ) {
             return runday.get(CONFIG_VAL);
         }
         return BATCH_RUN_DEF_DAY;
     }
 
-    /** */
+    /** TODO */
     public static String getRecordTypeName(Id rtId) {
         if (rtName == null) {
             RecordType rt = [SELECT DeveloperName FROM RecordType
@@ -148,7 +147,8 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     *  @return TODO
+     *  @param userID is the user to search for
+     *  @return A user with the input userID
      *  @throws SpecialistForecastException
      */
     public static User getDetailsByUserId(Id userId) {
@@ -246,33 +246,53 @@ public with sharing class ForecastHelper {
      /**
       *  This method is used to check access for the page exists for data sync
       *  @return TODO
-      */
+      */ // FIXME -- remove unecessary iteration?
      public static Boolean checkForecastDataSyncAccessForCurrentUser() {
-        boolean hasAccess = true;
 
-        Map<String, Schema.SObjectField> mForecast =
-            Schema.SObjectType.ForecastHierarchyConfigurations__c.fields.getMap();
+         Map<String, Schema.SObjectField> mForecast =
+             Schema.SObjectType.ForecastHierarchyConfigurations__c.fields.getMap();
+         if (mForecast == null || mForecast.size() == 0) {
+             return false;
+         }
 
-        String [] accessFields = new String [] {'checkAccessToSyncJob__c'};
-        if (mForecast == null || mForecast.size() == 0) {
-            hasAccess = false;
-        }
-        // Check if the user has Read access for the field
-        for (String fieldToCheck : accessFields) {
-            if (mForecast .get(fieldToCheck) == null ||
-            !mForecast.get(fieldToCheck).getDescribe().isAccessible()) {
-                hasAccess = false;
-            }
-        }
-        return hasAccess;
-    }
+         String[] accessFields = new String [] {'checkAccessToSyncJob__c'};
+         // Check if the user has Read access for the field
+         for (String fieldToCheck : accessFields) {
+             if (mForecast.get(fieldToCheck) == null ||
+             !mForecast.get(fieldToCheck).getDescribe().isAccessible()) {
+                 return false;
+             }
+         }
+         return true;
+     }
 
-    /** Simple method to search a selectOption list */
+    /**
+     *  Simple search of selectOption list, based on selectoption VALUES
+     *  @param lst is the list to be searched
+     *  @param search is the search term
+     *  @return true IFF an exact match is found in the list (cast INsensitive)
+     */
     public static Boolean listContains(SelectOption[] lst, String search) {
         for (SelectOption item : lst) {
             if (item.getValue() == search) { return true; }
         }
         return false;
+    }
+
+    /**
+     *  Formats a string for a table view to look like: $0.00
+     *  @param value is Decimal type representing some money.
+     *  @return a string formatted as US currency.
+     */ //FIXME There should be a generic way to do this!
+    public static String formatAsDollar(Decimal value) {
+        String[] formatter = new String[] {'0','number','###,###,##0.00'};
+        if (value != null) {
+            value.setScale(2);
+            String formatted = String.format(value.format(), formatter);
+            if (!formatted.contains('.' )) { formatted += '.00'; }
+            return formatted;
+        }
+        return null;
     }
 
     /**************************************************************************/

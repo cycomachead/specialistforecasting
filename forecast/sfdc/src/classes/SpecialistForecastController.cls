@@ -36,7 +36,6 @@ public with sharing class SpecialistForecastController {
     private static final String CLOSED      = ForecastHelper.CLOSED;
     private static final String CLOSED_WON  = ForecastHelper.CLOSED_WON;
     private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
-    private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
     private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
     private static final String FOR_ID      =
             SpecialistForecastException.FOR_ID;
@@ -51,13 +50,13 @@ public with sharing class SpecialistForecastController {
     private static final Integer MAX_BACK_SIZE = 16;
     // Access Check if user can view forecast reports
     private Boolean canView = true;
-
+    //
     private Map<Id,Set<Id>> mapSecondLevelUsersAndChild = new Map<Id,Set<Id>>();
-    private Map<Id,UserInfoWrapper> mapUsers = new Map<Id,UserInfoWrapper>();
+    //
+    private Map<Id,UserWrapper> mapUsers = new Map<Id,UserWrapper>();
 
-    // A list to be used for back button users
-    // Note: Cannot use a set for a VF picklist.
-    private SelectOption[] recentsList = new SelectOption[0];
+    // UI lists for moving around and viewing forecasts data
+    private SelectOption[] recentsList  = new SelectOption[0];
     private SelectOption[] fiscalYears;
     private SelectOption[] fiscalQuarters;
 
@@ -66,10 +65,11 @@ public with sharing class SpecialistForecastController {
 
     // Holds the UID of the user selected from the recents picklist
     public String selectedBackUser      { get;set; }
-
+    // True while the forecast override popup is active
     public Boolean displayPopup         { get;set; }
+    // True while the forecast details popup is active
     public Boolean displayDrilDownPopup { get;set; }
-
+    // values used while overriding forecast data (from popup)
     public Decimal originalAmount       { get;set; }
     public Decimal originalOldAmount    { get;set; }
     public Decimal overrideAmount       { get;set; }
@@ -77,11 +77,11 @@ public with sharing class SpecialistForecastController {
     //
     public SpecialistForecast__c[] specialistforecastList { get;set; }
     //
-    public SpecialistForecastlineItem__c sfLI { get;set; }
+    public SpecialistForecastlineItem__c sfLI             { get;set; }
     // list that drives the main forecasts table / view on VF page
-    public SFcastLineItem[] lineItemList;
+    public SFcastLineItem[] lineItemList = new SFcastLineItem[0];
     // The "Total" (last) line of the table on the VF page.
-    public SFcastLineItem   totalLine;
+    public SFcastLineItem   totalLine = new SFcastLineItem();
 
     public String overrideComment       { get;set; }
     public String strRecordId           { get;set; }
@@ -96,7 +96,7 @@ public with sharing class SpecialistForecastController {
     public String selectedRoleId        { get;set; }
 
     // Simple wrapper for role and user info, mostly for use in maps.
-    public with sharing class UserInfoWrapper {
+    public with sharing class UserWrapper {
         public Id     roleId   { get;set; }
         public Id     userId   { get;set; }
         public String roleName { get;set; }
@@ -124,13 +124,25 @@ public with sharing class SpecialistForecastController {
         }
     }
 
-    // FIXME Will need to be updated for month editing.
-    /**
-     *  @retun true IFF the user is allowed to override/edit forecasts
-     */
-    public boolean getCanSubmit() {
+    /** Returns true IFF the user has somewhere to go back to. */
+    public Boolean getCanGoBack() {
+        if (recentsList == null) { return false; }
+        return !recentsList.isEmpty();
+    }
+
+    /**  Returns true IFF the user is allowed to override/edit forecasts */
+    public Boolean getCanSubmit() {
         return (sfLI.ForecastOwner__c == UserInfo.getUserId() &&
             selectedFQ != QTR_ALL);
+    }
+
+    /** Called from VF page to check if user has access to the button */
+    public Boolean getViewAccessToSyncButton() {
+        try {
+            return ForecastHelper.checkForecastDataSyncAccessForCurrentUser();
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     /** Returns the list of fiscal quaters as a SelectOption[] for VF page */
@@ -150,8 +162,12 @@ public with sharing class SpecialistForecastController {
     /**  Returns the list of selectable fiscal years for VF page  */
     public SelectOption[] getFiscalYears() {
         if (fiscalYears == null) { setFiscalYears(); }
-
         return fiscalYears;
+    }
+
+    /**  Returns the list of selectable forecasts to view for VF page  */
+    public SelectOption[] getRecentsList() {
+        return recentsList;
     }
 
     /** Reset fiscal year selections to the base supported years */
@@ -169,12 +185,20 @@ public with sharing class SpecialistForecastController {
         fiscalYears = fYears;
     }
 
-    /** Returns the current forcast line item object */
-    // public SpecialistForecastlineItem__c getSfLI() {
-    //     return sfLI;
-    // }
+    /** Add recent user, w/o dupes and list size < MAX_BACK_SIZE */
+    private void setRecentsList() {
+        if (recentsList == null) { recentsList = new SelectOption[0]; }
 
-    //  View report button
+        String name = getUserNameFromMap(sfLI.ForecastOwner__c);
+        if (!ForecastHelper.listContains(recentsList, sfLI.ForecastOwner__c)) {
+            recentsList.add(new SelectOption(sfLI.ForecastOwner__c, name));
+        }
+        if (recentsList.size() > MAX_BACK_SIZE) {
+            recentsList.remove(1); // Force item 0 to always be inital user
+        }
+    }
+
+    /**  View report button */
     public PageReference viewSpecialistReport() {
         canView = true;
         allTotaluserIds.add(UserInfo.getUserId());
@@ -188,8 +212,7 @@ public with sharing class SpecialistForecastController {
             }
             canView = true;
             if (sfLI.ForecastOwner__c != null) {
-                PreparedByUser = [SELECT Name FROM User
-                    WHERE Id = :sfLI.ForecastOwner__c limit 1].Name;
+                PreparedByUser = getUserNameFromMap(sfLI.ForecastOwner__c); //
             }
         } catch (Exception ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
@@ -201,8 +224,7 @@ public with sharing class SpecialistForecastController {
     /** Called from userlink for drilldown */
     public PageReference reportDrildownByUserRole() {
         if (selectedUserId != null && selectedUserId.length() > 10) {
-            User usr = [SELECT Name FROM User WHERE Id = :selectedUserId limit 1];
-            PreparedbyUser = usr.Name;
+            PreparedbyUser = getUserNameFromMap(selectedUserId);
             sfLI.ForecastOwner__c = selectedUserId;
         }
         return null;
@@ -218,7 +240,7 @@ public with sharing class SpecialistForecastController {
             sfLI.Month__c = strMonth;
             sfLI.submittedDate__c = System.now();
             sfLI.ExtIdentifier__c = sfLI.ForecastOwner__c + selectedFY + strMonth;
-            Upsert sfLI ExtIdentifier__c;
+            UPSERT sfLI ExtIdentifier__c;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
                 'Report Submitted successfully'));
        } else {
@@ -229,44 +251,10 @@ public with sharing class SpecialistForecastController {
        return null;
     }
 
-    /** Called from VF page to check if user has access to the button */
-    public Boolean getViewAccessToSyncButton() {
-        try {
-            return ForecastHelper.checkForecastDataSyncAccessForCurrentUser();
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    /** Add a user to the view stack
-     *  Prevent dupes, and make sure list is < MAX_BACK_SIZE
-     */
-    private void addRecentsList() {
-        String uid = (String) sfLI.ForecastOwner__c;
-        if (!ForecastHelper.listContains(recentsList, uid)) {
-            recentsList.add(new SelectOption(uid,
-            [SELECT Name FROM User WHERE Id = :uid limit 1].Name));
-        }
-        if (recentsList.size() > MAX_BACK_SIZE) {
-            recentsList.remove(1); // Force item 0 to always be inital user
-        }
-    }
-
-    /** Return true IFF the user has somewhere to go back to. */
-    public boolean getCanGoBack() {
-        return !recentsList.isEmpty();
-    }
-
-    /** Return the set of users to go back to. */
-    public SelectOption[] getRecentsList() {
-        return recentsList;
-    }
-
     /** Returns the link of where the uder will go back to. */
     public PageReference backLink() {
         if (!recentsList.isEmpty()) {
-            User usr = [SELECT Name FROM User WHERE Id = :selectedBackUser limit 1];
-            PreparedbyUser = usr.Name;
+            PreparedByUser = getUserNameFromMap(selectedBackUser); //
             sfLI.ForecastOwner__c = selectedBackUser;
         }
         return null;
@@ -290,7 +278,6 @@ public with sharing class SpecialistForecastController {
     /**
      *  TODO: REFACTOR REFACTOR REFACTOR
      */
-
     public SFcastLineItem[] getSFcastLineItemsData() {
         // Background checks to make sure that we have the necessary perms.
         if (UserInfo.getUserRoleId() == null) {
@@ -301,11 +288,11 @@ public with sharing class SpecialistForecastController {
         if (!canView || !ForecastHelper.canAccessForecasts()) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
             'The current user doesn\'t have access to view Specialist'
-            + 'Forecasts')); // FIXME - make label
+            + 'Forecasts')); // TODO - make label
             return null;
         }
 
-        addrecentsList(); // Keep track of forecasts viewed for dropdown menu
+        setRecentsList(); // Keep track of forecasts viewed for dropdown menu
 
         Decimal closedAmount                 = 0, // hold the data for each
                 commitAmount                 = 0, // line in the table.
@@ -316,13 +303,6 @@ public with sharing class SpecialistForecastController {
                 bestCaseMgrOverrideAmount    = 0,
                 pipelineAmount               = 0,
                 quotaAmount                  = 0,
-                // totclosedAmount              = 0, // Variables used to hold the
- //                totcommitAmount              = 0, // total values and are calc.
- //                totbestCaseAmount            = 0, // as table lines are created
- //                totcommitOvrrideAmount       = 0,
- //                totbestCaseOverrideAmount    = 0,
- //                totpipelineAmount            = 0,
- //                totQuotaAmount               = 0,
                 subtotclosedAmount           = 0, // FIXME
                 subtotcommitAmount           = 0,
                 subtotbestCaseAmount         = 0,
@@ -332,20 +312,22 @@ public with sharing class SpecialistForecastController {
                 subtotQuotaAmount            = 0;
 
         // String represents "User (Role)"
-        Map<String,SFcastLineItem> mapUserRolelineItems = new
-        Map<String,SFcastLineItem>();
-        // TODO
+        // Map<String,SFcastLineItem> mapUserRolelineItems = new
+//         Map<String,SFcastLineItem>();
+        // TODO`
         Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
 
-        // Represents a single line in the forecasts table
-        SFcastLineItem   sfLine       = new SFcastLineItem();
+        // Current copy of individual table row before adding to the main list
+        SFcastLineItem sfLine = new SFcastLineItem();
         // Line item holding the values of the total row, set basic properties.
-        SFcastLineItem   totalLine    = new SFcastLineItem();
-                         totalLine.reportingUser          = true;
-                         totalLine.userName               = GRAND_TOTAL;
+                    totalLine = new SFcastLineItem();
+                    totalLine.makeTotalLine();
         // This is returned and the main set of data on the VF page.
-        // The last element in the list represents the "Total" line.
-        SFcastLineItem[] lineItemList = new SFcastLineItem[0];
+        // Clear list before creating a new table
+        lineItemList.clear();
+
+        // The user working with the VF page, used to determine view perms
+        Id currUser = UserInfo.getUserId();
 
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
         // Consolidate data TODO -
@@ -376,30 +358,33 @@ public with sharing class SpecialistForecastController {
 
         /********************** consolidation Start *************************/
         // Agreegate the records by owner for display as we are having one
-        //  record for a quater and we store as months
-        ownerlineItemsMap = aggregatelineItemsByOwner(listSplFCastlineItems);
-        for (Sobject so : listSplFCastQuotas) {
+        // record for a quater and we store as months
+        // FIXME WAT
+        // MORE NEEDED
+        ownerlineItemsMap = aggregateLineItemsByOwner(listSplFCastlineItems);
+        for (SObject so : listSplFCastQuotas) {
             AggregateResult ar = (AggregateResult) so;
-            Id ownerId = (Id) ar.get('SpecialistForecastUser__c');
+            Id         ownerId = (Id) ar.get('SpecialistForecastUser__c');
             Decimal tempAmount = (Decimal) ar.get('amnt');
-            lineItem = ownerlineItemsMap.get(OwnerId);
+                      lineItem = ownerlineItemsMap.get(ownerId);
 
             if (lineItem != null) {
                 lineItem.quotaAmount = tempAmount;
-                ownerlineItemsMap.put(OwnerId, lineItem);
+                ownerlineItemsMap.put(ownerId, lineItem);
             }
         }
         /********************** consolidation End *****************************/
-
+        // TODO
         Boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
         for (Id lineItemOwnerId : mapSecondLevelUsersAndChild.keySet()) {
-            sfLIne = new SFcastLineItem();
-            Boolean mgrCommitOverride = false;
+            sfLIne = new SFcastLineItem(); //TODO
+            Boolean mgrCommitOverride   = false; // No manager overrides
             Boolean mgrBestCaseOverride = false;
 
-            // TODO Refactor nested loops?
             for (Id childLinesOwnerId : mapSecondLevelUsersAndChild.get(lineItemOwnerId)) {
+                System.debug('\n\n\n MAP SECOND LEVEL: \n\n\t' + mapSecondLevelUsersAndChild);
+                // lineItem is TODO
                 lineItem = ownerlineItemsMap.get(childLinesOwnerId);
                 if (lineItem != null) {
                     haslineItemstoDisplay = true;
@@ -417,7 +402,7 @@ public with sharing class SpecialistForecastController {
                     // lineItem.mgrCommitOverridden = true;
                     // add to subtotal amount variables
                     if (commitOvrrideAmount > 0 && commitOvrrideAmount != commitAmount
-                        && childLinesOwnerId != lineItemOwnerId) {
+                    && childLinesOwnerId != lineItemOwnerId) {
                         commitAmount = commitOvrrideAmount;
                     }
                     subtotcommitAmount += (lineItem.mycommitOverridden
@@ -425,7 +410,7 @@ public with sharing class SpecialistForecastController {
                     subtotclosedAmount += closedAmount;
 
                     if (bestCaseOverrideAmount != bestCaseAmount &&
-                        bestCaseOverrideAmount > 0 && childLinesOwnerId != lineItemOwnerId) {
+                    bestCaseOverrideAmount > 0 && childLinesOwnerId != lineItemOwnerId) {
                         bestCaseAmount = bestCaseOverrideAmount;
                     }
 
@@ -465,24 +450,27 @@ public with sharing class SpecialistForecastController {
             }
 
             //if not search user then assign values
-            if (mapUsers.size() > 0 && haslineItemstoDisplay &&
-                mapUsers.containsKey(lineItemOwnerId) &&
-                lineItemOwnerId != sfLI.ForecastOwner__c) {
+            // haslineItemstoDisplay TODO
+            Boolean bool = mapUsers.containsKey(lineItemOwnerId);
+            // FIXME  - name, logic error in else if?
+            Boolean b2 = lineItemOwnerId != sfLI.ForecastOwner__c;
+            if (haslineItemstoDisplay && bool && b2) {
 
-                sfLIne.reportingUser = false;
-                sfLIne.forOverride = (sfLI.ForecastOwner__c == UserInfo.getUserId()
-                                       && selectedFQ != ForecastHelper.QTR_ALL);
-                sfLIne.userName =  mapUsers.get(lineItemOwnerId).userName;
-                sfLIne.roleName = mapUsers.get(lineItemOwnerId).roleName;
-                sfLIne.userId =  mapUsers.get(lineItemOwnerId).userId;
-                sfLIne.roleId = mapUsers.get(lineItemOwnerId).roleId;
-                sfLIne.closedAmount = subtotclosedAmount;
-                sfLIne.commitAmount = subtotcommitAmount;
+                sfLIne.reportingUser  = false;
+                sfLIne.forOverride    = (selectedFQ != QTR_ALL &&
+                                sfLI.ForecastOwner__c == currUser);
+                sfLIne.userName       = mapUsers.get(lineItemOwnerId).userName;
+                sfLIne.roleName       = mapUsers.get(lineItemOwnerId).roleName;
+                sfLIne.userId         = mapUsers.get(lineItemOwnerId).userId;
+                sfLIne.roleId         = mapUsers.get(lineItemOwnerId).roleId;
+                sfLIne.closedAmount   = subtotclosedAmount;
+                sfLIne.commitAmount   = subtotcommitAmount;
                 sfLIne.bestCaseAmount = subtotbestCaseAmount;
                 sfLIne.pipelineAmount = subtotpipelineAmount;
-                sfLIne.quotaAmount = subTotQuotaAmount;
-
+                sfLIne.quotaAmount    = subTotQuotaAmount;
+                // lineItem is TODO
                 lineItem = ownerlineItemsMap.get(lineItemOwnerId);
+                // TODO
                 if (lineItem != null) {
                     sfLIne.commitOverrideAmount = (!lineItem.mgrCommitOverridden
                         ? subtotcommitAmount : subtotcommitOvrrideAmount);
@@ -498,29 +486,38 @@ public with sharing class SpecialistForecastController {
                     sfLIne.mgrBestCaseOverrideNotes = lineItem.mgrBestCaseOverrideNotes;
                     sfLIne.prevDirectRepCommitAmount = lineItem.prevDirectRepCommitAmount;
                     sfLIne.prevDirectRepBestcaseAmount = lineItem.prevDirectRepBestcaseAmount;
-                } else {
-                    sfLIne.commitOverrideAmount = subtotcommitAmount;
+                } else { // LineItem == null
+                    sfLIne.commitOverrideAmount   = subtotcommitAmount;
                     sfLIne.bestCaseOverrideAmount = subtotbestCaseAmount;
-                    sfLIne.myCommitOverridden = false;
-                    sfLIne.myBestCaseOverridden = false;
-                    sfLIne.strLineItmId = '';
+                    sfLIne.myCommitOverridden     = false;
+                    sfLIne.myBestCaseOverridden   = false;
+                    sfLIne.strLineItmId           = '';
                 }
 
+                System.debug('\n\n\n BEFORE LIST ADD 497');
+                System.debug(lineItemList);
                 lineItemList.add(sfLIne);
+                // FIXME
+                debugFN();
+                System.debug(sfLine);
                 // increment total line on each interation
-                totalLine.increment(commitAmount, closedAmount, bestCaseAmount,
-                    pipelineAmount, quotaAmount, bestCaseOverrideAmount,
-                    0); //commitOverrideAmount
+                totalLine.increment(commitAmount,
+                                    closedAmount,
+                                    bestCaseAmount,
+                                    pipelineAmount,
+                                    quotaAmount,
+                                    bestCaseOverrideAmount,
+                                    commitOvrrideAmount);
 
-            } else if (mapUsers.size() > 0 && !haslineItemstoDisplay &&
-            mapUsers.containsKey(lineItemOwnerId)) {
-                sfLIne.createEmptySFLineItem(lineItemOwnerId,
-                    sfLI.ForecastOwner__c,mapUsers,quotaAmount);
-                sfLIne.forOverride = (selectedFQ != ForecastHelper.QTR_ALL
-                    ? sfLIne.forOverride : false);
+            } else if (!haslineItemstoDisplay && bool) {
+                sfLIne.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
+                    mapUsers.get(lineItemOwnerId), quotaAmount);
+                System.debug('\n\n BEFORE LIST ADD: line 515 \n');
+                System.debug(lineItemList); //FIXME
                 lineItemList.add(sfLIne);
+                debugFN();
             } //end if
-
+            // Reset Values ... TODO
             haslineItemstoDisplay        = false;
             subtotclosedAmount           = 0;
             subtotcommitAmount           = 0;
@@ -529,14 +526,12 @@ public with sharing class SpecialistForecastController {
             subtotbestCaseOverrideAmount = 0;
             subtotpipelineAmount         = 0;
             subtotQuotaAmount            = 0;
-
         } // end for
 
         // create search user line items
-        if (ownerlineItemsMap.containsKey(sfLI.ForecastOwner__c) &&
-            ownerlineItemsMap.get(sfLI.ForecastOwner__c) != null) {
-
-            lineItem               = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
+        lineItem = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
+        if (lineItem != null) {
+            sfLine = new SFcastLineItem();
             closedAmount           = defaultIfNull(lineItem.closedAmount);
             commitAmount           = defaultIfNull(lineItem.commitAmount);
             bestCaseAmount         = defaultIfNull(lineItem.bestCaseAmount);
@@ -550,9 +545,8 @@ public with sharing class SpecialistForecastController {
                     lineItem.bestCaseOverrideAmount : bestCaseAmount);
 
             sfLIne.reportingUser = false;
-            sfLIne.forOverride   = (sfLI.ForecastOwner__c == UserInfo.getUserId()
+            sfLIne.forOverride   = (sfLI.ForecastOwner__c == currUser
                                    && selectedFQ != QTR_ALL);
-
             sfLIne.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
             sfLIne.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
             sfLIne.userId   = mapUsers.get(sfLI.ForecastOwner__c).userId;
@@ -569,8 +563,13 @@ public with sharing class SpecialistForecastController {
             sfLIne.strLineItmId           = lineItem.strLineItmId;
             sfLIne.searchUser             = true;
 
-            //add the total amounts to the list
+            System.debug('\n\n BEFORE LIST ADD line 570 \n');
+            System.debug(lineItemList);
+            //add the total amounts to the list -- TODO, total?
             lineItemList.add(sfLIne);
+            // FIXME
+            debugFN();
+            System.debug(sfLine);
 
             // increment total line on each interation
             totalLine.increment(commitAmount,
@@ -579,23 +578,31 @@ public with sharing class SpecialistForecastController {
                                 pipelineAmount,
                                 quotaAmount,
                                 bestCaseOverrideAmount,
-                                0); // commitOverrideAmount
+                                commitOvrrideAmount);
         } else { // else WHAT? FIXME
             sfLIne = new SFcastLineItem();
-            sfLIne.createEmptySFLineItem(sfLI.ForecastOwner__c,
-                sfLI.ForecastOwner__c, mapUsers, quotaAmount);
-            sfLIne.forOverride = (selectedFQ != QTR_ALL ? sfLIne.forOverride : false);
+            sfLIne.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
+                mapUsers.get(sfLI.ForecastOwner__c), quotaAmount);
             lineItemList.add(sfLIne);
+            // FIXME
+            debugFN();
+            System.debug(sfLine);
         }
 
+        System.debug('\n\n BEFORE DEDUPE \n\t' +
+            'SIZE: \t' + lineItemList.size() + '\n\tCONTENTS:\t' + lineItemList);
+        //deDupe();
+        System.debug('\n\n END TABLE GENERATE \n\t' +
+            'SIZE: \t' + lineItemList.size() + '\n\tCONTENTS:\t' + lineItemList);
         return lineItemList;
     }
 
     /** Return the "Total" line for the Forecasts table on the VF page. */
     public SFcastLineItem getTotalLine() {
-        // if (lineItemList != null) {
-//             return lineItemList[lineItemList.size() - 1];
-//         }
+        if (totalLine == null) {
+            totalLine = new SFcastLineItem();
+            totalLine.makeTotalLine();
+         }
         return totalLine;
     }
 
@@ -625,14 +632,14 @@ public with sharing class SpecialistForecastController {
             return;
         }
 
-        UserInfoWrapper ruinfo;
+        UserWrapper ruinfo;
         HierarchyUtil.RoleNodeWrapper[] lstchildUserNodes = rolwraps.myChildNodes;
 
         if (lstchildUserNodes != null) {
             for (HierarchyUtil.RoleNodeWrapper rolewrapper : lstchildUserNodes) {
                 if (roleWrapper.myUsers != null && roleWrapper.myUsers.size() == 1) {
                     alluserIds      = new Set<Id>();
-                    ruinfo          = new UserInfoWrapper();
+                    ruinfo          = new UserWrapper();
                     ruinfo.roleId   = rolewrapper.myRoleId;
                     ruinfo.roleName = rolewrapper.myroleName;
                     ruinfo.userId   = rolewrapper.myUsers.get(0).Id;
@@ -650,7 +657,7 @@ public with sharing class SpecialistForecastController {
                 && !roleWrapper.isLeafNode) {
                     alluserIds = new Set<Id>();
 
-                    ruinfo            = new UserInfoWrapper();
+                    ruinfo            = new UserWrapper();
                     ruinfo.roleId     = rolewrapper.myRoleId;
                     ruinfo.roleName   = rolewrapper.myroleName;
                     ruinfo.userId     = rolewrapper.myMappedUser.Id;
@@ -667,7 +674,7 @@ public with sharing class SpecialistForecastController {
                 && roleWrapper.isLeafNode) {
                     for(User myusr : rolewrapper.myUsers) {
                         alluserIds      = new Set<Id>();
-                        ruinfo          = new UserInfoWrapper();
+                        ruinfo          = new UserWrapper();
                         ruinfo.roleId   = rolewrapper.myRoleId;
                         ruinfo.roleName = rolewrapper.myroleName;
                         ruinfo.userId   = myusr.Id;
@@ -685,7 +692,7 @@ public with sharing class SpecialistForecastController {
         } //end if
 
         // mapped/search user
-        ruinfo           = new UserInfoWrapper();
+        ruinfo           = new UserWrapper();
         ruinfo.roleId    = usr.UserRoleId;
         ruinfo.roleName  = usr.UseRrole.Name;
         ruinfo.userId    = userId;
@@ -716,10 +723,8 @@ public with sharing class SpecialistForecastController {
                         allTotaluserIds.add(rw.myMappedUser.Id);
                 }
                 if (rw.hasChildren) {
-                    roletraverse (rw);
+                    roleTraverse(rw);
                 }
-
-               //}//end if
            } //end for
        } //end if
     }
@@ -729,10 +734,9 @@ public with sharing class SpecialistForecastController {
      *  for a quater and  we store as months
      *  @param List of SpecialistForecastlineItem__c
      */
-    private Map<Id,SFcastLineItem> aggregatelineItemsByOwner(
-    SpecialistForecastlineItem__c[] listSplFCastlineItems) {
-
-        Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
+    private Map<Id, SFcastLineItem> aggregatelineItemsByOwner(
+    SpecialistForecastlineItem__c[] inpLineItemList) {
+        Map<Id, SFcastLineItem> ownerItems = new Map<Id, SFcastLineItem>();
         Decimal closedAmount   = 0;
         Decimal commitAmount   = 0;
         Decimal bestCaseAmount = 0;
@@ -746,7 +750,7 @@ public with sharing class SpecialistForecastController {
         String currentOwnerId;
         String previousOwnerId;
 
-        for (SpecialistForecastlineItem__c sfl : listSplFCastlineItems) {
+        for (SpecialistForecastlineItem__c sfl : inpLineItemList) {
             currentOwnerId = sfl.ForecastOwner__c;
 
             closedAmount   = defaultIfNull(sfl.originalClosedAmount__c);
@@ -763,23 +767,23 @@ public with sharing class SpecialistForecastController {
             bestCaseMgrOverrideAmount =
                 defaultIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenBestcaseAmount__c);
 
-            splv = ownerlineItemsMap.get(currentOwnerId);
+            splv = ownerItems.get(currentOwnerId);
 
             if (splv == null) { splv = new SFcastLineItem(); }
 
             if (previousOwnerId != currentOwnerId) {
-                 previousOwnerId = currentOwnerId;
-                 splv.closedAmount = closedAmount;
-                 splv.commitAmount = commitAmount;
-                 splv.bestCaseAmount = bestCaseAmount;
-                 splv.pipelineAmount = pipelineAmount;
-                 splv.commitOverrideAmount = commitOverrideAmount;
-                 splv.bestCaseOverrideAmount = bestCaseOverrideAmount;
-                 splv.mgrCommitOverrideAmount = commitMgrOvrrideAmount;
+                 previousOwnerId                = currentOwnerId;
+                 splv.closedAmount              = closedAmount;
+                 splv.commitAmount              = commitAmount;
+                 splv.bestCaseAmount            = bestCaseAmount;
+                 splv.pipelineAmount            = pipelineAmount;
+                 splv.commitOverrideAmount      = commitOverrideAmount;
+                 splv.bestCaseOverrideAmount    = bestCaseOverrideAmount;
+                 splv.mgrCommitOverrideAmount   = commitMgrOvrrideAmount;
                  splv.mgrBestCaseOverrideAmount = bestCaseMgrOverrideAmount;
-                 splv.submittedDate = (sfl.submitteddate__c != null ?
+                 splv.submittedDate             = (sfl.submitteddate__c != null ?
                      sfl.submitteddate__c.format() : defaultIfNull(splv.submittedDate));
-                 splv.isSubmitted = (sfl.Submitteddate__c != null ||
+                 splv.isSubmitted               = (sfl.Submitteddate__c != null ||
                       defaultIfNull(splv.isSubmitted));
 
                  splv.MycommitOverridden =
@@ -798,7 +802,7 @@ public with sharing class SpecialistForecastController {
                      sfl.SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c;
                  splv.prevDirectRepBestcaseAmount =
                      sfl.SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c;
-            } else {
+            } else { // previousOwnerId == currentOwnerId
                 splv.closedAmount              += closedAmount;
                 splv.commitAmount              += commitAmount;
                 splv.bestCaseAmount            += bestCaseAmount;
@@ -834,28 +838,26 @@ public with sharing class SpecialistForecastController {
             } //end if
             commitMgrOvrrideAmount = 0;
             commitOverrideAmount = 0;
-            ownerlineItemsMap.put(currentOwnerId,splv);
+
+            ownerItems.put(currentOwnerId, splv);
         } //end for
 
-        return ownerlineItemsMap;
+        return ownerItems;
     }
 
     /** */
-    private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper rolewrapper,
-    User myusr) {
+    private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper wrap, User myusr) {
+        UserWrapper ruInfo = new UserWrapper();
+        ruInfo.roleId      = wrap.myRoleId;
+        ruInfo.roleName    = wrap.myroleName;
+        ruInfo.userId      = myUsr.Id;
+        ruInfo.userName    = myUsr.Name;
+        mapUsers.put(myUsr.Id, ruInfo); // Put the key with the child
 
-        UserInfoWrapper ruinfo = new UserInfoWrapper();
-        ruinfo.roleId   = rolewrapper.myRoleId;
-        ruinfo.roleName = rolewrapper.myroleName;
-        ruinfo.userId   = myusr.Id;
-        ruinfo.userName = myusr.Name;
-        mapUsers.put(myusr.Id, ruinfo); // Put the key with the child
-
-        roleTraverse(rolewrapper);
-        alluserIds.add(myusr.Id);
-        allTotaluserIds.add(myusr.Id);
-        mapSecondLevelUsersAndChild.put(myusr.Id, alluserIds);
-
+        roleTraverse(wrap);
+        alluserIds.add(myUsr.Id);
+        allTotaluserIds.add(myUsr.Id);
+        mapSecondLevelUsersAndChild.put(myUsr.Id, alluserIds);
     }
 
     /***************    Specialist Forecast Override     **********************/
@@ -891,7 +893,7 @@ public with sharing class SpecialistForecastController {
        spovr.OwnerId = lineItemOwnerId;
 
        try {
-           Upsert spovr ExtIdentifier__c;
+           UPSERT spovr ExtIdentifier__c;
        } catch(System.DMLException ex) {
            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
                'Failed to update the Override value'));
@@ -900,9 +902,9 @@ public with sharing class SpecialistForecastController {
 
         String[] lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
 
-        spc.ExtIdentifier__c = lineItemOwnerId + SelectedFY + lstMonths.get(0);
+        spc.ExtIdentifier__c = lineItemOwnerId + SelectedFY + lstMonths[0];
         spc.SpecialistForecastOverride__c = spovr.Id;
-        spc.Month__c = lstMonths.get(0);
+        spc.Month__c = lstMonths[0];
         spc.ForecastOwner__c = lineItemOwnerId;
         spc.FiscalYear__c = SelectedFY;
         spc.OwnerId = lineItemOwnerId;
@@ -925,13 +927,13 @@ public with sharing class SpecialistForecastController {
 
     /** Sets default values for all variables. */
     private void initializeOverrideVariables() {
-        overrideAmount = null;
-        originalAmount = 0;
+        overrideAmount    = null;
+        originalAmount    = 0;
         originalOldAmount = 0;
-        overrideComment = '';
-        strRecordId = '';
-        strField = '';
-        lineItemOwnerId = '';
+        overrideComment   = '';
+        strRecordId       = '';
+        strField          = '';
+        lineItemOwnerId   = '';
     }
 
     /** Returns the current user working with forecasts */
@@ -973,16 +975,13 @@ public with sharing class SpecialistForecastController {
         if (strField == CLOSED) { lstStatus.add(CLOSED_WON); }
 
         String[] lstMonths = ForecastHelper.getMonthsInQuarter(selectedFQ);
-
-        specialistForecastList = [SELECT Opportunity__C, Opportunity__r.Name,
-                                    Account__c, FiscalYear__c, Month__c,
-                                    ForecastAmount__c, ForecastCategory__c,
-                                    ForecastCloseDate__c, ForecastStage__c
-                                    FROM SpecialistForecast__c
-                                    WHERE FiscalYear__c = :SelectedFY
-                                    AND Month__c in :lstMonths
-                                    AND OwnerId = :lineItemOwnerId
-                                    AND ForecastCategory__c in :lststatus];
+        // FIXME why oppty __c?
+        specialistForecastList = [SELECT Opportunity__c, Opportunity__r.Name,
+            Account__c, FiscalYear__c, Month__c, ForecastAmount__c,
+            ForecastCategory__c, ForecastCloseDate__c, ForecastStage__c
+            FROM SpecialistForecast__c WHERE FiscalYear__c = :SelectedFY
+            AND Month__c in :lstMonths AND OwnerId = :lineItemOwnerId
+            AND ForecastCategory__c in :lststatus];
     }
     /***************  Specialist Forecast DrillDown End  **********************/
 
@@ -1006,4 +1005,37 @@ public with sharing class SpecialistForecastController {
         return inp == null ? false : inp;
     }
 
+    /** TODO */
+    public String getUserNameFromMap(String uid) {
+        if (mapUsers.containsKey(uid)) {
+            return mapUsers.get(uid).userName;
+        } else {
+            try {
+                return [SELECT Name FROM User WHERE Id = :uid limit 1].Name;
+            } catch (Exception ex) {
+                return ''; // FIXME better error handling
+            }
+        }
+    }
+
+    // FIXME
+    private void debugFN() {
+        System.debug('\n\n ########### DEBUG ########### \n\n');
+        System.debug('\n MAP USERS: \n\t' + mapUsers);
+        System.debug('\n LINE ITEMS LIST\n\t' + lineItemList);
+        System.debug('\n SIZE: \t' + lineItemList.size());
+        if (lineItemList.size() > 0)
+            System.debug('\n LAST ADDED: \t' + lineItemList[lineItemlist.size() - 1].userId);
+        System.debug('');
+
+        System.debug('\n\n ########### DEBUG ########### \n\n\n');
+    }
+
+    // FIXME
+    private void deDupe() {
+        Set<SFcastLineItem> lineSet = new Set<SFcastLineItem>();
+        lineSet.addAll(lineItemList);
+        lineItemList.clear();
+        lineItemList.addAll(lineSet);
+    }
 }
