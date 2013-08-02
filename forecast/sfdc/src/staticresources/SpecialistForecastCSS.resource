@@ -49,11 +49,15 @@ tfoot.footer {
 
 .cell td, .dataRow td, .topTable td,
 .dataRow tr > td {
-     vertical-align: middle !important;
+     vertical-align: middle !important; /* FIXME, this shouldn't be done. */
 }
 
 .topTable tr:nth-child(even) .cell {
     background: #FFF;
+}
+
+.topTable tr:nth-child(odd) .cell {
+    background: #E0E0E0;
 }
 
 .cell span, .cell td > span {
