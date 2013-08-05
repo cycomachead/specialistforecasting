@@ -81,9 +81,9 @@ public with sharing class SpecialistForecastController {
     // list that drives the main forecasts table / view on VF page
     public SFcastLineItem[] lineItemList = new SFcastLineItem[0];
     // Working Line items to be added to the lineItemList as data is processed.
-    public SFcastLineItem   sfLine = new SFcastLineItem();
+    public SFcastLineItem       currLine = new SFcastLineItem();
     // The "Total" (last) line of the table on the VF page.
-    public SFcastLineItem   totalLine = new SFcastLineItem();
+    public SFcastLineItem      totalLine = new SFcastLineItem();
 
     public String overrideComment       { get;set; }
     public String strRecordId           { get;set; }
@@ -316,10 +316,10 @@ public with sharing class SpecialistForecastController {
         Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
 
         // Current copy of individual table row before adding to the main list
-        sfLine = new SFcastLineItem(); // SFcastLineItem
+        currLine = new SFcastLineItem();
         // Line item holding the values of the total row, set basic properties.
-                    totalLine = new SFcastLineItem();
-                    totalLine.makeTotalLine();
+        totalLine = new SFcastLineItem();
+        totalLine.makeTotalLine();
         // This is returned and the main set of data on the VF page.
         // Clear list before creating a new table
         lineItemList.clear();
@@ -375,7 +375,7 @@ public with sharing class SpecialistForecastController {
         Boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
         for (Id lineItemOwnerId : mapSecondLevelUsersAndChild.keySet()) {
-            sfLine = new SFcastLineItem(); //TODO
+            currLine = new SFcastLineItem(); //TODO
             Boolean mgrCommitOverride   = false; // No manager overrides
             Boolean mgrBestCaseOverride = false;
             // TODO -- what are we doing here?
@@ -451,58 +451,50 @@ public with sharing class SpecialistForecastController {
             Boolean b2 = lineItemOwnerId != sfLI.ForecastOwner__c;
             if (haslineItemstoDisplay && bool && b2) {
                 // TODO why use subTotalal?
-                sfLine.reportingUser  = false;
-                sfLine.forOverride    = (selectedFQ != QTR_ALL &&
+                currLine.reportingUser  = false;
+                currLine.forOverride    = (selectedFQ != QTR_ALL &&
                                 sfLI.ForecastOwner__c == currUser);
-                sfLine.userName       = mapUsers.get(lineItemOwnerId).userName;
-                sfLine.roleName       = mapUsers.get(lineItemOwnerId).roleName;
-                sfLine.userId         = mapUsers.get(lineItemOwnerId).userId;
-                sfLine.roleId         = mapUsers.get(lineItemOwnerId).roleId;
-                sfLine.closedAmount   = subTotalclosedAmount;
-                sfLine.commitAmount   = subTotalcommitAmount;
-                sfLine.bestCaseAmount = subTotalbestCaseAmount;
-                sfLine.pipelineAmount = subTotalpipelineAmount;
-                sfLine.quotaAmount    = subTotalQuotaAmount;
+                currLine.userName       = mapUsers.get(lineItemOwnerId).userName;
+                currLine.roleName       = mapUsers.get(lineItemOwnerId).roleName;
+                currLine.userId         = mapUsers.get(lineItemOwnerId).userId;
+                currLine.roleId         = mapUsers.get(lineItemOwnerId).roleId;
+                currLine.closedAmount   = subTotalclosedAmount;
+                currLine.commitAmount   = subTotalcommitAmount;
+                currLine.bestCaseAmount = subTotalbestCaseAmount;
+                currLine.pipelineAmount = subTotalpipelineAmount;
+                currLine.quotaAmount    = subTotalQuotaAmount;
                 // lineItem is TODO
                 lineItem = ownerlineItemsMap.get(lineItemOwnerId);
                 // TODO
                 if (lineItem != null) {
-                    sfLine.commitOverrideAmount        = (!lineItem.mgrCommitOverridden
+                    currLine.commitOverrideAmount        = (!lineItem.mgrCommitOverridden
                         ? subTotalcommitAmount : subTotalcommitOverrideAmount);
-                    sfLine.bestCaseOverrideAmount      = (!lineItem.mgrBestCaseOverridden
+                    currLine.bestCaseOverrideAmount      = (!lineItem.mgrBestCaseOverridden
                         ? subTotalbestCaseAmount : subTotalbestCaseOverrideAmount);
-                    sfLine.myCommitOverridden          = (lineItem.mgrCommitOverridden);
-                    sfLine.myBestCaseOverridden        = (lineItem.mgrBestCaseOverridden);
-                    sfLine.strLineItmId                = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
-                    sfLine.isSubmitted                 = (defaultValue(lineItem.isSubmitted) ||
-                         defaultValue(sfLine.isSubmitted));
-                    sfLine.submittedDate               = lineItem.submittedDate;
-                    sfLine.mgrCommitOverrideNotes      = lineItem.mgrCommitOverrideNotes;
-                    sfLine.mgrBestCaseOverrideNotes    = lineItem.mgrBestCaseOverrideNotes;
-                    sfLine.prevDirectRepCommitAmount   = lineItem.prevDirectRepCommitAmount;
-                    sfLine.prevDirectRepBestcaseAmount = lineItem.prevDirectRepBestcaseAmount;
+                    currLine.myCommitOverridden          = (lineItem.mgrCommitOverridden);
+                    currLine.myBestCaseOverridden        = (lineItem.mgrBestCaseOverridden);
+                    currLine.strLineItmId                = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
+                    currLine.isSubmitted                 = (defaultValue(lineItem.isSubmitted) ||
+                         defaultValue(currLine.isSubmitted));
+                    currLine.submittedDate               = lineItem.submittedDate;
+                    currLine.mgrCommitOverrideNotes      = lineItem.mgrCommitOverrideNotes;
+                    currLine.mgrBestCaseOverrideNotes    = lineItem.mgrBestCaseOverrideNotes;
+                    currLine.prevDirectRepCommitAmount   = lineItem.prevDirectRepCommitAmount;
+                    currLine.prevDirectRepBestcaseAmount = lineItem.prevDirectRepBestcaseAmount;
                 } else { // LineItem == null
-                    sfLine.commitOverrideAmount   = subTotalcommitAmount;
-                    sfLine.bestCaseOverrideAmount = subTotalbestCaseAmount;
-                    sfLine.myCommitOverridden     = false;
-                    sfLine.myBestCaseOverridden   = false;
-                    sfLine.strLineItmId           = '';
+                    currLine.commitOverrideAmount   = subTotalcommitAmount;
+                    currLine.bestCaseOverrideAmount = subTotalbestCaseAmount;
+                    currLine.myCommitOverridden     = false;
+                    currLine.myBestCaseOverridden   = false;
+                    currLine.strLineItmId           = '';
                 }
 
-                lineItemList.add(sfLine);
-                // increment total line on each interation
-                totalLine.increment(sfLine.commitAmount,
-                                    sfLine.closedAmount,
-                                    sfLine.bestCaseAmount,
-                                    sfLine.pipelineAmount,
-                                    sfLine.quotaAmount,
-                                    sfLine.bestCaseOverrideAmount,
-                                    sfLine.commitOverrideAmount);
+                addLineItem();
 
             } else if (!haslineItemstoDisplay && bool) {
-                sfLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
+                currLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
                     mapUsers.get(lineItemOwnerId), quotaAmount);
-                lineItemList.add(sfLine);
+                addLineItem();
             } //end if
             // Reset Values ... TODO
             haslineItemstoDisplay        = false;
@@ -518,47 +510,38 @@ public with sharing class SpecialistForecastController {
         // Create last line, searchUser line item, use data if it exists.
         lineItem = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
         if (lineItem != null) {
-            sfLine = new SFcastLineItem();
+            currLine = new SFcastLineItem();
             commitOverrideAmount    = (lineItem.commitOverrideAmount != null ?
                 lineItem.commitOverrideAmount : commitAmount); //FIXME
             bestCaseOverrideAmount = (lineItem.bestCaseOverrideAmount != null
                 ? lineItem.bestCaseOverrideAmount : bestCaseAmount); //FIXME
 
-            sfLine.reportingUser = false;
-            sfLine.forOverride   = (sfLI.ForecastOwner__c == currUser
+            currLine.reportingUser = false;
+            currLine.forOverride   = (sfLI.ForecastOwner__c == currUser
                                    && selectedFQ != QTR_ALL);
-            sfLine.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
-            sfLine.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
-            sfLine.userId   = mapUsers.get(sfLI.ForecastOwner__c).userId;
-            sfLine.roleId   = mapUsers.get(sfLI.ForecastOwner__c).roleId;
-            sfLine.closedAmount           = defaultValue(lineItem.closedAmount);
-            sfLine.commitAmount           = defaultValue(lineItem.commitAmount);
-            sfLine.bestCaseAmount         = defaultValue(lineItem.bestCaseAmount);
-            sfLine.pipelineAmount         = defaultValue(lineItem.pipelineAmount);
-            sfLine.quotaAmount            = defaultValue(lineItem.quotaAmount);
-            sfLine.bestCaseOverrideAmount = bestCaseOverrideAmount;
-            sfLine.commitOverrideAmount   = commitOverrideAmount;
-            sfLine.myCommitOverridden     = lineItem.myCommitOverridden;
-            sfLine.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
-            sfLine.strLineItmId           = lineItem.strLineItmId;
-            sfLine.searchUser             = true;
+            currLine.userName = mapUsers.get(sfLI.ForecastOwner__c).userName;
+            currLine.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
+            currLine.userId   = mapUsers.get(sfLI.ForecastOwner__c).userId;
+            currLine.roleId   = mapUsers.get(sfLI.ForecastOwner__c).roleId;
+            currLine.closedAmount           = defaultValue(lineItem.closedAmount);
+            currLine.commitAmount           = defaultValue(lineItem.commitAmount);
+            currLine.bestCaseAmount         = defaultValue(lineItem.bestCaseAmount);
+            currLine.pipelineAmount         = defaultValue(lineItem.pipelineAmount);
+            currLine.quotaAmount            = defaultValue(lineItem.quotaAmount);
+            currLine.bestCaseOverrideAmount = bestCaseOverrideAmount;
+            currLine.commitOverrideAmount   = commitOverrideAmount;
+            currLine.myCommitOverridden     = lineItem.myCommitOverridden;
+            currLine.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
+            currLine.strLineItmId           = lineItem.strLineItmId;
+            currLine.searchUser             = true;
 
-            //add the total amounts to the list -- TODO, total?
-            lineItemList.add(sfLine);
+            addLineItem();
 
-            // increment total line on each interation
-            totalLine.increment(sfLine.commitAmount,
-                                sfLine.closedAmount,
-                                sfLine.bestCaseAmount,
-                                sfLine.pipelineAmount,
-                                sfLine.quotaAmount,
-                                sfLine.bestCaseOverrideAmount,
-                                sfLine.commitOverrideAmount);
         } else { // else WHAT? FIXME
-            sfLine = new SFcastLineItem();
-            sfLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
+            currLine = new SFcastLineItem();
+            currLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
                 mapUsers.get(sfLI.ForecastOwner__c), quotaAmount);
-            lineItemList.add(sfLine);
+            addLineItem();
         }
 
         return lineItemList;
@@ -571,6 +554,18 @@ public with sharing class SpecialistForecastController {
             totalLine.makeTotalLine();
          }
         return totalLine;
+    }
+
+    /** Add the current line item to the list, increment totals, and reset */
+    public void addLineItem() {
+        lineItemList.add(currLine);
+        // increment total line on each add
+        totalLine.increment(currLine.commitAmount, currLine.closedAmount,
+            currLine.bestCaseAmount, currLine.pipelineAmount,
+            currLine.quotaAmount, currLine.bestCaseOverrideAmount,
+            currLine.commitOverrideAmount);
+        // reset line item to prevent overriding list data.
+        currLine = new SFcastLineItem();
     }
 
     /**
