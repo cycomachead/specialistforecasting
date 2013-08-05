@@ -80,6 +80,8 @@ public with sharing class SpecialistForecastController {
     public SpecialistForecastlineItem__c sfLI             { get;set; }
     // list that drives the main forecasts table / view on VF page
     public SFcastLineItem[] lineItemList = new SFcastLineItem[0];
+    // Working Line items to be added to the lineItemList as data is processed.
+    public SFcastLineItem   sfLine = new SFcastLineItem();
     // The "Total" (last) line of the table on the VF page.
     public SFcastLineItem   totalLine = new SFcastLineItem();
 
@@ -314,7 +316,7 @@ public with sharing class SpecialistForecastController {
         Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
 
         // Current copy of individual table row before adding to the main list
-        SFcastLineItem sfLine = new SFcastLineItem();
+        sfLine = new SFcastLineItem(); // SFcastLineItem
         // Line item holding the values of the total row, set basic properties.
                     totalLine = new SFcastLineItem();
                     totalLine.makeTotalLine();

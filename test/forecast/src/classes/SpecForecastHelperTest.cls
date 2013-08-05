@@ -35,42 +35,54 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 @isTest
 public class SpecForecastHelperTest {
 
+    // Test returning fiscal quarters.
     private static testMethod void testGetMonthsInQuarter() {
+        // This must be here for tests to pass in any org.
+        MonthUtil.reset(2, false);
         String[] months = ForecastHelper.getMonthsInQuarter('Q1');
-        System.assertEquals('February', months.get(0));
-        System.assertEquals('March', months.get(1));
-        System.assertEquals('April', months.get(2));
+        System.assertEquals('February', months[0]);
+        System.assertEquals('March', months[1]);
+        System.assertEquals('April', months[2]);
         months = ForecastHelper.getMonthsInQuarter('Q2');
-        System.assertEquals('May', months.get(0));
-        System.assertEquals('June', months.get(1));
-        System.assertEquals('July', months.get(2));
+        System.assertEquals('May', months[0]);
+        System.assertEquals('June', months[1]);
+        System.assertEquals('July', months[2]);
         months = ForecastHelper.getMonthsInQuarter('Q3');
-        System.assertEquals('August', months.get(0));
-        System.assertEquals('September', months.get(1));
-        System.assertEquals('October', months.get(2));
+        System.assertEquals('August', months[0]);
+        System.assertEquals('September', months[1]);
+        System.assertEquals('October', months[2]);
         months = ForecastHelper.getMonthsInQuarter('Q4');
-        System.assertEquals('November', months.get(0));
-        System.assertEquals('December', months.get(1));
-        System.assertEquals('January', months.get(2));
+        System.assertEquals('November', months[0]);
+        System.assertEquals('December', months[1]);
+        System.assertEquals('January', months[2]);
     }
 
+    // Test for what looks like a good quarter value
     private static testMethod void testGetCurrentQuarter() {
         String curQrtr = ForecastHelper.getCurrentQuarter();
-        System.assert(curQrtr == 'Q1' || curQrtr == 'Q2' ||
-            curQrtr == 'Q3' || curQrtr == 'Q4');
+        System.assert(curQrtr.length() == 2 &&
+            Integer.valueOf(curQrtr.substring(1)) < 5, 'Current Qtr is valid');
     }
 
-    // update the assert of FY13 every year (1st February)
+    // Checks that a string FYXX is returned and is close to the current year
     private static testMethod void testGetCurrentFiscalYear() {
         String curFY = ForecastHelper.getCurrentFiscalYear();
-        System.assertEquals('FY14', curFY);
+        System.assert(curFY.length() == 4, 'FY is correct length');
+        Integer yr = Integer.valueOf(curFY.substring(2));
+        Integer year = System.today().year() - 2000;
+        System.assert( yr == year || yr == year + 1, 'Year is close.');
     }
 
     // update the assert of FY12 every year (1st February)
     private static testMethod void testGetLastFiscalYear() {
-        System.assertEquals('FY13', ForecastHelper.getLastFiscalYear());
+        String curFY = ForecastHelper.getLastFiscalYear();
+        System.assert(curFY.length() == 4, 'FY is correct length');
+        Integer yr = Integer.valueOf(curFY.substring(2));
+        Integer year = System.today().year() - 2000;
+        System.assert( yr == year || yr == year - 1, 'Year is close.');
     }
 
+    // Test the previous fiscal year function for (un)expected values.
     private static testMethod void testGetPreviousFiscalYear() {
         String previousFY = ForecastHelper.getPreviousFiscalYear('FY13');
         System.assertEquals('FY12', previousFY);
@@ -89,28 +101,31 @@ public class SpecForecastHelperTest {
         System.assertEquals('FY02', previousFY);
     }
 
-    // MUST be updated every year!!
-    // TODO Fix for testing with Data and without
+    // Ensures that the method returns at least the current year.
     private static testMethod void testGetSupportedFiscalYears() {
         String[] supportedFYs = ForecastHelper.getSupportedFiscalYears();
-        Boolean deOrg = 'FY14' == supportedFYs.get(0);
-        Boolean aps1Test = 'FY13' == supportedFYs.get(0);
-        System.assert(deOrg || aps1Test, 'Failed supported FYs.');
-        // System.assertEquals(supportedFYs.get(1), 'FY14', 'supported is FY14');
-        // System.assertEquals(supportedFYs.get(2), 'FY15', 'supported is FY15');
-
+        // use because there's not list contains.
+        Set<String> years = new Set<String>();
+        years.addAll(supportedFYs);
+        System.assert(supportedFYs.size() >= 1, 'At least 1 FY is supported');
+        System.assert(years.contains(ForecastHelper.getCurrentFiscalYear()),
+            'List should contain the current fiscal year');
     }
 
+    // Test for supported fiscal quarters, simple and basic.
     private static testMethod void testGetSupportedFiscalQuarters() {
         String[] supportedFQs = ForecastHelper.getSupportedFiscalQuarters();
-        System.assertEquals('Q1', supportedFQs.get(0));
-        System.assertEquals('Q2', supportedFQs.get(1));
-        System.assertEquals('Q3', supportedFQs.get(2));
-        System.assertEquals('Q4', supportedFQs.get(3));
+        System.assertEquals('Q1', supportedFQs[0]);
+        System.assertEquals('Q2', supportedFQs[1]);
+        System.assertEquals('Q3', supportedFQs[2]);
+        System.assertEquals('Q4', supportedFQs[3]);
     }
 
-    // TODO: Remove tests, add edge cases.
+    // Tests getting a proper fiscal year from month and date
+    // based on month util settings.
     private static testMethod void testExtractFYAndMonthFromDate() {
+        // This must be here for the tests to pass in every org.
+        MonthUtil.reset(2, false);
         Date myDate = Date.newInstance(2012, 1, 17);
         String[] monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
         System.assertEquals('January', monthAndFiscalYear[0]);
@@ -257,109 +272,6 @@ public class SpecForecastHelperTest {
         monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
         System.assertEquals('December', monthAndFiscalYear[0]);
         System.assertEquals('FY15', monthAndFiscalYear[1]);
-
-        myDate = Date.newInstance(2011, 1, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('January', monthAndFiscalYear[0]);
-        System.assertEquals('FY11', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 2, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('February', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 3, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('March', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 4, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('April', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 5, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('May', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 6, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('June', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 7, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('July', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 8, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('August', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 9, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('September', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 10, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('October', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 11, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('November', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2011, 12, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonthFromDate(myDate);
-        System.assertEquals('December', monthAndFiscalYear[0]);
-        System.assertEquals('FY12', monthAndFiscalYear[1]);
     }
-
-    // TODO: Is this necessary?
-    // private static testMethod void testApplyMonthsFromQuarter() {
-//         Date myDate = Date.newInstance(2012, 4, 17);
-//         Map<String, Boolean> showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-//         System.assert(showHideMap.get('hideFirstMonth'));
-//         System.assert(showHideMap.get('hideSecondMonth'));
-//         System.assert(! showHideMap.get('hideThirdMonth'));
-//         // myDate = Date.newInstance(2012, 4, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q2', showHideMap, myDate);
-//         System.assert(! showHideMap.get('hideFirstMonth'));
-//         System.assert(! showHideMap.get('hideSecondMonth'));
-//         System.assert(! showHideMap.get('hideThirdMonth'));
-//         myDate = Date.newInstance(2012, 3, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-//         System.assert(showHideMap.get('hideFirstMonth'));
-//         System.assert(! showHideMap.get('hideSecondMonth'));
-//         System.assert(! showHideMap.get('hideThirdMonth'));
-//         myDate = Date.newInstance(2012, 5, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-//         System.assert(showHideMap.get('hideFirstMonth'));
-//         System.assert(showHideMap.get('hideSecondMonth'));
-//         System.assert(showHideMap.get('hideThirdMonth'));
-//
-//         myDate = Date.newInstance(2012, 6, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q2', showHideMap, myDate);
-//         System.assert(showHideMap.get('hideFirstMonth'));
-//         System.assert(! showHideMap.get('hideSecondMonth'));
-//         System.assert(! showHideMap.get('hideThirdMonth'));
-//
-//         myDate = Date.newInstance(2012, 2, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q1', showHideMap, myDate);
-//         System.assert(! showHideMap.get('hideThirdMonth'));
-//
-//         myDate = Date.newInstance(2012, 8, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q3', showHideMap, myDate);
-//         System.assert(! showHideMap.get('hideFirstMonth'));
-//         System.assert(! showHideMap.get('hideSecondMonth'));
-//         System.assert(! showHideMap.get('hideThirdMonth'));
-//
-//         myDate = Date.newInstance(2012, 11, 17);
-//         showHideMap = new Map<String, Boolean>();
-//         ForecastHelper.applyMonthsFromQuarter('Q4', showHideMap, myDate);
-//         System.assert(!showHideMap.get('hideFirstMonth'));
-//         System.assert(!showHideMap.get('hideSecondMonth'));
-//         System.assert(!showHideMap.get('hideThirdMonth'));
-//     }
 
 }

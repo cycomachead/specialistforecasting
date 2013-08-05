@@ -204,7 +204,6 @@
     <fields>
         <fullName>ForecastStage__c</fullName>
         <label>AE Forecast Stage</label>
-        <required>true</required>
         <inlineHelpText>Opportunity Stage chosen by the AE for the forecast.</inlineHelpText>
         <type>Picklist</type>
         <picklist>
