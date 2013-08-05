@@ -204,7 +204,7 @@
     <fields>
         <fullName>ForecastStage__c</fullName>
         <label>AE Forecast Stage</label>
-        <!-- <required>true</required> -->
+        <required>true</required>
         <inlineHelpText>Opportunity Stage chosen by the AE for the forecast.</inlineHelpText>
         <type>Picklist</type>
         <picklist>
@@ -269,6 +269,7 @@
         <externalId>false</externalId>
         <!-- <required>true</required> -->
         <label>Forecast Category</label>
+        <!-- FIXME helptext -->
         <trackHistory>true</trackHistory>
         <picklist>
             <controllingField>ForecastStage__c</controllingField>

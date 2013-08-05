@@ -9,7 +9,11 @@ TODO: About the package
 
 ### Customizations
 To make Specialist Forecasting work for your organization, you'll want to change a few things.
-##### Forecasting Product Types
+
+#### Setting Up Report Scheduling
+The specialist Forecasting package allows admins to schedule report generation...
+BLAH BLAH code schedule from execute anon by `SOME CODE HERE`
+#### Forecasting Product Types
 A forecast may have a product type associated with it. By default, there are two products, "Product 1" and "Product 2" which are defined in the file `/objects/SpecialistForecast__c.object`. They belong to the `ForecastType__c` object and you may simply add or change the fields in the metadata file with no ill effects (as long as you do it on install).
 
 ##License

@@ -33,6 +33,7 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
+    <!-- FIXME -->
     <description>Specialist Forecast Quota within 62 Org</description>
     <enableActivities>true</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
@@ -42,19 +43,11 @@
     <fields>
         <fullName>Month__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>The month in number for the year starting from 1</inlineHelpText>
+        <inlineHelpText>The month the forecast quota applies to.</inlineHelpText>
         <label>Month</label>
         <picklist>
             <picklistValues>
-                <fullName>April</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>August</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>December</fullName>
+                <fullName>January</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -62,19 +55,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>January</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>July</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>June</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>March</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>April</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -82,7 +67,19 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>November</fullName>
+                <fullName>June</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>July</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>August</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>September</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -90,10 +87,14 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>September</fullName>
+                <fullName>November</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>true</sorted>
+            <picklistValues>
+                <fullName>December</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -102,7 +103,7 @@
     <fields>
         <fullName>FiscalYear__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Returns the FY of the record</inlineHelpText>
+        <inlineHelpText>The fiscal year the quota applies to.</inlineHelpText>
         <label>Fiscal Year</label>
         <picklist>
             <picklistValues>

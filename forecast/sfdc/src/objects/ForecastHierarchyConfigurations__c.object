@@ -11,10 +11,10 @@
     <sharingModel>Private</sharingModel>
     <nameField>
         <displayFormat>FHC-{000000}</displayFormat>
-        <label>Record #</label>
+        <label>Hierarchy Record #</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
-    </nameField>   
+    </nameField>
     <fields>
         <fullName>HierarchyRole__c</fullName>
         <label>Hierarchy Role</label>
@@ -28,26 +28,26 @@
     <referenceTo>User</referenceTo>
     <relationshipName>HierarchyRoleUsers</relationshipName>
     <type>Lookup</type>
-    </fields>     
+    </fields>
     <fields>
         <fullName>IsManager__c</fullName>
         <label>Is Manager?</label>
         <defaultValue>true</defaultValue>
-        <type>Checkbox</type>    
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>IsActive__c</fullName>
         <label>Is Active?</label>
         <defaultValue>true</defaultValue>
-        <type>Checkbox</type>    
-    </fields>    
+        <type>Checkbox</type>
+    </fields>
     <fields>
         <fullName>Comment__c</fullName>
         <label>Comment</label>
         <length>200</length>
         <required>false</required>
-        <type>Text</type>    
-    </fields> 
+        <type>Text</type>
+    </fields>
     <fields>
         <fullName>HashForCheck__c</fullName>
         <externalId>false</externalId>
@@ -85,6 +85,5 @@
         <label>All</label>
         <language>en_US</language>
     </listViews>
-
 </CustomObject>
 

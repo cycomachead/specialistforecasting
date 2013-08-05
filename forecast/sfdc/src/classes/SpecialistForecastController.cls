@@ -148,8 +148,7 @@ public with sharing class SpecialistForecastController {
     /** Returns the list of fiscal quaters as a SelectOption[] for VF page */
     public SelectOption[] getFiscalQuarters() {
         if (fiscalQuarters == null) {
-            fiscalQuarters = new SelectOption[0];
-            fiscalQuarters.add(new SelectOption(QTR_ALL, QTR_ALL));
+            fiscalQuarters = new SelectOption[] {new SelectOption(QTR_ALL, QTR_ALL)};
 
             String[] fQuarters = ForecastHelper.getSupportedFiscalQuarters();
             for(String fq : fQuarters) {
@@ -224,7 +223,7 @@ public with sharing class SpecialistForecastController {
     /** Called from userlink for drilldown */
     public PageReference reportDrildownByUserRole() {
         if (selectedUserId != null && selectedUserId.length() > 10) {
-            PreparedbyUser = getUserNameFromMap(selectedUserId);
+            preparedbyUser = getUserNameFromMap(selectedUserId);
             sfLI.ForecastOwner__c = selectedUserId;
         }
         return null;
@@ -254,7 +253,7 @@ public with sharing class SpecialistForecastController {
     /** Returns the link of where the uder will go back to. */
     public PageReference backLink() {
         if (!recentsList.isEmpty()) {
-            PreparedByUser = getUserNameFromMap(selectedBackUser); //
+            preparedByUser = getUserNameFromMap(selectedBackUser);
             sfLI.ForecastOwner__c = selectedBackUser;
         }
         return null;
@@ -297,7 +296,7 @@ public with sharing class SpecialistForecastController {
         Decimal closedAmount                   = 0, // hold the data for each
                 commitAmount                   = 0, // line in the table.
                 bestCaseAmount                 = 0,
-                commitOverrideAmount            = 0,
+                commitOverrideAmount           = 0,
                 bestCaseOverrideAmount         = 0,
                 commitMgrOvrrideAmount         = 0,
                 bestCaseMgrOverrideAmount      = 0,
@@ -306,7 +305,7 @@ public with sharing class SpecialistForecastController {
                 subTotalclosedAmount           = 0, // FIXME
                 subTotalcommitAmount           = 0,
                 subTotalbestCaseAmount         = 0,
-                subTotalcommitOverrideAmount    = 0,
+                subTotalcommitOverrideAmount   = 0,
                 subTotalbestCaseOverrideAmount = 0,
                 subTotalpipelineAmount         = 0,
                 subTotalQuotaAmount            = 0;
@@ -383,16 +382,16 @@ public with sharing class SpecialistForecastController {
                 lineItem = ownerlineItemsMap.get(childLinesOwnerId);
                 if (lineItem != null) {
                     haslineItemstoDisplay = true;
-                    closedAmount = defaultIfNull(lineItem.closedAmount);
+                    closedAmount = defaultValue(lineItem.closedAmount);
                     // if manager override amount exists then display mgroverrideamt
-                    commitAmount = defaultIfNull(lineItem.commitAmount);
+                    commitAmount = defaultValue(lineItem.commitAmount);
                     commitOverrideAmount = (lineItem.mgrCommitOverrideAmount !=
                         null ? lineItem.mgrCommitOverrideAmount : commitAmount);
-                    bestCaseAmount = defaultIfNull(lineItem.bestCaseAmount);
+                    bestCaseAmount = defaultValue(lineItem.bestCaseAmount);
                     bestCaseOverrideAmount = (lineItem.mgrBestCaseOverrideAmount
                         != null ? lineItem.mgrBestCaseOverrideAmount : bestCaseAmount);
-                    pipelineAmount = defaultIfNull(lineItem.pipelineAmount);
-                    quotaAmount = defaultIfNull(lineItem.quotaAmount);
+                    pipelineAmount = defaultValue(lineItem.pipelineAmount);
+                    quotaAmount = defaultValue(lineItem.quotaAmount);
 
                     // lineItem.mgrCommitOverridden = true;
                     // add to subTotalal amount variables
@@ -441,7 +440,7 @@ public with sharing class SpecialistForecastController {
                 pipelineAmount         = 0;
                 quotaAmount            = 0;
                 bestCaseOverrideAmount = 0;
-                commitOverrideAmount    = 0;
+                commitOverrideAmount   = 0;
             } // end inner for loop
 
             //if not search user then assign values
@@ -473,8 +472,8 @@ public with sharing class SpecialistForecastController {
                     sfLine.myCommitOverridden          = (lineItem.mgrCommitOverridden);
                     sfLine.myBestCaseOverridden        = (lineItem.mgrBestCaseOverridden);
                     sfLine.strLineItmId                = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
-                    sfLine.isSubmitted                 = (defaultIfNull(lineItem.isSubmitted) ||
-                         defaultIfNull(sfLine.isSubmitted));
+                    sfLine.isSubmitted                 = (defaultValue(lineItem.isSubmitted) ||
+                         defaultValue(sfLine.isSubmitted));
                     sfLine.submittedDate               = lineItem.submittedDate;
                     sfLine.mgrCommitOverrideNotes      = lineItem.mgrCommitOverrideNotes;
                     sfLine.mgrBestCaseOverrideNotes    = lineItem.mgrBestCaseOverrideNotes;
@@ -508,7 +507,7 @@ public with sharing class SpecialistForecastController {
             subTotalclosedAmount           = 0;
             subTotalcommitAmount           = 0;
             subTotalbestCaseAmount         = 0;
-            subTotalcommitOverrideAmount    = 0;
+            subTotalcommitOverrideAmount   = 0;
             subTotalbestCaseOverrideAmount = 0;
             subTotalpipelineAmount         = 0;
             subTotalQuotaAmount            = 0;
@@ -519,9 +518,9 @@ public with sharing class SpecialistForecastController {
         if (lineItem != null) {
             sfLine = new SFcastLineItem();
             commitOverrideAmount    = (lineItem.commitOverrideAmount != null ?
-                lineItem.commitOverrideAmount : commitAmount);
+                lineItem.commitOverrideAmount : commitAmount); //FIXME
             bestCaseOverrideAmount = (lineItem.bestCaseOverrideAmount != null
-                ? lineItem.bestCaseOverrideAmount : bestCaseAmount);
+                ? lineItem.bestCaseOverrideAmount : bestCaseAmount); //FIXME
 
             sfLine.reportingUser = false;
             sfLine.forOverride   = (sfLI.ForecastOwner__c == currUser
@@ -530,11 +529,11 @@ public with sharing class SpecialistForecastController {
             sfLine.roleName = mapUsers.get(sfLI.ForecastOwner__c).roleName;
             sfLine.userId   = mapUsers.get(sfLI.ForecastOwner__c).userId;
             sfLine.roleId   = mapUsers.get(sfLI.ForecastOwner__c).roleId;
-            sfLine.closedAmount           = defaultIfNull(lineItem.closedAmount);
-            sfLine.commitAmount           = defaultIfNull(lineItem.commitAmount);
-            sfLine.bestCaseAmount         = defaultIfNull(lineItem.bestCaseAmount);
-            sfLine.pipelineAmount         = defaultIfNull(lineItem.pipelineAmount);
-            sfLine.quotaAmount            = defaultIfNull(lineItem.quotaAmount);
+            sfLine.closedAmount           = defaultValue(lineItem.closedAmount);
+            sfLine.commitAmount           = defaultValue(lineItem.commitAmount);
+            sfLine.bestCaseAmount         = defaultValue(lineItem.bestCaseAmount);
+            sfLine.pipelineAmount         = defaultValue(lineItem.pipelineAmount);
+            sfLine.quotaAmount            = defaultValue(lineItem.quotaAmount);
             sfLine.bestCaseOverrideAmount = bestCaseOverrideAmount;
             sfLine.commitOverrideAmount   = commitOverrideAmount;
             sfLine.myCommitOverridden     = lineItem.myCommitOverridden;
@@ -671,21 +670,21 @@ public with sharing class SpecialistForecastController {
      * @param rolewrapper user/role indicates the starting point of traversal
      */
     private void roleTraverse(HierarchyUtil.RoleNodeWrapper rolewrapper) {
-         if (rolewrapper.myChildNodes != null) {
+         if (rolewrapper.myChildNodes != null) { // hasChildren?
              for (HierarchyUtil.RoleNodeWrapper rw : rolewrapper.myChildNodes){
                  if (rw.myUsers != null && rw.myUsers.size() > 1 && rw.isLeafNode) {
-                     for(User usr : rw.myUsers){
-                         alluserIds.add(usr.Id);
-                         allTotaluserIds.add(usr.Id);
+                     for (User usr : rw.myUsers) {
+                         allUserIds.add(usr.Id);
+                         allTotalUserIds.add(usr.Id);
                      }
-                 }
+                 } // need to merge these two cases somehow.
                  if (rw.myUsers != null && rw.myUsers.size() == 1) {
-                     alluserIds.add(rw.myUsers.get(0).Id);
-                     allTotaluserIds.add(rw.myUsers.get(0).Id);
+                     allUserIds.add(rw.myUsers[0].Id);
+                     allTotaluserIds.add(rw.myUsers[0].Id);
                  }
                  if (rw.myUsers != null && rw.myUsers.size() > 1 &&
                  !rw.isLeafNode) {
-                        alluserIds.add(rw.myMappedUser.Id);
+                        allUserIds.add(rw.myMappedUser.Id);
                         allTotaluserIds.add(rw.myMappedUser.Id);
                 }
                 if (rw.hasChildren) {
@@ -719,19 +718,19 @@ public with sharing class SpecialistForecastController {
         for (SpecialistForecastlineItem__c sfl : inpLineItemList) {
             currentOwnerId = sfl.ForecastOwner__c;
 
-            closedAmount   = defaultIfNull(sfl.originalClosedAmount__c);
-            commitAmount   = defaultIfNull(sfl.originalCommitAmount__c);
-            bestCaseAmount = defaultIfNull(sfl.originalbestCaseAmount__c);
-            pipelineAmount = defaultIfNull(sfl.originalPipelineAmount__c);
+            closedAmount   = defaultValue(sfl.originalClosedAmount__c);
+            commitAmount   = defaultValue(sfl.originalCommitAmount__c);
+            bestCaseAmount = defaultValue(sfl.originalbestCaseAmount__c);
+            pipelineAmount = defaultValue(sfl.originalPipelineAmount__c);
 
             commitOverrideAmount =
-                defaultIfNull(sfl.SpecialistForecastOverride__r.ownOverriddenCommitAmount__c);
+                defaultValue(sfl.SpecialistForecastOverride__r.ownOverriddenCommitAmount__c);
             bestCaseOverrideAmount =
-                defaultIfNull(sfl.SpecialistForecastOverride__r.ownOverriddenBestcaseAmount__c);
+                defaultValue(sfl.SpecialistForecastOverride__r.ownOverriddenBestcaseAmount__c);
             commitMgrOvrrideAmount =
-                defaultIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenCommitAmount__c);
+                defaultValue(sfl.SpecialistForecastOverride__r.managerOverriddenCommitAmount__c);
             bestCaseMgrOverrideAmount =
-                defaultIfNull(sfl.SpecialistForecastOverride__r.managerOverriddenBestcaseAmount__c);
+                defaultValue(sfl.SpecialistForecastOverride__r.managerOverriddenBestcaseAmount__c);
 
             splv = ownerItems.get(currentOwnerId);
 
@@ -748,9 +747,9 @@ public with sharing class SpecialistForecastController {
                  splv.mgrCommitOverrideAmount   = commitMgrOvrrideAmount;
                  splv.mgrBestCaseOverrideAmount = bestCaseMgrOverrideAmount;
                  splv.submittedDate             = (sfl.submitteddate__c != null ?
-                     sfl.submitteddate__c.format() : defaultIfNull(splv.submittedDate));
+                     sfl.submitteddate__c.format() : defaultValue(splv.submittedDate));
                  splv.isSubmitted               = (sfl.Submitteddate__c != null ||
-                      defaultIfNull(splv.isSubmitted));
+                      defaultValue(splv.isSubmitted));
 
                  splv.MycommitOverridden =
                      sfl.SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c != null;
@@ -790,7 +789,7 @@ public with sharing class SpecialistForecastController {
                     (sfl.SpecialistForecastOverride__r.ManagerOverriddenBestcaseAmount__c
                     != null || splv.mgrBestCaseOverridden);
                 splv.submittedDate = (sfl.submitteddate__c != null ?
-                    sfl.submitteddate__c.format() : defaultIfNull(splv.submittedDate));
+                    sfl.submitteddate__c.format() : defaultValue(splv.submittedDate));
                 splv.isSubmitted = (sfl.Submitteddate__c != null ||
                     splv.isSubmitted);
                 splv.mgrCommitOverrideNotes = (splv.mgrCommitOverridden ?
@@ -821,7 +820,7 @@ public with sharing class SpecialistForecastController {
         mapUsers.put(myUsr.Id, ruInfo); // Put the key with the child
 
         roleTraverse(wrap);
-        alluserIds.add(myUsr.Id);
+        allUserIds.add(myUsr.Id);
         allTotaluserIds.add(myUsr.Id);
         mapSecondLevelUsersAndChild.put(myUsr.Id, alluserIds);
     }
@@ -907,7 +906,7 @@ public with sharing class SpecialistForecastController {
         return preparedByUser;
     }
 
-    /** */
+    /** TODO */
     public void showOverridePopup() {
         displayPopup = true;
     }
@@ -935,8 +934,7 @@ public with sharing class SpecialistForecastController {
 
     /** Sets specialistForecastList to forecast records in selected FQ and FY */
     private void getSpecialistForecastRecords() {
-        String[] lstStatus = new String[0];
-        lstStatus.add(strField);
+        String[] lstStatus = new String[] { strField };
 
         if (strField == CLOSED) { lstStatus.add(CLOSED_WON); }
 
@@ -952,22 +950,22 @@ public with sharing class SpecialistForecastController {
     /***************  Specialist Forecast DrillDown End  **********************/
 
     /** Return 0 if INP is null, else inp. */
-    private static Integer defaultIfNull(Integer inp) {
+    private static Integer defaultValue(Integer inp) {
         return inp == null ? 0 : inp;
     }
 
     /** Return 0 if INP is null, else inp. */
-    private static Decimal defaultIfNull(Decimal inp) {
+    private static Decimal defaultValue(Decimal inp) {
         return inp == null ? 0 : inp;
     }
 
     /** Return '' if INP is null, else inp. */
-    private static String defaultIfNull(String inp) {
+    private static String defaultValue(String inp) {
         return inp == null ? '' : inp;
     }
 
     /** Return false if INP is null, else inp. */
-    private static Boolean defaultIfNull(Boolean inp) {
+    private static Boolean defaultValue(Boolean inp) {
         return inp == null ? false : inp;
     }
 
@@ -982,19 +980,6 @@ public with sharing class SpecialistForecastController {
                 return ''; // FIXME better error handling
             }
         }
-    }
-
-    // FIXME
-    private void debugFN() {
-        System.debug('\n\n ########### DEBUG ########### \n\n');
-        System.debug('\n MAP USERS: \n\t' + mapUsers);
-        System.debug('\n LINE ITEMS LIST\n\t' + lineItemList);
-        System.debug('\n SIZE: \t' + lineItemList.size());
-        if (lineItemList.size() > 0)
-            System.debug('\n LAST ADDED: \t' + lineItemList[lineItemlist.size() - 1].userId);
-        System.debug('');
-
-        System.debug('\n\n ########### DEBUG ########### \n\n\n');
     }
 
     // FIXME
