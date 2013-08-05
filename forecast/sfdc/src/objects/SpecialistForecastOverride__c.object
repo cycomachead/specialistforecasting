@@ -101,12 +101,12 @@
     </fields>
     <fields>
     <fullName>ManagerOverriddenBestCaseAmount__c</fullName>
-    <label>Manager Overridden Bestcase Amount</label>
+    <label>Manager Overridden Best Case Amount</label>
     <precision>16</precision>
     <scale>2</scale>
     <type>Currency</type>
     <trackHistory>true</trackHistory>
-    <description>Manager Overridden Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+    <description>Manager Overridden Best Case forecasted opportunity total amount for cloud-specific products</description>
     </fields>
     <fields>
     <fullName>PreviousDirectRepCommitAmount__c</fullName>
@@ -115,16 +115,16 @@
     <scale>2</scale>
     <type>Currency</type>
     <trackHistory>true</trackHistory>
-    <description>Old Direct Report Commit forecasted opportunity  total amount for cloud-specific products</description>
+    <description>Old Direct Report Commit forecasted opportunity total amount for cloud-specific products</description>
     </fields>
     <fields>
         <fullName>PreviousDirectRepBestcaseAmount__c</fullName>
-        <label>Previous Bestcase Amount</label>
+        <label>Previous Best Case Amount</label>
     <precision>16</precision>
     <scale>2</scale>
     <type>Currency</type>
     <trackHistory>true</trackHistory>
-        <description>Old Direct Report Bestcase forecasted opportunity  total amount for cloud-specific products</description>
+        <description>Old Direct Report Best Case forecasted opportunity  total amount for cloud-specific products</description>
     </fields>
    <fields>
     <fullName>PeriodType__c</fullName>
@@ -155,7 +155,7 @@
         <language>en_US</language>
     </listViews>
 
-    
+
 </CustomObject>
 
 
