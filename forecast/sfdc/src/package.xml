@@ -13,7 +13,6 @@
         <members>SpecialistForecastSubmitBatch</members>
         <members>SFcastLineItem</members>
         <members>StoreScheduler</members>
-        <members>StoreScheduleWrapper</members>
         <name>ApexClass</name>
     </types>
     <types>

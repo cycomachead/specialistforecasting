@@ -47,7 +47,7 @@ global with sharing class SpecialistForecastSubmitBatch implements
      */
     global SpecialistForecastLineItem__c[]  start(
     Database.BatchableContext context) {
-        lineItemRecords =[SELECT id, SubmittedDate__C FROM
+        lineItemRecords = [SELECT id, SubmittedDate__C FROM
             SpecialistForecastLineItem__c WHERE SubmittedDate__c != null];
         return lineItemRecords;
     }
