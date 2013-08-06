@@ -106,7 +106,7 @@ public with sharing class MonthUtil {
      *  @param i is an integer.
      *  @return An American/English month name.
      */
-    public static String getMonthName(Integer i) {
+    public static String getMonth(Integer i) {
         if (i > 0) {
             i = (Math.mod(i, NUM) == 0 ? 12 : Math.mod(i, NUM));
             return ALL[i - 1];

@@ -89,17 +89,17 @@ public with sharing class SpecForecastMonthUtilTest {
         System.assertEquals(5, MonthUtil.getMonthNumber(MAY));
         System.assertEquals(10, MonthUtil.getMonthNumber(OCT));
         System.assertEquals(2, MonthUtil.getMonthNumber(FEB));
-        System.assertEquals(JAN, MonthUtil.getMonthName(1));
-        System.assertEquals(JUN, MonthUtil.getMonthName(6));
-        System.assertEquals(DEC, MonthUtil.getMonthName(12));
-        System.assertEquals(OCT, MonthUtil.getMonthName(10));
+        System.assertEquals(JAN, MonthUtil.getMonth(1));
+        System.assertEquals(JUN, MonthUtil.getMonth(6));
+        System.assertEquals(DEC, MonthUtil.getMonth(12));
+        System.assertEquals(OCT, MonthUtil.getMonth(10));
         System.assert(MonthUtil.getOrderedFiscalMonths().size() == 12);
         // Expect Error Results and weird cases.
         System.assertEquals(-1, MonthUtil.getMonthNumber('WOOT!'));
         System.assertEquals(-1, MonthUtil.getMonthNumber(':D'));
-        System.assertEquals(MAY, MonthUtil.getMonthName(1337));
-        System.assertEquals('', MonthUtil.getMonthName(0));
-        System.assertEquals('', MonthUtil.getMonthName(-1));
+        System.assertEquals(MAY, MonthUtil.(1337));
+        System.assertEquals('', MonthUtil.(0));
+        System.assertEquals('', MonthUtil.(-1));
     }
 
     /** Test the abbrev method, both positive and negative tests. */

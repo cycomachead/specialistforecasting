@@ -384,7 +384,7 @@ public with sharing class ForecastHelper {
             return extractFYAndMonthFromDate(System.today());
         }
 
-        return new String[] { MonthUtil.getAll()[inpDate.month() - 1],
+        return new String[] { MonthUtil.getMonth(inpDate.month()),
                               'FY' + MonthUtil.getFYFromDate(inpDate) };
     }
 
