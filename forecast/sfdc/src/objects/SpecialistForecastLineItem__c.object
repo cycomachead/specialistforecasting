@@ -247,7 +247,6 @@
         <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
-
     <fields>
         <fullName>SpecialistForecastOverride__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -376,6 +375,7 @@
             </values>
         </picklistValues>
     </recordTypes>
+
     <searchLayouts/>
 
 </CustomObject>

@@ -201,13 +201,12 @@ public with sharing class ForecastHelper {
             WHERE ExcludeFromCalculation__c = false
             AND FiscalYear__c = :fy AND Month__c IN :mons
             AND ForecastOwner__c IN :owners ORDER By ForecastOwner__c];
-        } catch (Exception ex) { // FIXME granular exception and error label
+        } catch (Exception ex) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
-            LI_ERROR + ex.getMessage()));
+                LI_ERROR + ex.getMessage()));
             return null;
         }
     }
-
 
     /**
      *  gets all the quota amount by Year, Month and owners results used by
@@ -224,11 +223,11 @@ public with sharing class ForecastHelper {
             SUM(QuotaAmount__c) amnt FROM SpecialistForecastQuota__c
             WHERE FiscalYear__c = :fy AND Month__c IN :mons
             AND SpecialistForecastuser__c IN :owners
-            GROUP BY  SpecialistForecastuser__c,FiscalYear__c
+            GROUP BY SpecialistForecastuser__c, FiscalYear__c
             ORDER BY SpecialistForecastuser__c];
-        } catch (Exception ex) { // FIXME granular exception and error label
+        } catch (Exception ex) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
-            QUOTA_ ERROR + ex.getMessage()));
+                QUOTA_ERROR + ex.getMessage()));
             return null;
         }
     }
@@ -247,7 +246,7 @@ public with sharing class ForecastHelper {
      /**
       *  This method is used to check access for the page exists for data sync
       *  @return TODO
-      */ // FIXME -- remove unecessary iteration?
+      */
      public static Boolean checkForecastDataSyncAccessForCurrentUser() {
 
          Map<String, Schema.SObjectField> mForecast =
@@ -298,6 +297,34 @@ public with sharing class ForecastHelper {
 
     /**************************************************************************/
     /**               FISCAL YEAR CALCUATION UTIL METHODS                    **/
+
+    /**
+     *  Given a DATE, a FQ, and FY, determine if the date is in FQ-FY.
+     *  @param date is string YYYY-MM-DD
+     *  @paran fq is a string Q#, or 'All'
+     *  @param fy is a string FY##
+     *  @return True IFF the date is in the selected quarter and year.
+     */
+    // NOTE: This is currently untested and unused.
+    public static Boolean dateInFQAndFY(String dates, String fq, String fy) {
+        Integer recordYr, recordMon, checkQtr, checkYr;
+        try {
+            recordYr  = Integer.valueOf(dates.substring(0,3));
+            recordMon = Integer.valueOf(dates.substring(5,6));
+            checkQtr  = fq != QTR_ALL ? Integer.valueOf(fq.substring(1)) : 0;
+            checkYr   = Integer.valueOf(fy.substring(2));
+        } catch (Exception ex) {
+            // ERROR
+            return null;
+        }
+
+        Boolean correctFY = MonthUtil.getFY(recordYr, recordMon) == checkYr;
+        if (fq == QTR_ALL) {
+            return correctFY;
+        } else {
+            return MonthUtil.getFiscalQtr(recordMon) == checkQtr && correctFY;
+        }
+    }
     /**
      * @return current fiscal quarter as a string, 'Q#', based on system time.
      */

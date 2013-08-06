@@ -67,7 +67,7 @@ public with sharing class SpecialistForecastException extends Exception {
         'Quotas. <br /> ';
     public static Final String LI_ERROR =
         'An error occurred while trying to access Specialist Forecast ' +
-        'line items. <br /> ' 
+        'line items. <br /> ';
 
     // Sentence Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';

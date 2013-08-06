@@ -255,10 +255,10 @@ public with sharing class MonthUtil {
 
     /**
      *  Given a (non-adjusted) month it will return the fiscal quarter it is in
-     *  @param MONTH is an integer in [1, 12] WHERE 1 represents Janurary
-     *  @return The fiscal quarter of the given month
+     *  @param MONTH is an integer in [1, 12] where 1 represents Janurary
+     *  @return The fiscal quarter of the given month, in [1, 4]
      */
-    public static Integer getFiscalQtrOfMon(Integer mon) {
+    public static Integer getFiscalQtr(Integer mon) {
         return getQtrOfMonth(getFiscalMonthNum(mon, FY_START));
     }
 
@@ -266,7 +266,7 @@ public with sharing class MonthUtil {
      * return current fiscal quarter as a string, 'Q#', based on system time.
      */
     public static Integer getCurrentFiscalQtr() {
-        return getFiscalQtrOfMon(System.today().month());
+        return getFiscalQtr(System.today().month());
     }
 
     /** Normalizes YEAR so that it returns an int in [0, 99] */

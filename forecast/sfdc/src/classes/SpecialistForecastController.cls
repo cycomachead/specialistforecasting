@@ -501,7 +501,7 @@ public with sharing class SpecialistForecastController {
             // addLineItem(); here instead?
 
             // Reset Values ... TODO
-            haslineItemstoDisplay        = false;
+            haslineItemstoDisplay          = false;
             subTotalclosedAmount           = 0;
             subTotalcommitAmount           = 0;
             subTotalbestCaseAmount         = 0;

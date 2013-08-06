@@ -194,6 +194,6 @@ public with sharing class SFcastLineItem {
         prevDirectRepBestcaseAmount = 0;
         quotaAmount                 = 0;
         pipelineAmount              = 0;
-        }``
+    }
 
 }
