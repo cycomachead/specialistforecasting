@@ -29,7 +29,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *  Basic Exception for Specialist Forecasting Unmanaged Package
  *  @author Michael Ball
- *  @since
  */
 
 public with sharing class SpecialistForecastException extends Exception {
@@ -60,6 +59,9 @@ public with sharing class SpecialistForecastException extends Exception {
         'The current user is missing a Role ID and cannot access forecasts.'
         + '<br /> Please add a User Role to the current user profile to use '
         + 'Specialist Forecasting.';
+    public static Final String NO_ACCESS =
+        'Your user doesn\'t have access to view Specialist Forecasts. <br />'
+        + 'Please check your user profile or contact an administrator.';
 
     // Sentence Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';

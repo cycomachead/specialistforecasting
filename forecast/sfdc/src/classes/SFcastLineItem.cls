@@ -73,67 +73,77 @@ public with sharing class SFcastLineItem {
     public String submittedDate                { get;set; }
 
 
-       // Basic Constructor, prevent null values.
-       public SFCastLineItem() {
-           reportingUser               = false;
-           forOverride                 = false;
-           myCommitOverridden          = false;
-           myBestCaseOverridden        = false;
-           mgrCommitOverridden         = false;
-           mgrBestCaseOverridden       = false;
-           isSubmitted                 = false;
-           isCommitOverridden          = false;
-           isBestcaseOverridden        = false;
-           searchUser                  = false; //FIXME
+    // Basic Constructor, prevent null values.
+    public SFCastLineItem() {
+        reportingUser               = false;
+        forOverride                 = false;
+        myCommitOverridden          = false;
+        myBestCaseOverridden        = false;
+        mgrCommitOverridden         = false;
+        mgrBestCaseOverridden       = false;
+        isSubmitted                 = false;
+        isCommitOverridden          = false;
+        isBestcaseOverridden        = false;
+        searchUser                  = false;
+        closedAmount                = 0;
+        commitAmount                = 0;
+        bestCaseAmount              = 0;
+        commitOverrideAmount        = 0;
+        bestCaseOverrideAmount      = 0;
+        mgrBestCaseOverrideAmount   = 0;
+        mgrCommitOverrideAmount     = 0;
+        prevDirectRepCommitAmount   = 0;
+        prevDirectRepBestcaseAmount = 0;
+        quotaAmount                 = 0;
+        pipelineAmount              = 0;
+        roleName                    = '';
+        userName                    = '';
+        roleId                      = '';
+        userId                      = '';
+        mgrCommitOverrideNotes      = '';
+        mgrbestcaseOverrideNotes    = '';
+        strLineItmId                = '';
+        submittedDate               = '';
+    }
 
-//            roleName                    = '';
-//            userName                    = '';
-//            roleId                      = '';
-//            userId                      = '';
-//            mgrCommitOverrideNotes      = '';
-//            mgrbestcaseOverrideNotes    = '';
-//            strLineItmId                = '';
-//            submittedDate               = '';
-       }
+    /** Returns string "UserName (RoleName)" if available. */
+    public String getUserRoleName() {
+        if (roleName != null && userName != null) {
+            return userName + ' (' + roleName  + ')';
+        }
+        return '';
+    }
 
+    // FIXME search user needs Init'd
+    public Boolean getCommitPreviousAmountMatch() {
+        return (searchUser != null  || !searchUser) &&
+            (prevDirectRepCommitAmount != null && (commitAmount != null
+            && prevDirectRepCommitAmount != commitAmount));
+    }
 
-       /** Returns string "UserName (RoleName)" if available. */
-       public String getUserRoleName() {
-            if (roleName != null && userName != null) {
-                return userName + ' (' + roleName  + ')';
-            }
-            return '';
-       }
+    /** TODO */
+    public String getPrevVFDirectRepCommitAmount() {
+        return ForecastHelper.formatAsDollar(prevDirectRepCommitAmount);
+    }
 
-       // FIXME search user needs Init'd
-       public Boolean getCommitPreviousAmountMatch() {
-            return (searchUser != null  || !searchUser) &&
-                (prevDirectRepCommitAmount != null && (commitAmount != null
-                    && prevDirectRepCommitAmount != commitAmount));
-       }
+    /** TODO */
+    public String getPrevVFDirectRepBestcaseAmount() {
+        return ForecastHelper.formatAsDollar(prevDirectRepBestcaseAmount);
+    }
 
-       /** TODO */
-       public String getPrevVFDirectRepCommitAmount() {
-           return ForecastHelper.formatAsDollar(prevDirectRepCommitAmount);
-      }
-
-      /** TODO */
-      public String getPrevVFDirectRepBestcaseAmount() {
-          return ForecastHelper.formatAsDollar(prevDirectRepBestcaseAmount);
-      }
-
-      // FIXME search user needs Init'd
-      public boolean getBestCasePreviousAmountMatch() {
-          return (searchUser != null || !searchUser) &&
-              prevDirectRepBestcaseAmount != null && bestCaseAmount != null
-                  && prevDirectRepBestCaseAmount != bestCaseAmount;
-      }
+    // FIXME search user needs Init'd
+    public boolean getBestCasePreviousAmountMatch() {
+        return (searchUser != null || !searchUser) &&
+            prevDirectRepBestcaseAmount != null && bestCaseAmount != null
+            && prevDirectRepBestCaseAmount != bestCaseAmount;
+    }
 
     /**
      *  Create  displayble virtual LineItem for the VF page
-     *  @param
-     *  @param
-     *  @param
+     *  @param TODO
+     *  @param TODO
+     *  @param TODO
+     *  @param TODO
      */
     public void createEmptyLineItem(Id inpUser, String selFQ,
     SpecialistForecastController.UserWrapper info, Decimal quotaAmt) {

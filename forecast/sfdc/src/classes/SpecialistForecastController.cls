@@ -45,6 +45,8 @@ public with sharing class SpecialistForecastController {
             SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
     private static final String USER_MISSING_ID =
             SpecialistForecastException.USER_MISSING_ID;
+    private static final String NO_ACCESS =
+            SpecialistForecastException.NO_ACCESS;
 
     // The max size of the recent users list, mostly to keep things manageable.
     private static final Integer MAX_BACK_SIZE = 16;
@@ -284,12 +286,11 @@ public with sharing class SpecialistForecastController {
         if (UserInfo.getUserRoleId() == null) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
                 USER_MISSING_ID));
-            return null; // kill the method to prevent later exceptions
+            return null;
         }
         if (!canView || !ForecastHelper.canAccessForecasts()) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-            'The current user doesn\'t have access to view Specialist'
-            + 'Forecasts')); // TODO - make label
+            NO_ACCESS));
             return null;
         }
 
@@ -374,11 +375,12 @@ public with sharing class SpecialistForecastController {
         // TODO
         Boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
-        for (Id lineItemOwnerId : mapSecondLevelUsersAndChild.keySet()) {
-            currLine = new SFcastLineItem(); //TODO
+        Set<Id> someSet = mapSecondLevelUsersAndChild.keySet(); //FIXME - name
+        for (Id lineItemOwnerId : someSet) {
             Boolean mgrCommitOverride   = false; // No manager overrides
             Boolean mgrBestCaseOverride = false;
-            // TODO -- what are we doing here?
+            // Iterate over a user's forcast data to create their totals.
+            // Calculate values, don't add to table yet.
             for (Id childLinesOwnerId : mapSecondLevelUsersAndChild.get(lineItemOwnerId)) {
                 // lineItem is TODO
                 lineItem = ownerlineItemsMap.get(childLinesOwnerId);
@@ -445,11 +447,12 @@ public with sharing class SpecialistForecastController {
                 commitOverrideAmount   = 0;
             } // end inner for loop
 
-            //if not search user then assign values
-            Boolean bool = mapUsers.containsKey(lineItemOwnerId);
+            // TODO
+            Boolean b1 = mapUsers.containsKey(lineItemOwnerId);
             // FIXME  - name, logic error in else if?
             Boolean b2 = lineItemOwnerId != sfLI.ForecastOwner__c;
-            if (haslineItemstoDisplay && bool && b2) {
+            //if not search user then assign values
+            if (haslineItemstoDisplay && b1 && b2) {
                 // TODO why use subTotalal?
                 currLine.reportingUser  = false;
                 currLine.forOverride    = (selectedFQ != QTR_ALL &&
@@ -490,12 +493,13 @@ public with sharing class SpecialistForecastController {
                 }
 
                 addLineItem();
-
-            } else if (!haslineItemstoDisplay && bool) {
+            } else if (!haslineItemstoDisplay && b1) {
                 currLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
                     mapUsers.get(lineItemOwnerId), quotaAmount);
                 addLineItem();
             } //end if
+            // addLineItem(); here instead?
+
             // Reset Values ... TODO
             haslineItemstoDisplay        = false;
             subTotalclosedAmount           = 0;
@@ -510,12 +514,6 @@ public with sharing class SpecialistForecastController {
         // Create last line, searchUser line item, use data if it exists.
         lineItem = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
         if (lineItem != null) {
-            currLine = new SFcastLineItem();
-            commitOverrideAmount    = (lineItem.commitOverrideAmount != null ?
-                lineItem.commitOverrideAmount : commitAmount); //FIXME
-            bestCaseOverrideAmount = (lineItem.bestCaseOverrideAmount != null
-                ? lineItem.bestCaseOverrideAmount : bestCaseAmount); //FIXME
-
             currLine.reportingUser = false;
             currLine.forOverride   = (sfLI.ForecastOwner__c == currUser
                                    && selectedFQ != QTR_ALL);
@@ -528,21 +526,17 @@ public with sharing class SpecialistForecastController {
             currLine.bestCaseAmount         = defaultValue(lineItem.bestCaseAmount);
             currLine.pipelineAmount         = defaultValue(lineItem.pipelineAmount);
             currLine.quotaAmount            = defaultValue(lineItem.quotaAmount);
-            currLine.bestCaseOverrideAmount = bestCaseOverrideAmount;
-            currLine.commitOverrideAmount   = commitOverrideAmount;
+            currLine.bestCaseOverrideAmount = defaultValue(lineItem.bestCaseOverrideAmount);
+            currLine.commitOverrideAmount   = defaultValue(lineItem.commitOverrideAmount);
             currLine.myCommitOverridden     = lineItem.myCommitOverridden;
             currLine.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
             currLine.strLineItmId           = lineItem.strLineItmId;
             currLine.searchUser             = true;
-
-            addLineItem();
-
         } else { // else WHAT? FIXME
-            currLine = new SFcastLineItem();
             currLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
                 mapUsers.get(sfLI.ForecastOwner__c), quotaAmount);
-            addLineItem();
         }
+        addLineItem(); // Add forecast owner's line to list.
 
         return lineItemList;
     }

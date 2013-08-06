@@ -3,13 +3,16 @@
 
 TODO: About the package
 ### Features
+This package is super awesome!
 ### Code Overview
-
+Look at all teh codez.
 #### Conventions
-
+__c.
 ### Customizations
 To make Specialist Forecasting work for your organization, you'll want to change a few things.
 
+#### Basic Configuration Settings
+Use custom Settings...
 #### Setting Up Report Scheduling
 The specialist Forecasting package allows admins to schedule report generation...
 BLAH BLAH code schedule from execute anon by `SOME CODE HERE`
