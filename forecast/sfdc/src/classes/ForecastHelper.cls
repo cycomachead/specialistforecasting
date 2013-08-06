@@ -69,6 +69,9 @@ public with sharing class ForecastHelper {
             SpecialistForecastException.CANT_FIND_USER;
     private static final String CRON_SCHED_ERR =
             SpecialistForecastException.CRON_SCHED_ERR;
+    private static final String LI_ERROR = SpecialistForecastException.LI_ERROR;
+    private static final String QUOTA_ERROR    =
+            SpecialistForecastException.QUOTA_ERROR;
 
     /** TODO */
     public static String rtName = null;
@@ -200,8 +203,7 @@ public with sharing class ForecastHelper {
             AND ForecastOwner__c IN :owners ORDER By ForecastOwner__c];
         } catch (Exception ex) { // FIXME granular exception and error label
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
-            'An error occurred while trying to access Specialist Forecast ' +
-            'line items. <br /> ' + ex.getMessage()));
+            LI_ERROR + ex.getMessage()));
             return null;
         }
     }
@@ -226,8 +228,7 @@ public with sharing class ForecastHelper {
             ORDER BY SpecialistForecastuser__c];
         } catch (Exception ex) { // FIXME granular exception and error label
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
-            'An error occurred while trying to access Specialist Forecast ' +
-            'quotas. <br /> ' + ex.getMessage()));
+            QUOTA_ ERROR + ex.getMessage()));
             return null;
         }
     }
