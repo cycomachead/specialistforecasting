@@ -322,7 +322,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                                     value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>
-                                <apex:commandLink styleClass="no" onClick="setBlur()"
+                                <apex:commandLink onClick="setBlur()"
                                     rendered="{!(forecast.searchUser && forecast.commitAmount > 0)}" action="{!showDrilDownPopup}" rerender="drldwnpopup">
                                     <apex:outputText value="${0, number,###,###,###,##0.00}">
                                         <apex:param value="{!forecast.commitAmount}"/>
