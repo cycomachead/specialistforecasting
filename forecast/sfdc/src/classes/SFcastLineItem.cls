@@ -84,7 +84,7 @@ public with sharing class SFcastLineItem {
         isSubmitted                 = false;
         isCommitOverridden          = false;
         isBestcaseOverridden        = false;
-        searchUser                  = false;
+        searchUser                  = true; // FIXME
         closedAmount                = 0;
         commitAmount                = 0;
         bestCaseAmount              = 0;
@@ -163,7 +163,7 @@ public with sharing class SFcastLineItem {
         reportingUser          = false;
         myCommitOverridden     = false;
         myBestCaseOverridden   = false;
-        searchUser             = false; //FIXME
+        searchUser             = true; //FIXME
     }
 
     // Increment the values used in the total line for the VF page.

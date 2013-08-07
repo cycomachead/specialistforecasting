@@ -43,7 +43,8 @@ public class SpecForecastBatchTest {
     */
     private static testMethod void testBatch() {
         Test.startTest();
-        Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), 20);
+        Integer count = [SELECT count() FROM SpecialistForecast__c];
+        Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), count);
         Test.stopTest();
         System.debug('specialistForecastBatchID = ' + batchProcessId);
 

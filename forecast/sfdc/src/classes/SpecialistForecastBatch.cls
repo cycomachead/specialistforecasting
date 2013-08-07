@@ -124,9 +124,9 @@ global with sharing class SpecialistForecastBatch implements
 
             item.ExtIdentifier__c = external_Key;
 
-            processedRecords.put(external_Key,item);
+            processedRecords.put(external_Key, item);
             //check if
-            if (previousKey != external_Key){
+            if (previousKey != external_Key) {
                 previousKey = external_Key;
                 allLineItems.add(item);
             }
@@ -166,10 +166,10 @@ global with sharing class SpecialistForecastBatch implements
      */
     private void updateSFLineItems() {
         SpecialistForecastLineItem__c[] spllist = [SELECT Id,
-                            OriginalPipelineAmount__c, OriginalClosedAmount__c,
-                            OriginalBestCaseAmount__c, OriginalCommitAmount__c
-                            FROM SpecialistForecastLineItem__c
-                            WHERE LastModifiedDate < :starttime];
+            OriginalPipelineAmount__c, OriginalClosedAmount__c,
+            OriginalBestCaseAmount__c, OriginalCommitAmount__c
+            FROM SpecialistForecastLineItem__c
+            WHERE LastModifiedDate < :starttime];
 
         for (SpecialistForecastLineItem__c item : spllist) {
               item.OriginalClosedAmount__c   = 0;
@@ -179,8 +179,6 @@ global with sharing class SpecialistForecastBatch implements
         }
          // TODO- store the update() in UpdateResult[] and log the error messages if any record failed update.
          Database.update(spllist,false);
-
-
 
     }
 }

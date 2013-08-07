@@ -33,6 +33,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 public with sharing class ForecastHelper {
 
+    /** Category Configuration Settings */
     public static final String CAT_STORE_BATCH_JOB = 'StoreBatchJob';
     public static final String CAT_SUPPORTED_DATA  = 'SupportedData';
     public static final String CAT_SUPPORTED_FY    = 'Supported Fiscal Years';
@@ -73,17 +74,15 @@ public with sharing class ForecastHelper {
     private static final String QUOTA_ERROR    =
             SpecialistForecastException.QUOTA_ERROR;
 
-    /** TODO */
-    public static String rtName = null;
-    /** TODO */
-    private static Map<String, String> batchJobs;
     /** List of all supported quarters. */
     private static final String[] ALL_FQ = new String[] {'Q1', 'Q2', 'Q3', 'Q4'};
     /** Runtime generated list of supported fiscal years. */
     private static String[] supportedFY;
+    // TODO, in the future this should be based on queries of forecast data,
+    // not config settings.s
 
     /**************************************************************************/
-
+    /** Returns configuration settings for batch jobs. */
     public static Map<String, String> getBatchJobs() {
         Set<String> batchJobNames =
             RetrieveForecastConfigurations.getForecastConfigurationNames(
@@ -91,15 +90,11 @@ public with sharing class ForecastHelper {
         if (batchJobNames == null || batchJobNames.size() == 0) {
             return null;
         }
-        batchJobs = new Map<String, String>();
+        Map<String, String> batchJobs = new Map<String, String>();
         for(String batchName : batchJobNames) {
             Map<String, String> strBatches =
                 RetrieveForecastConfigurations.getForecastConfigurationsByName(
                 batchName);
-            // if (strBatches == null || strBatches.size() == 0
-            // || strBatches.get(ACTIVE) != 'true') {
-            //     continue;
-            // }
             batchJobs.put(strBatches.get(NAME), strBatches.get(CONFIG_VAL));
         }
         return batchJobs;
@@ -139,16 +134,6 @@ public with sharing class ForecastHelper {
         return BATCH_RUN_DEF_DAY;
     }
 
-    /** TODO */
-    public static String getRecordTypeName(Id rtId) {
-        if (rtName == null) {
-            RecordType rt = [SELECT DeveloperName FROM RecordType
-                WHERE Id = :rtId limit 1];
-            rtName = rt.DeveloperName;
-        }
-        return rtName;
-    }
-
     /**
      *  @param userID is the user to search for
      *  @return A user with the input userID
@@ -165,7 +150,7 @@ public with sharing class ForecastHelper {
     }
 
     /**
-     * @return TODO
+     * @return a UserRole object (Name, ID) from a user.
      */
     public static UserRole getRoleByUserId(Id userId) {
         User aUser = getDetailsByUserId(userId);
@@ -245,7 +230,7 @@ public with sharing class ForecastHelper {
 
      /**
       *  This method is used to check access for the page exists for data sync
-      *  @return TODO
+      *  @return True IFF the user has access to the proper forecasts data
       */
      public static Boolean checkForecastDataSyncAccessForCurrentUser() {
 

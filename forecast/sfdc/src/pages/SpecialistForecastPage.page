@@ -300,7 +300,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                                     </apex:outputText>
                                     <apex:commandLink styleClass="no" onClick="setBlur();"
                                         action="{!showOverridePopup}" rendered="{!forecast.forOverride}" rerender="ovrpopup">
-                                        <img src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
+                                        <img class="no" src="/img/forecast_edit_off.gif" alt="Click to Override (New Window)" title="Click to Override (New Window)"/>
                                         <apex:param name="orgamt" value="{!forecast.commitOverrideAmount}" assignTo="{!originalAmount}"/>
                                         <apex:param name="orgOldamt" value="{!forecast.commitAmount}" assignTo="{!originaloldAmount}"/>
                                         <apex:param name="lineitem" value="{!forecast.strLineItmId}" assignTo="{!strRecordId}"/>
@@ -315,7 +315,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                                     value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.commitAmount}"/>
                                 </apex:outputText>
-                                <!-- FIXME -->
                                 <apex:outputText
                                     title=""
                                     rendered="{!(NOT(forecast.searchUser && forecast.commitAmount > 0) && NOT(forecast.MycommitOverridden && forecast.commitPreviousAmountMatch))}"
