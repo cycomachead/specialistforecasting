@@ -277,10 +277,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                                 </apex:outputpanel>
                             </td>
                             <td class="cell"><!-- Closed -->
-                                <apex:outputText rendered="{!NOT(forecast.searchUser && forecast.closedAmount > 0)}" value="${0, number,###,###,###,##0.00}">
+                                <apex:outputText rendered="{!NOT(forecast.closedAmount > 0)}" value="${0, number,###,###,###,##0.00}">
                                     <apex:param value="{!forecast.closedAmount}" />
                                 </apex:outputText>
-                                <apex:commandLink rendered="{!(forecast.searchUser && forecast.closedAmount > 0)}"
+                                <apex:commandLink rendered="{!(forecast.closedAmount > 0)}"
                                     action="{!showDrilDownPopup}" rerender="drldwnpopup"
                                     onClick="setBlur()">
                                     <apex:outputText value="${0, number,###,###,###,##0.00}">

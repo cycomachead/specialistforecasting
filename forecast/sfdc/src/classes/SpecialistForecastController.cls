@@ -470,15 +470,15 @@ public with sharing class SpecialistForecastController {
                 lineItem = ownerlineItemsMap.get(lineItemOwnerId);
                 // TODO
                 if (lineItem != null) {
-                    currLine.commitOverrideAmount        = (!lineItem.mgrCommitOverridden
-                        ? subTotalcommitAmount : subTotalcommitOverrideAmount);
-                    currLine.bestCaseOverrideAmount      = (!lineItem.mgrBestCaseOverridden
-                        ? subTotalbestCaseAmount : subTotalbestCaseOverrideAmount);
-                    currLine.myCommitOverridden          = (lineItem.mgrCommitOverridden);
-                    currLine.myBestCaseOverridden        = (lineItem.mgrBestCaseOverridden);
-                    currLine.strLineItmId                = ownerlineItemsMap.get(lineItemOwnerId).strLineItmId;
-                    currLine.isSubmitted                 = (defaultValue(lineItem.isSubmitted) ||
-                         defaultValue(currLine.isSubmitted));
+                    currLine.commitOverrideAmount        = !lineItem.mgrCommitOverridden
+                        ? subTotalcommitAmount : subTotalcommitOverrideAmount;
+                    currLine.bestCaseOverrideAmount      = !lineItem.mgrBestCaseOverridden
+                        ? subTotalbestCaseAmount : subTotalbestCaseOverrideAmount;
+                    currLine.myCommitOverridden          = lineItem.mgrCommitOverridden;
+                    currLine.myBestCaseOverridden        = lineItem.mgrBestCaseOverridden;
+                    currLine.strLineItmId                = lineItem.strLineItmId;
+                    currLine.isSubmitted                 = defaultValue(lineItem.isSubmitted) ||
+                         defaultValue(currLine.isSubmitted);
                     currLine.submittedDate               = lineItem.submittedDate;
                     currLine.mgrCommitOverrideNotes      = lineItem.mgrCommitOverrideNotes;
                     currLine.mgrBestCaseOverrideNotes    = lineItem.mgrBestCaseOverrideNotes;
@@ -531,7 +531,7 @@ public with sharing class SpecialistForecastController {
             currLine.myCommitOverridden     = lineItem.myCommitOverridden;
             currLine.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
             currLine.strLineItmId           = lineItem.strLineItmId;
-            currLine.searchUser             = true;
+            currLine.searchUser             = true; // FIXME
         } else { // else WHAT? FIXME
             currLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
                 mapUsers.get(sfLI.ForecastOwner__c), quotaAmount);
