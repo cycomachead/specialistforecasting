@@ -531,7 +531,6 @@ public with sharing class SpecialistForecastController {
             currLine.myCommitOverridden     = lineItem.myCommitOverridden;
             currLine.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
             currLine.strLineItmId           = lineItem.strLineItmId;
-            currLine.searchUser             = true; // FIXME
         } else { // else WHAT? FIXME
             currLine.createEmptyLineItem(sfLI.ForecastOwner__c, selectedFQ,
                 mapUsers.get(sfLI.ForecastOwner__c), quotaAmount);

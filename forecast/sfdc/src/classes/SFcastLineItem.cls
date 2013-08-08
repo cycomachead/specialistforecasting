@@ -48,8 +48,6 @@ public with sharing class SFcastLineItem {
     public Boolean mgrBestCaseOverridden       { get;set; }
     // TODO
     public Boolean reportingUser               { get;set; }
-    // The true if line item is the forecast of the user being viewed
-    public Boolean searchUser                  { get;set; }
 
     public Decimal closedAmount                { get;set; }
     public Decimal commitAmount                { get;set; }
@@ -84,7 +82,6 @@ public with sharing class SFcastLineItem {
         isSubmitted                 = false;
         isCommitOverridden          = false;
         isBestcaseOverridden        = false;
-        searchUser                  = true; // FIXME
         closedAmount                = 0;
         commitAmount                = 0;
         bestCaseAmount              = 0;
@@ -116,9 +113,8 @@ public with sharing class SFcastLineItem {
 
     // FIXME search user needs Init'd
     public Boolean getCommitPreviousAmountMatch() {
-        return (searchUser != null  || !searchUser) &&
-            (prevDirectRepCommitAmount != null && (commitAmount != null
-            && prevDirectRepCommitAmount != commitAmount));
+        return prevDirectRepCommitAmount != null && commitAmount != null
+            && prevDirectRepCommitAmount != commitAmount;
     }
 
     /** TODO */
@@ -133,8 +129,7 @@ public with sharing class SFcastLineItem {
 
     // FIXME search user needs Init'd
     public boolean getBestCasePreviousAmountMatch() {
-        return (searchUser != null || !searchUser) &&
-            prevDirectRepBestcaseAmount != null && bestCaseAmount != null
+        return prevDirectRepBestcaseAmount != null && bestCaseAmount != null
             && prevDirectRepBestCaseAmount != bestCaseAmount;
     }
 
@@ -163,7 +158,6 @@ public with sharing class SFcastLineItem {
         reportingUser          = false;
         myCommitOverridden     = false;
         myBestCaseOverridden   = false;
-        searchUser             = true; //FIXME
     }
 
     // Increment the values used in the total line for the VF page.

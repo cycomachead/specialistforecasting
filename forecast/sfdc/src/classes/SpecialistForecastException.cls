@@ -60,14 +60,14 @@ public with sharing class SpecialistForecastException extends Exception {
         + '<br /> Please add a User Role to the current user profile to use '
         + 'Specialist Forecasting.';
     public static Final String NO_ACCESS =
-        'Your user doesn\'t have access to view Specialist Forecasts. <br />'
-        + 'Please check your user profile or contact an administrator.';
+        'Your user account doesn\'t have access to view Specialist Forecasts.'
+        + '\nPlease check your user profile or contact an administrator.';
     public static Final String QUOTA_ERROR =
         'An error occurred while trying to access Specialist Forecast ' +
-        'Quotas. <br /> ';
+        'Quotas.';
     public static Final String LI_ERROR =
         'An error occurred while trying to access Specialist Forecast ' +
-        'line items. <br /> ';
+        'line items.';
 
     // Sentence Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';
