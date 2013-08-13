@@ -28,29 +28,33 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  * Trigger for SpecialistForecast__c
+ * This trigger validates that required data exists and calculates the Month
+ * and FY fields for each record based on the submitted close date.
  */
 trigger SpecialistForecastTrigger on SpecialistForecast__c bulk(before insert,
       before update) {
 
     if (Trigger.isBefore) {
         if (Trigger.isInsert || Trigger.isUpdate) {
-            String[] monthAndFiscalYear;
-            for (SpecialistForecast__c specForecast : Trigger.new) {
-                if (specForecast.OwnerId != specForecast.OwnerCopy__c) {
-                    specForecast.OwnerCopy__c = specForecast.OwnerId;
+            for (SpecialistForecast__c sf : Trigger.new) {
+                if (sf.ForecastCloseDate__c == null) {
+                    sf.addError('Please supply a date for the forecast.');
                 }
-                if (specForecast.ForecastCloseDate__c == null) {
-                    specForecast.addError('Please supply a date for the forecast.');
+                if (sf.ForecastStage__c == null) {
+                    sf.addError('Please supply a stage for the forecast.');
                 }
-                monthAndFiscalYear =
-                     ForecastHelper.extractFYAndMonthFromDate(specForecast.ForecastCloseDate__c);
-                specForecast.Month__c = monthAndFiscalYear[0];
-                specForecast.FiscalYear__c = monthAndFiscalYear[1];
-                if (specForecast.ForecastAmount__c == null ||
-                specForecast.ForecastAmount__c < 0) {
-                    specForecast.ForecastAmount__c = 0;
+                if (sf.ForecastCategory__c == null) {
+                    sf.addError('Please supply a category for the forecast.');
                 }
-                // @TODO consider ForecastStage__c and ForecastCategory__c validation that are done through dependent picklist in UI now
+                if (sf.OwnerId != sf.OwnerCopy__c) {
+                    sf.OwnerCopy__c = sf.OwnerId;
+                }
+                sf.Month__c = MonthUtil.getMonth(sf.ForecastCloseDate__c.month());
+                sf.FiscalYear__c = 'FY' +
+                    MonthUtil.getFYFromDate(sf.ForecastCloseDate__c);
+                if (sf.ForecastAmount__c == null || sf.ForecastAmount__c < 0) {
+                    sf.ForecastAmount__c = 0;
+                }
             }
         }
     }

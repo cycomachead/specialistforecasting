@@ -391,14 +391,14 @@
         </formula>
         <type>Text</type>
     </fields>
-    <fields>
+    <!-- <fields>
         <fullName>FiscalQuarter__c</fullName>
         <label>Fiscal Quarter</label>
         <formula>
             CASE(Month(ForecastCloseDate__c),12,Text(FiscalYear__c) &amp;' Q4' , 11,Text(FiscalYear__c) &amp;' Q4' , 1,Text(FiscalYear__c)  &amp;' Q4' ,10,Text(FiscalYear__c) &amp;' Q3' , 9,Text(FiscalYear__c) &amp;' Q3', 8,Text(FiscalYear__c) &amp; ' Q3' ,7,Text(FiscalYear__c) &amp; ' Q2' , 6,Text(FiscalYear__c) &amp;' Q2' , 5,Text(FiscalYear__c) &amp;' Q2' , 4,Text(FiscalYear__c) &amp;' Q1' , 3,Text(FiscalYear__c) &amp;' Q1' , 2,Text(FiscalYear__c) &amp;' Q1' , '')
         </formula>
         <type>Text</type>
-    </fields>
+    </fields> -->
 
     <listViews>
         <fullName>All</fullName>

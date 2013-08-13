@@ -34,11 +34,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 public with sharing class SFcastLineItem {
     /** Total constant for the last line in the VF table. */
     private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
-    /** "All" const picklist value, controls override options. */
-    private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
 
-    // TODO
-    public Boolean forOverride                 { get;set; }
     public Boolean isSubmitted                 { get;set; }
     public Boolean isCommitOverridden          { get;set; }
     public Boolean isBestcaseOverridden        { get;set; }
@@ -46,8 +42,6 @@ public with sharing class SFcastLineItem {
     public Boolean myBestCaseOverridden        { get;set; }
     public Boolean mgrCommitOverridden         { get;set; }
     public Boolean mgrBestCaseOverridden       { get;set; }
-    // TODO
-    public Boolean reportingUser               { get;set; }
 
     public Decimal closedAmount                { get;set; }
     public Decimal commitAmount                { get;set; }
@@ -70,11 +64,8 @@ public with sharing class SFcastLineItem {
     public String strLineItmId                 { get;set; }
     public String submittedDate                { get;set; }
 
-
     // Basic Constructor, prevent null values.
     public SFCastLineItem() {
-        reportingUser               = false;
-        forOverride                 = false;
         myCommitOverridden          = false;
         myBestCaseOverridden        = false;
         mgrCommitOverridden         = false;
@@ -111,12 +102,6 @@ public with sharing class SFcastLineItem {
         return '';
     }
 
-    // FIXME search user needs Init'd
-    public Boolean getCommitPreviousAmountMatch() {
-        return prevDirectRepCommitAmount != null && commitAmount != null
-            && prevDirectRepCommitAmount != commitAmount;
-    }
-
     /** TODO */
     public String getPrevVFDirectRepCommitAmount() {
         return ForecastHelper.formatAsDollar(prevDirectRepCommitAmount);
@@ -127,7 +112,13 @@ public with sharing class SFcastLineItem {
         return ForecastHelper.formatAsDollar(prevDirectRepBestcaseAmount);
     }
 
-    // FIXME search user needs Init'd
+    /** TODO */
+    public Boolean getCommitPreviousAmountMatch() {
+        return prevDirectRepCommitAmount != null && commitAmount != null
+            && prevDirectRepCommitAmount != commitAmount;
+    }
+
+    /** TODO */
     public boolean getBestCasePreviousAmountMatch() {
         return prevDirectRepBestcaseAmount != null && bestCaseAmount != null
             && prevDirectRepBestCaseAmount != bestCaseAmount;
@@ -137,13 +128,9 @@ public with sharing class SFcastLineItem {
      *  Create  displayble virtual LineItem for the VF page
      *  @param TODO
      *  @param TODO
-     *  @param TODO
-     *  @param TODO
      */
-    public void createEmptyLineItem(Id inpUser, String selFQ,
-    SpecialistForecastController.UserWrapper info, Decimal quotaAmt) {
-        forOverride            = (inpUser != UserInfo.getUserId() &&
-                                   selFQ  != QTR_ALL); // FIXME
+    public void createEmptyLineItem(String selFQ, Decimal quotaAmt,
+    SpecialistForecastController.UserWrapper info) {
         userName               = info.userName;
         roleName               = info.roleName;
         userId                 = info.userID;
@@ -155,15 +142,14 @@ public with sharing class SFcastLineItem {
         bestCaseOverrideAmount = 0;
         bestCaseAmount         = 0;
         pipelineAmount         = 0;
-        reportingUser          = false;
         myCommitOverridden     = false;
         myBestCaseOverridden   = false;
     }
 
     // Increment the values used in the total line for the VF page.
-    public void increment(Decimal commitAmt, Decimal closedAmt,
-    Decimal bestCaseAmt, Decimal pipelineAmt, Decimal quotaAmt,
-    Decimal bestCaseOverrideAmt, Decimal commitOverrideAmt) {
+    public void increment(Decimal closedAmt, Decimal commitOverrideAmt,
+    Decimal commitAmt, Decimal bestCaseOverrideAmt, Decimal bestCaseAmt,
+    Decimal pipelineAmt, Decimal quotaAmt) {
         commitAmount           += commitAmt;
         closedAmount           += closedAmt;
         bestCaseAmount         += bestCaseAmt;
@@ -175,7 +161,6 @@ public with sharing class SFcastLineItem {
 
     /** Set the basic properties of an instant to be like the "Total" line. */
     public void makeTotalLine() {
-        reportingUser               = false;
         userName                    = GRAND_TOTAL;
         closedAmount                = 0;
         commitAmount                = 0;

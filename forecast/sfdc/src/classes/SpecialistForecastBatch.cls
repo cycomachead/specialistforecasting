@@ -35,6 +35,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 global with sharing class SpecialistForecastBatch implements
     Database.Batchable<AggregateResult> {
 
+        // TODO Use generic labels.
+
     private static final String DONT_SEND_EMAIL = ForecastHelper.DONT_SEND_EMAIL;
 
     global Map<String, AggregateResult[]> input {get; set;}

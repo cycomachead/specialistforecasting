@@ -46,7 +46,7 @@
         <members>SpecialistForecast__c.Account__c</members>
         <members>SpecialistForecast__c.Opportunity__c</members>
         <members>SpecialistForecast__c.ForecastCloseDate__c</members>
-        <members>SpecialistForecast__c.FiscalQuarter__c</members>
+        <!-- <members>SpecialistForecast__c.FiscalQuarter__c</members> -->
         <members>SpecialistForecast__c.FiscalYear__c</members>
         <members>SpecialistForecast__c.ForecastType__c</members>
         <members>SpecialistForecast__c.Month__c</members>
@@ -105,7 +105,6 @@
         <members>SpecialistForecastLineItem__c</members>
         <members>SpecialistForecastQuota__c</members>
         <members>SpecialistForecastTab</members>
-        <members>StoreBatchAdminTab</members>
         <members>ForecastHierarchyConfigurations__c</members>
         <name>CustomTab</name>
     </types>

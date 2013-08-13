@@ -6,11 +6,18 @@ TODO: About the package
 This package is super awesome!
 ### Code Overview
 Look at all teh codez.
-#### Conventions
-__c.
+
 ### Customizations
 To make Specialist Forecasting work for your organization, you'll want to change a few things.
-
+#### Salesforce Roles and Profiles
+Edit Profiles to add access to tabs and objects:
+FHC
+SFR
+SF
+SFLI
+SFB
+SFQ
+SFO (No Tab)
 #### Basic Configuration Settings
 Use custom Settings...
 #### Setting Up Report Scheduling

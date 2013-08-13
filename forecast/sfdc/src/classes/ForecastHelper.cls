@@ -27,9 +27,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Helper Class used for Forecast related functionalities
- *
- * @author Michael Ball
+ *  Helper Class used for Forecast related functionalities
+ *  TODO -- more needed
+ *  @author Michael Ball
  */
 public with sharing class ForecastHelper {
 
@@ -78,8 +78,7 @@ public with sharing class ForecastHelper {
     private static final String[] ALL_FQ = new String[] {'Q1', 'Q2', 'Q3', 'Q4'};
     /** Runtime generated list of supported fiscal years. */
     private static String[] supportedFY;
-    // TODO, in the future this should be based on queries of forecast data,
-    // not config settings.s
+    // For future, this should be created dynamically, not from config settingd
 
     /**************************************************************************/
     /** Returns configuration settings for batch jobs. */
@@ -113,7 +112,7 @@ public with sharing class ForecastHelper {
         }
         throw new SpecialistForecastException(CRON_SCHED_ERR);
     }
-
+    /** TODO */
     public static String getCronEmail() {
         Map<String, String> email =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
@@ -123,7 +122,7 @@ public with sharing class ForecastHelper {
         }
         return DONT_SEND_EMAIL;
     }
-
+    /** TODO */
     public static String getCronRunDay() {
         Map<String, String> runday =
             RetrieveForecastConfigurations.getForecastConfigurationsByName(
@@ -141,8 +140,8 @@ public with sharing class ForecastHelper {
      */
     public static User getDetailsByUserId(Id userId) {
         try {
-            User aUser = ([SELECT Id, Name, UserName, Email, UserType, UserRoleId,
-                IsActive, Alias FROM User WHERE Id = :userId]);
+            User aUser = [SELECT Id, Name, UserName, Email, UserType, UserRoleId,
+                IsActive, Alias, FirstName, UserRole.Name FROM User WHERE Id = :userId];
             return aUser;
         } catch (Exception ex) {
             throw new SpecialistForecastException(CANT_FIND_USER + userID + '.');
@@ -154,9 +153,14 @@ public with sharing class ForecastHelper {
      */
     public static UserRole getRoleByUserId(Id userId) {
         User aUser = getDetailsByUserId(userId);
-        UserRole aRole = [SELECT id, name FROM UserRole
-            WHERE id = :aUser.UserRoleId];
-        return aRole;
+        try {
+            UserRole aRole = new UserRole();
+            aRole.Id       = aUser.UserRoleId;
+            aRole.Name     = aUser.UserRole.Name;
+            return aRole;
+        } catch (Exception ex) { // TODO use better error msg
+            throw new SpecialistForecastException('No Role Found ' + userID + '.');
+        }
     }
 
     /**
@@ -243,6 +247,7 @@ public with sharing class ForecastHelper {
          String[] accessFields = new String [] {'checkAccessToSyncJob__c'};
          // Check if the user has Read access for the field
          for (String fieldToCheck : accessFields) {
+             System.debug('\n\n ### MAP ACCESS:\t ' + mForecast.get(fieldToCheck).getDescribe().isAccessible());
              if (mForecast.get(fieldToCheck) == null ||
              !mForecast.get(fieldToCheck).getDescribe().isAccessible()) {
                  return false;
@@ -392,9 +397,9 @@ public with sharing class ForecastHelper {
      *  @param inpDate is an Apex date object
      *  @return A String[] of { 'MONTH', 'FYX##' }
      */
-    public static String[] extractFYAndMonthFromDate(Date inpDate) {
+    public static String[] extractFYAndMonth(Date inpDate) {
         if (inpDate == null) {
-            return extractFYAndMonthFromDate(System.today());
+            return extractFYAndMonth(System.today());
         }
 
         return new String[] { MonthUtil.getMonth(inpDate.month()),

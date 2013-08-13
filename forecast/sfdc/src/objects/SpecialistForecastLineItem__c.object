@@ -70,15 +70,7 @@
         <label>Month</label>
         <picklist>
             <picklistValues>
-                <fullName>April</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>August</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>December</fullName>
+                <fullName>January</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -86,19 +78,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>January</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>July</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>June</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>March</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>April</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -106,7 +90,19 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>November</fullName>
+                <fullName>June</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>July</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>August</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>September</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -114,7 +110,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>September</fullName>
+                <fullName>November</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>December</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>true</sorted>

@@ -27,7 +27,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- *  A class for dealing with the months of the year and retaions to fiscal years.
+ *  A class for dealing with the months of the year and relations to fiscal years.
+ *  This class keeps track of the Fiscal Year settings in the Org Company object
+ *  and makes working with adjusted dates much easier, especially for a project
+ *  like forcasting.
  *  @author Michael Ball
  */
 
@@ -47,7 +50,8 @@ public with sharing class MonthUtil {
     /** List of the months of year with FY_START as first month. */
     private static String[] ORDERED_MONTHS;
 
-    /** Inner class so that org queries pass even if a user does not have read
+    /**
+     *  Inner class so that org queries pass even if a user does not have read
      *  access to the org data. "without sharing" is required if the user
      *  doesn't have permission to view org settings, but the class is setup to
      *  keep access restricted from changing org settings.
@@ -65,8 +69,11 @@ public with sharing class MonthUtil {
         public Boolean getFYIsStart() { return FY_IS_START; }
     }
 
-    /** Work-around since inner classes cannot be static and static variables
-     *  must be declared at the begging of a class.  */
+    /**
+     *  Work-around since inner classes cannot be static and static variables
+     *  must be declared at the begging of a class.
+     *  Static -- TODO
+     */
     private static OrgData setup = new OrgData();
     static { resetFromOrg(); }
 
@@ -98,7 +105,6 @@ public with sharing class MonthUtil {
         FY_IS_START_MON = isStart;
         ORDERED_MONTHS = rotatedFrom(FY_START);
     }
-
     /**************************************************************************/
     /*                          BASE MONTH UTILITIES                          */
     /**
@@ -240,14 +246,14 @@ public with sharing class MonthUtil {
     }
 
     /**
-     * return The current fiscal year as a two-digit integer.
+     *  @return The current fiscal year as a two-digit integer.
      */
     public static Integer getCurrentFY() {
         return getFYFromDate(System.today());
     }
 
     /**
-     * return The fiscal year from the INPDATE provided.
+     *  @return The fiscal year from the INPDATE provided.
      */
     public static Integer getFYFromDate(Date inpDate) {
         return getFY(inpDate.year(), inpDate.month());
@@ -263,7 +269,7 @@ public with sharing class MonthUtil {
     }
 
     /**
-     * return current fiscal quarter as a string, 'Q#', based on system time.
+     *  @return current fiscal quarter as a string, 'Q#', based on system time.
      */
     public static Integer getCurrentFiscalQtr() {
         return getFiscalQtr(System.today().month());
@@ -271,14 +277,16 @@ public with sharing class MonthUtil {
 
     /** Normalizes YEAR so that it returns an int in [0, 99] */
     public static Integer normalizeYr(Integer year) {
-        if (year < 0) { //make it so mod is always pos > 0 wraps around
+        if (year < 0) { //make it so mod wraps around, always > 0
             return 100 + Math.mod(year, 100); // + since year%100 is < 0.
         } else {
             return Math.mod(year, 100);
         }
     }
 
-    /** Normalizes YEAR so that it returns a String in ['00', '99'] */
+    /**
+     *  Normalizes YEAR so that it returns a String in ['00', '99'].
+     */
     public static String normalizeYrToStr(Integer year) {
         year = normalizeYr(year);
         return (year < 10 ? '0' : '') + year;

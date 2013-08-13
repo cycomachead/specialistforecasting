@@ -56,12 +56,12 @@ public with sharing class SpecialistForecastException extends Exception {
     public static Final String PARENT_ID_NULL =
         'A required Parent User ID could be found';
     public static Final String USER_MISSING_ID =
-        'The current user is missing a Role ID and cannot access forecasts.'
-        + '<br /> Please add a User Role to the current user profile to use '
+        'The current user is missing a Role ID and cannot access forecasts. '
+        + 'Please add a User Role to the current user profile to use '
         + 'Specialist Forecasting.';
     public static Final String NO_ACCESS =
         'Your user account doesn\'t have access to view Specialist Forecasts.'
-        + '\nPlease check your user profile or contact an administrator.';
+        + ' Please check your user profile or contact an administrator.';
     public static Final String QUOTA_ERROR =
         'An error occurred while trying to access Specialist Forecast ' +
         'Quotas.';
@@ -76,5 +76,6 @@ public with sharing class SpecialistForecastException extends Exception {
     public static final String CANT_FIND_USER =
         'Unable able for find a user for UserID: ';
     public static final String FOR_ID = ' for ID: ';
+    public static final String UNEXPECTED = 'Unexpected Report Error: ';
 
 }
