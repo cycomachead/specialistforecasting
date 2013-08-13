@@ -1011,7 +1011,7 @@ public with sharing class SpecialistForecastController {
                     + ' ' + categoryTitle + '.');
             }
         } catch (Exception ex) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.serverity.Error,
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.Error,
                 UNEXPECTED + ex.getMessage()));
 
         }
