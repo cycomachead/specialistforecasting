@@ -1,8 +1,12 @@
 .DS_Store
-tools/*
-tools/build
-tools/ant
-tools/automation
 pull/*
 pull.xml
-forecast/data/*
+test/forecast/
+test/forecast/*
+tools/ant
+tools/automation
+tools/build/build.properties
+tools/Darwin
+tools/java
+tools/template
+tools/wsdl
