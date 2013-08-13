@@ -46,7 +46,6 @@
         <members>SpecialistForecast__c.Account__c</members>
         <members>SpecialistForecast__c.Opportunity__c</members>
         <members>SpecialistForecast__c.ForecastCloseDate__c</members>
-        <!-- <members>SpecialistForecast__c.FiscalQuarter__c</members> -->
         <members>SpecialistForecast__c.FiscalYear__c</members>
         <members>SpecialistForecast__c.ForecastType__c</members>
         <members>SpecialistForecast__c.Month__c</members>
@@ -109,7 +108,6 @@
         <name>CustomTab</name>
     </types>
     <types>
-        <!-- <members>Opportunity-Opportunity Layout</members> -->
         <members>SpecialistForecast__c-Specialist Forecast Layout</members>
         <members>SpecialistForecastLineItem__c-Specialist Forecast Line Item Layout</members>
         <members>SpecialistForecastQuota__c-Specialist Forecast Quota Layout</members>
@@ -125,11 +123,9 @@
     <types>
         <members>SpecialistForecastSubmitIcon</members>
         <members>SpecialistForecastCSS</members>
-        <members>icon</members>
-        <members>icon_xsmall</members>
         <name>StaticResource</name>
     </types>
-    <version>26.0</version>
+    <version>28.0</version>
 </Package>
 
 

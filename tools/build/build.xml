@@ -17,12 +17,9 @@
 
     <property name="tools.dir" value="${tools.home}"/>
 
-    <property name="testForecast.home" value="${tests.home}/forecast"/>
-
     <property name="testForecast.cls.dir" value="${testForecast.home}/src/classes/"/>
     <property name="testForecast.trg.dir" value="${testForecast.home}/src/triggers/"/>
 
-    <property name="dealmaker.home" value="${managedapps.home}/dealmaker"/>
 
     <!-- custom task definitions -->
     <path id="loader.classpath">
@@ -39,7 +36,7 @@
     <echo />
 
     <echo message="forecastHome: ${forecast.home}"/>
-    <echo message="testForecast.home: ${testForecast.home}"/>
+    <echo message="test.home: ${tests.home}"/>
     <echo />
 
     <taskdef name="deploy" classname="com.salesforce.ant.DeployTask" classpath="${tools.home}/java/ext/ant-salesforce.jar"/>
@@ -47,25 +44,25 @@
         <format property="tempDateTimePattern" pattern="MM_dd_yyyy_hh_mm_aa"/>
     </tstamp>
 
-    <property name="forecastSFDC.dir" value="${forecast.home}/src"/>
+    <property name="forecasts.dir" value="${forecast.home}/src"/>
 
-    <target name="deployForecastSFDC" description="Puts the components from forecast sfdc source dir.">
-        <echo message="username: ${sfdc.login}"/>
-        <echo message="Deploying 62 Org Code from: ${forecastSFDC.dir}"/>
-        <deploy username="${sfdc.login}"
-                password="${sfdc.password}"
+    <target name="deployForecast" description="Deploy Specialist Forecasting.">
+        <echo message="username: ${org.login}"/>
+        <echo message="Deploying Code from: ${forecasts.dir}"/>
+        <deploy username="${org.login}"
+                password="${org.password}"
                 serverurl="${env.endpoint}"
-                deployroot="${forecastSFDC.dir}"
+                deployroot="${forecasts.dir}"
                 maxPoll="1000" pollWaitMillis="100000">
         </deploy>
     </target>
 
-    <property name="testForecast.dir" value="${testForecast.home}/src"/>
-    <target name="deployTestForecast" description="Puts the components from test/forecast source dir.">
-        <echo message="username: ${sfdc.login}"/>
-        <echo message="Deploying 62 Org Code from: ${testForecast.dir}"/>
-        <deploy username="${sfdc.login}"
-                password="${sfdc.password}"
+    <property name="testForecast.dir" value="${tests.home}/src"/>
+    <target name="deployTestForecast" description="Puts the components from test/src dir.">
+        <echo message="username: ${org.login}"/>
+        <echo message="Deploying Code from: ${testForecast.dir}"/>
+        <deploy username="${org.login}"
+                password="${org.password}"
                 serverurl="${env.endpoint}"
                 deployroot="${testForecast.dir}"
                 maxPoll="1000" pollWaitMillis="100000">
@@ -138,26 +135,26 @@
     </target>
 
     <target name="loadForecastClasses" depends="compileApexLoader" description="Loads Specialist Forecasting Apex Classes into org">
-        <apexLoader user="${sfdc.login}" password="${sfdc.password}"
+        <apexLoader user="${org.login}" password="${org.password}"
                     directory="${forecastsfdc.cls.dir}" server="${env.endpoint}"
                     manifestdir="${forecast.home}/sfdc" manifest="manifestClasses.txt"/>
     </target>
 
     <target name="loadForecastTriggers" depends="compileApexLoader" description="Loads Specialist Forecasting Apex Triggers into org">
-        <apexLoader user="${sfdc.login}" password="${sfdc.password}"
+        <apexLoader user="${org.login}" password="${org.password}"
                     directory="${forecastsfdc.trg.dir}" server="${env.endpoint}"
                     manifestdir="${forecast.home}/src" manifest="manifestTriggers.txt"/>
     </target>
 
     <target name="loadForecastPages" depends="compileScontrolLoader" description="Loads Specialist Forecasting Apex Pages into org">
-        <scontrolLoader user="${sfdc.login}" password="${sfdc.password}"
+        <scontrolLoader user="${org.login}" password="${org.password}"
                         directory="${forecastsfdc.pages.dir}" server="${env.endpoint}"
                         manifestdir="${forecast.home}/src" manifest="manifestPages.txt"/>
     </target>
 
     <target name="runClassTestWithoutCodeCov">
         <echo message="Running ftest for ${class.name}"/>
-        <apexRunTests user="${sfdc.login}" password="${sfdc.password}" xmlResults="${manifestdir}/results/result-${class.name}.xml"
+        <apexRunTests user="${org.login}" password="${org.password}" xmlResults="${manifestdir}/results/result-${class.name}.xml"
             server="${env.endpoint}" extraArgs="-nc -k ${class.name}" />
     </target>
 
@@ -213,29 +210,29 @@
 
     <target name="insertSpecialistForecastData" depends="getOrgPassword" description="Inserts Specialist Forecast data">
         <antcall target="insertSpecialistForecast">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
-    <target name="insertSpecialistForecastLineItemIntoSfdc" depends="getOrgPassword" description="Inserts Specialist Forecast Line Item data">
+    <target name="insertSpecialistForecastLineItemIntoOrg" depends="getOrgPassword" description="Inserts Specialist Forecast Line Item data">
         <antcall target="insertSpecialistForecastLineItem">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
-    <target name="insertForecastConfigurationsIntoSfdc" depends="getOrgPassword" description="Inserts Specialist Forecast Report custom settings data">
+    <target name="insertForecastConfigurationsIntoOrg" depends="getOrgPassword" description="Inserts Specialist Forecast Report custom settings data">
         <antcall target="insertForecastConfigurations">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
-    <target name="insertForecastHierarchyConfigurationsIntoSfdc" depends="getOrgPassword" description="Inserts specialist forecast hierarchy Role-User Mapping data">
+    <target name="insertForecastHierarchyConfigurationsIntoOrg" depends="getOrgPassword" description="Inserts specialist forecast hierarchy Role-User Mapping data">
         <antcall target="insertForecastHierarchyConfigurations">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
@@ -261,29 +258,29 @@
 
     <target name="deleteAllDataFromSpecialistForecasts" depends="getOrgPassword" description="Deletes Specialist Forecast data">
         <antcall target="deleteAllSpecialistForecast">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
     <target name="deleteAllDataFromSpecialistForecastLineItem" depends="getOrgPassword" description="Deletes Specialist Forecast Line Item data">
         <antcall target="deleteAllSpecialistForecastLineItem">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
     <target name="deleteAllDataFromForecastConfigurations" depends="getOrgPassword" description="Deletes Forecast Configurations custom settings data">
         <antcall target="deleteAllForecastConfigurations">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
     <target name="deleteAllDataFromForecastHierarchyConfigurations" depends="getOrgPassword" description="Deletes Forecast Hierarchy Configurations">
         <antcall target="deleteAllForecastHierarchyConfigurations">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
@@ -302,17 +299,24 @@
 
     <target name="extractForecastConfigurationsFromOrg" depends="getOrgPassword" description="Extracts Forecast Configuration custom settings data">
         <antcall target="extractForecastConfigurations">
-            <param name="current.username" value="${sfdc.login}"/>
-            <param name="current.encPwd" value="${sfdc.password.enc}"/>
+            <param name="current.username" value="${org.login}"/>
+            <param name="current.encPwd" value="${org.password.enc}"/>
         </antcall>
     </target>
 
-    <target name="getOrgPassword" unless="sfdc.password.enc">
-        <baseEncryptPassword outputProperty="sfdc.password.enc">
+    <target name="getOrgPassword" unless="org.password.enc">
+        <baseEncryptPassword outputProperty="org.password.enc">
             <arg value="-e"/>
-            <arg value="${sfdc.password}"/>
+            <arg value="${org.password}"/>
         </baseEncryptPassword>
     </target>
 
-
+    <target name="help">
+        <echo message="Specialist Forecasting Deploy Help"/>
+        <echo />
+        <echo message="Please inspect build.xml for a list of all targets."/>
+        <echo message="To deploy the entire package use: ant deployForecast"/>
+        <echo message="To deploy test files use:         ant deployTestForecast"/>
+        <echo />
+    </target>
 </project>

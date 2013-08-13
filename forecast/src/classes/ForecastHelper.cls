@@ -45,7 +45,7 @@ public with sharing class ForecastHelper {
     public static final String ACTIVE     = 'IsActive';
     public static final String COMMENT    = 'Comment';
 
-    /** Column Headings and related uses. */
+    /** Standard Forecast Categories. */
     public static final String BEST_CASE   = 'Best Case';
     public static final String CLOSED      = 'Closed';
     public static final String CLOSED_WON  = 'Closed Won';

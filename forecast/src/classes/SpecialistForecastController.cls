@@ -27,8 +27,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- *  TODO -- main class description
- *
+ *  This is the controller and does the bulk of the work for the Specialist
+ *  Forecasting unmanaged package.
+ *  @author mball
  */
 public with sharing class SpecialistForecastController {
 
@@ -36,7 +37,7 @@ public with sharing class SpecialistForecastController {
     private static final String CLOSED      = ForecastHelper.CLOSED;
     private static final String CLOSED_WON  = ForecastHelper.CLOSED_WON;
     private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
-    private static final String BEST_CASE  = 'Best Case';
+    private static final String BEST_CASE   = ForecastHelper.BEST_CASE;
     private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
     private static final String FOR_ID      =
             SpecialistForecastException.FOR_ID;
@@ -52,6 +53,9 @@ public with sharing class SpecialistForecastController {
             SpecialistForecastException.UNEXPECTED;
     private static final String NO_PERMS = 'You do not have permission to view reports for this user.';
     private static final String REFRESH_SUCCESS = 'Data refresh request submitted successfully.';
+    private static final String OVER_ERROR = 'Failed to update the Forecast Override ';
+    private static final String OVERRIDE_SUCCESS = 'Override Amount updated successfully';
+    private static final String REP_SUCCESS = 'Report Submitted successfully';
 
     // The max size of the recent users list, mostly to keep things manageable.
     private static final Integer MAX_BACK_SIZE = 16;
@@ -59,7 +63,13 @@ public with sharing class SpecialistForecastController {
     private Boolean canView = true;
     // TODO
     private Map<Id,Set<Id>> mapSecondLevelUsersAndChild = new Map<Id,Set<Id>>();
-    // Keeps track of User and Role details for forecast records
+    /**
+     *  This keeps track of basic user properities used for generating the
+     *  VisualForce table. It's designed to reduce the need to query the DB
+     *  and this should always be checked first before trying a new query.
+     *  Use the getUserInfo(Id) method to access data instead of calling .get()
+     *  directly, to keep code stable and performant.
+     */
     private Map<Id,UserWrapper> mapUsers = new Map<Id,UserWrapper>();
 
     // UI lists for moving around and viewing forecasts data
@@ -68,9 +78,9 @@ public with sharing class SpecialistForecastController {
     private SelectOption[] fiscalQuarters;
     // Holds the UID of the user selected from the recents picklist
     public String selectedBackUser      { get;set; }
-    //
+    // Set from the fiscal year dropdown picklist
     public String selectedFY            { get;set; }
-    //
+    // set from the fiscal quarter dropdown picklist
     public String selectedFQ            { get;set; }
     // User Name for page section heading on the VF page
     public String preparedByUser        { get;set; }
@@ -78,13 +88,11 @@ public with sharing class SpecialistForecastController {
     // This should be set to 'My' when the user is viewing their own data.
     public String preparedByName        { get;set; }
 
-    // TODO
     private Set<Id> allUserIDs      = new Set<Id>();
-    //
     private Set<Id> allTotaluserIDs = new Set<Id>();
 
     // Line Item Object for the forecast owner (person working with the VF page)
-    public SpecialistForecastlineItem__c sfLI             { get;set; }
+    public SpecialistForecastlineItem__c sfLI { get;set; }
     // list that drives the main forecasts table / view on VF page
     public SFcastLineItem[] lineItemList = new SFcastLineItem[0];
     // Working Line items to be added to the lineItemList as data is processed.
@@ -92,7 +100,9 @@ public with sharing class SpecialistForecastController {
     // The "Total" (last) line of the table on the VF page.
     public SFcastLineItem      totalLine = new SFcastLineItem();
 
-    /** Variables used for dealing with override and drilldown views. */
+    /** Variables used for dealing with override and drilldown views.
+     *  These are assigned from the visual force table page when clicking links.
+     */
     // True IFF not viewing the quarter "All" and can override a forecast
     public Boolean canOverride          { get;set; }
     // True while the forecast override popup is active
@@ -101,26 +111,20 @@ public with sharing class SpecialistForecastController {
     public Boolean displayDrilDownPopup { get;set; }
     // values used while overriding forecast data (from popup)
     public Decimal originalAmount       { get;set; }
-    // TODO
     public Decimal originalOldAmount    { get;set; }
-    // TODO
     public Decimal overrideAmount       { get;set; }
     // the list which holds forecast records for a detial / drilldown view
     public SpecialistForecast__c[] forecastDetailsList { get;set; }
-    //
+    // Comment field in the override popup.
     public String overrideComment       { get;set; }
-    //
+    // The Forecast record id of the line in the table view.
     public String strRecordId           { get;set; }
     // OwnerId of the selected row when an action is taken (override, etc)
     public String lineItemOwnerID       { get;set; }
-    //
+    // FY of the selected line in the table view.
     public String fiscalYear            { get;set; }
-    //
-    public String fiscalQuarter         { get;set; }
-    //
+    // The user ID of the selected line in the VF table, used for drilldowns.
     public String selectedUserId        { get;set; }
-    //
-    public String selectedRoleId        { get;set; }
     /**
      *  Used on VF page to title the drilldown popup with proper category title
      *  NOTE: This is also used in the query for ForecastCategory__c when getting
@@ -143,26 +147,17 @@ public with sharing class SpecialistForecastController {
      *  If no FY or FQ is provided, then the current system time is used.
      */
     public SpecialistForecastController() {
-        try {
-            sfLI = new SpecialistForecastlineItem__c();
-            sfLI.ForecastOwner__c = UserInfo.getUserId();
-            setPreparedBy(sfLI.ForecastOwner__c);
-            if (selectedFY == null) {
-                selectedFY = ForecastHelper.getCurrentFiscalYear();
-            }
-            if (selectedFQ == null) {
-                selectedFQ = ForecastHelper.getCurrentQuarter();
-            }
-        } catch (Exception ex) {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                UNEXPECTED + ex.getMessage()));
+        sfLI = new SpecialistForecastlineItem__c();
+        sfLI.ForecastOwner__c = UserInfo.getUserId();
+        setPreparedBy(sfLI.ForecastOwner__c);
+        if (selectedFY == null) {
+            selectedFY = ForecastHelper.getCurrentFiscalYear();
+        }
+        if (selectedFQ == null) {
+            selectedFQ = ForecastHelper.getCurrentQuarter();
         }
     }
 
-    /** Returns canOverride, controling ability to submit an override. */
-    public Boolean getCanOverride() {
-        return canOverride;
-    }
     /** True IFF the user isn't viewing the year forecast */
     public void setCanOverride() {
         canOverride = selectedFQ != QTR_ALL;
@@ -174,10 +169,10 @@ public with sharing class SpecialistForecastController {
         return !recentsList.isEmpty();
     }
 
-    /**  Returns true IFF the user is allowed to override/edit forecasts */
+    /**  Returns true IFF the user is allowed to submit forecast reports */
     public Boolean getCanSubmit() {
         return (sfLI.ForecastOwner__c == UserInfo.getUserId() &&
-            selectedFQ != QTR_ALL);
+                selectedFQ != QTR_ALL);
     }
 
     /** Called from VF page; true IFF user can Refresh forecast reports */
@@ -274,23 +269,25 @@ public with sharing class SpecialistForecastController {
 
     /** Called from submit button */
     public PageReference submitReport() {
-        if (selectedFQ == QTR_ALL) {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,
-                'You can\'t submit for quarter "All".' +
-                'Please select a different quarter to submit.'));
+        // This should never happen, but background check.
+        if (selectedFQ == QTR_ALL) { return null; }
+        String strMonth = ForecastHelper.getMonthsInQuarter(selectedFQ)[0];
+        SpecialistForecastlineItem__c rep = new SpecialistForecastlineItem__c();
+        rep.ForecastOwner__C =  sfLI.ForecastOwner__c;
+        rep.FiscalYear__c = selectedFY;
+        rep.Month__c = strMonth;
+        rep.submittedDate__c = System.now();
+        rep.ExtIdentifier__c = sfLI.ForecastOwner__c + selectedFY + strMonth;
+        try {
+            UPSERT rep ExtIdentifier__c;
+        } catch (Exception ex) {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
+                UNEXPECTED + ex.getMessage()));
             return null;
         }
-        String strMonth = ForecastHelper.getMonthsInQuarter(selectedFQ)[0];
-        SpecialistForecastlineItem__c sfLI = new SpecialistForecastlineItem__c();
-        sfLI.ForecastOwner__C =  sfLI.ForecastOwner__c;
-        sfLI.FiscalYear__c = SelectedFY;
-        sfLI.Month__c = strMonth;
-        sfLI.submittedDate__c = System.now();
-        sfLI.ExtIdentifier__c = sfLI.ForecastOwner__c + selectedFY + strMonth;
-        UPSERT sfLI ExtIdentifier__c;
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
-            'Report Submitted successfully'));
-       return null;
+            REP_SUCCESS));
+        return null;
     }
 
     /** Returns the link of where the uder will go back to. */
@@ -318,8 +315,11 @@ public with sharing class SpecialistForecastController {
     }
 
     /**
-     *  TODO: REFACTOR REFACTOR REFACTOR
-     *  TODO: Description and high level function...
+     *  This is the bulk of the work in generating the visualforce table.
+     *  The function performs a basic setup and data check (generating a users'
+     *  hierarchy is part) and then consolidates forecast quota data
+     *  the every forcecast is read and overrides are calcuated.
+     *  All adding to the main table is handled by addLineItem()
      */
     public SFcastLineItem[] getSFcastLineItemsData() {
         // Background checks to make sure that we have the necessary perms.
@@ -372,7 +372,6 @@ public with sharing class SpecialistForecastController {
 
         // Clear maps before adding back. Optimize this?
         mapSecondLevelUsersAndChild.clear();
-        //mapUsers.clear();
         // get the current user and all level reporting users
         // Add users back to mapSecondLevelUsersAndChild
         getMappedUserInfoFromRoleHierarchy(sfLI.ForecastOwner__c);
@@ -397,13 +396,12 @@ public with sharing class SpecialistForecastController {
         // forcast owner
         // MORE NEEDED -- TODO
         ownerlineItemsMap = aggregateLineItemsByOwner(lineItemsList);
-        for (SObject so : forecastQuotas) {
-            AggregateResult ar = (AggregateResult) so;
+        for (AggregateResult ar : forecastQuotas) {
             Id         ownerId = (Id) ar.get('SpecialistForecastUser__c');
             Decimal tempAmount = (Decimal) ar.get('amnt');
                       lineItem = ownerlineItemsMap.get(ownerId);
 
-            if (lineItem != null) { //if we have an item, add the quota to it.
+            if (lineItem != null) { //line item exists so add the quota to it.
                 lineItem.quotaAmount = tempAmount;
                 ownerlineItemsMap.put(ownerId, lineItem);
             }
@@ -484,15 +482,10 @@ public with sharing class SpecialistForecastController {
             } // end inner for loop
 
             UserWrapper ownerInfo = getUserInfo(lineOwnerID);
-            // TODO
-            Boolean b1 = ownerInfo != null;
-            // FIXME  - name, logic error in else if?
-            Boolean b2 = lineOwnerID != sfLI.ForecastOwner__c;
-            //if not search user then assign values
-            if (haslineItemstoDisplay && b1 && b2) {
+            Boolean isNotOwnerLine = lineOwnerID != sfLI.ForecastOwner__c;
+            // if not ownerLine then assign forecast values
+            if (haslineItemstoDisplay && isNotOwnerLine) {
                 // TODO why use subTotalal?
-                // currLine.reportingUser  = false; FIXME
-                //currLine.canOverride    = selectedFQ != QTR_ALL;
                 currLine.userName       = ownerInfo.userName;
                 currLine.roleName       = ownerInfo.roleName;
                 currLine.userId         = ownerInfo.userId;
@@ -502,9 +495,8 @@ public with sharing class SpecialistForecastController {
                 currLine.bestCaseAmount = subTotalbestCaseAmount;
                 currLine.pipelineAmount = subTotalpipelineAmount;
                 currLine.quotaAmount    = subTotalQuotaAmount;
-                // lineItem is TODO
+                // Merge override values, if they exist.
                 lineItem = ownerlineItemsMap.get(lineOwnerID);
-                // TODO
                 if (lineItem != null) {
                     currLine.commitOverrideAmount        = !lineItem.mgrCommitOverridden
                         ? subTotalcommitAmount : subTotalcommitOverrideAmount;
@@ -528,14 +520,12 @@ public with sharing class SpecialistForecastController {
                     currLine.strLineItmId           = '';
                 }
                 addLineItem();
-            } else if (!haslineItemstoDisplay && b1) {
-                currLine.createEmptyLineItem(selectedFQ, quotaAmount,
-                    ownerInfo);
+            } else if (!haslineItemstoDisplay && isNotOwnerLine) {
+                currLine.createEmptyLineItem(quotaAmount, ownerInfo);
                 addLineItem();
             } //end if
 
-            // Reset Values ... TODO
-            haslineItemstoDisplay          = false;
+            haslineItemstoDisplay          = false; // Reset Values
             subTotalclosedAmount           = 0;
             subTotalcommitAmount           = 0;
             subTotalbestCaseAmount         = 0;
@@ -549,8 +539,6 @@ public with sharing class SpecialistForecastController {
         UserWrapper ownerInfo = getUserInfo(sfLI.ForecastOwner__c);
         lineItem = ownerlineItemsMap.get(sfLI.ForecastOwner__c);
         if (lineItem != null) {
-            //currLine.reportingUser          = false; FIXME
-            //currLine.canOverride            = (selectedFQ != QTR_ALL);
             currLine.userName               = ownerInfo.userName;
             currLine.roleName               = ownerInfo.roleName;
             currLine.userId                 = ownerInfo.userId;
@@ -566,7 +554,7 @@ public with sharing class SpecialistForecastController {
             currLine.myBestCaseOverridden   = lineItem.myBestCaseOverridden;
             currLine.strLineItmId           = lineItem.strLineItmId;
         } else { // Create Forecast line for Owner (No data found)
-            currLine.createEmptyLineItem(selectedFQ, quotaAmount, ownerInfo);
+            currLine.createEmptyLineItem(quotaAmount, ownerInfo);
         }
         addLineItem(); // Add forecast owner's line to list.
 
@@ -836,7 +824,7 @@ public with sharing class SpecialistForecastController {
         return ownerItems;
     }
 
-    /** TODO */
+    /** Consolidate User and Role info and add to user to all maps. */
     private void setRoleUserValue(HierarchyUtil.RoleNodeWrapper wrap, User myusr) {
         UserWrapper ruInfo  = new UserWrapper();
         ruInfo.roleId       = wrap.myRoleId;
@@ -853,21 +841,6 @@ public with sharing class SpecialistForecastController {
     }
 
     /******************   Override & Drilldown Methods    *********************/
-    /** Returns the current user working with forecasts */
-    public String getPreparedByUser() {
-        return preparedByUser;
-    }
-
-    /** Returns the first name of user working with forecasts */
-    public String getPreparedByName() {
-        return preparedByName;
-    }
-
-    /** Returns the selected forecast category from the VF page */
-    public String getCategoryTitle() {
-        return categoryTitle;
-    }
-
     /**
      *  NOTE: To be called only after sfLI.ForecastOwner__c is updated
      *  Sets perparedByUser and preparedByName to the proper values.
@@ -879,13 +852,12 @@ public with sharing class SpecialistForecastController {
         } else {
             preparedByUser = getUserInfo(uid).userName;
             preparedByName = getUserInfo(uid).firstName;
-            // Add appropriate ownership to the name.
             preparedByName += preparedByName.endsWith('s') ? '\'' : '\'s';
-        }
+        } // Add appropriate ownership to the name.
         preparedByUser += preparedByUser.endsWith('s') ? '\'' : '\'s';
     }
 
-    /** TODO */
+    /** Write override information back to the database */
     public PageReference saveOverride() {
         SpecialistForecastlineItem__c spc = new SpecialistForecastlineItem__c();
         SpecialistForecastOverride__c spovr = new SpecialistForecastOverride__c();
@@ -917,7 +889,7 @@ public with sharing class SpecialistForecastController {
            UPSERT spovr ExtIdentifier__c;
        } catch(System.DMLException ex) {
            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-               'Failed to update the Override value'));
+               OVER_ERROR + 'for SpecialistForecastOverride__c.'));
            return null;
         }
 
@@ -933,15 +905,15 @@ public with sharing class SpecialistForecastController {
             UPSERT spc ExtIdentifier__c;
         } catch(System.DMLException ex) {
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Error,
-                'Failed to update the Override Amount'));
+                OVER_ERROR + 'for SpecialistForecastLineItem__c.'));
             return null;
         }
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,
-            'Override Amount updated successfully'));
+            OVERRIDE_SUCCESS));
         return null;
     }
 
-    /** TODO */
+    /** True IFF a user is overriding their own reports forcasts */
     private boolean isSelfOverride() {
         return UserInfo.getUserId() == lineItemOwnerID;
     }
@@ -956,7 +928,7 @@ public with sharing class SpecialistForecastController {
         lineItemOwnerID   = '';
     }
 
-    /** TODO */
+    /** Show override popup and set the name variables */
     public void showOverridePopup() {
         displayPopup = true;
         setPreparedBy(lineItemOwnerID);
@@ -969,19 +941,20 @@ public with sharing class SpecialistForecastController {
         setPreparedBy(sfLI.ForecastOwner__c);
     }
 
-    /** TODO */
+    /** close the drillown and reset the name values. */
     public void closeDrilDownPopup() {
         displayDrilDownPopup = false;
         setPreparedBy(sfLI.ForecastOwner__c);
     }
 
-    /** TODO */
+    /** Grab all forecasts for a user and show the popup */
     public void showDrilDownPopup() {
         if (selectedFQ != null && selectedFY != null && lineItemOwnerID != null) {
             setPreparedBy(lineItemOwnerID);
             getSpecialistForecastRecords();
         } else {
-            // add warning TODO
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.Error,
+                UNEXPECTED + 'Can\'t find data to display forecast records.'));
         }
         displayDrilDownPopup = true;
     }
@@ -992,18 +965,18 @@ public with sharing class SpecialistForecastController {
      */
     private void getSpecialistForecastRecords() {
         String[] months = ForecastHelper.getMonthsInQuarter(selectedFQ);
-        String[] status = new String[] { categoryTitle };
+        String[] category = new String[] { categoryTitle };
 
-        if (categoryTitle == CLOSED) { status.add(CLOSED_WON); }
+        // Grab closed-won forecasts as well.
+        if (categoryTitle == CLOSED) { category.add(CLOSED_WON); }
 
-        // Use a try-catch and add warning. TODO
         try {
             forecastDetailsList = [SELECT Opportunity__c, Opportunity__r.Name,
                 Account__c, FiscalYear__c, Month__c, ForecastAmount__c,
                 ForecastCategory__c, ForecastCloseDate__c, ForecastStage__c
                 FROM SpecialistForecast__c WHERE FiscalYear__c = :selectedFY
                 AND Month__c in :months AND OwnerId = :lineItemOwnerID
-                AND ForecastCategory__c in :status];
+                AND ForecastCategory__c in :category];
             if (forecastDetailsList.size() == 0) {
                 throw new SpecialistForecastException(
                     'No Specialist Forecasts were found for ' + preparedByUser +
@@ -1013,9 +986,7 @@ public with sharing class SpecialistForecastController {
         } catch (Exception ex) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.Error,
                 UNEXPECTED + ex.getMessage()));
-
         }
-
     }
 
     /*****************  Utily Methods for general use  ************************/
@@ -1061,11 +1032,12 @@ public with sharing class SpecialistForecastController {
                 mapUsers.put(uid, info); // Add to map to save time later.
             } catch (Exception ex) {
                 ApexPages.addMessage(new ApexPages.message(
-                    ApexPages.severity.ERROR, ROLE_ID_NULL + uid));
-                info.userName = 'No Name Found:' + uid;
-                info.userID   = uid;
-                info.roleName = 'No Role Found';
-                info.roleId   = '';
+                    ApexPages.severity.ERROR, UNEXPECTED + ex.getMessage()));
+                info.userName  = 'No Name Found:' + uid;
+                info.firstName = 'No Name Found:' + uid;
+                info.userID    = uid;
+                info.roleName  = 'No Role Found';
+                info.roleId    = '';
             }
         }
         return info;

@@ -394,7 +394,7 @@
         <arg value="dataAccess.name=@{dataDir}/@{fileName}.csv"/>
         <arg value="sfdc.extractionSOQL=Select @{fields} FROM @{ns}@{entityName}__c"/>
         <arg value="sfdc.username=@{username}"/>
-        <arg value="sfdc.password=@{encPwd}"/>
+        <arg value="org.password=@{encPwd}"/>
       </baseQueryCall>
     </sequential>
   </macrodef>
@@ -414,7 +414,7 @@
         <arg value="process.mappingFile=@{dataMappingDir}/@{fileName}.sdl"/>
         <arg value="sfdc.externalIdField=@{ns}ExtIdentifier__c"/>
         <arg value="sfdc.username=@{username}"/>
-        <arg value="sfdc.password=@{encPwd}"/>
+        <arg value="org.password=@{encPwd}"/>
       </baseUpsertCall>
     </sequential>
   </macrodef>
@@ -433,7 +433,7 @@
         <arg value="dataAccess.name=@{dataDir}/@{fileName}.csv"/>
         <arg value="process.mappingFile=@{dataMappingDir}/@{fileName}.sdl"/>
         <arg value="sfdc.username=@{username}"/>
-        <arg value="sfdc.password=@{encPwd}"/>
+        <arg value="org.password=@{encPwd}"/>
       </baseInsertCall>
     </sequential>
   </macrodef>
@@ -458,7 +458,7 @@
         <arg value="dataAccess.name=@{dataDir}/@{entityName}_del.csv"/>
         <arg value="sfdc.extractionSOQL=Select Id FROM @{ns}@{entityName}__c"/>
         <arg value="sfdc.username=@{username}"/>
-        <arg value="sfdc.password=@{encPwd}"/>
+        <arg value="org.password=@{encPwd}"/>
       </baseLoaderCall>
       <!-- Delete the IDs we retrieved -->
       <baseLoaderCall>
@@ -468,7 +468,7 @@
         <arg value="dataAccess.name=@{dataDir}/@{entityName}_del.csv"/>
         <arg value="process.mappingFile=@{dataMappingDir}/delete.sdl"/>
         <arg value="sfdc.username=@{username}"/>
-        <arg value="sfdc.password=@{encPwd}"/>
+        <arg value="org.password=@{encPwd}"/>
       </baseLoaderCall>
       <!-- Cleanup after ourselves -->
       <delete file="@{dataDir}/@{entityName}_del.csv"/>

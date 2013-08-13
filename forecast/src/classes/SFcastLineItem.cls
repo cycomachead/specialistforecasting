@@ -129,7 +129,7 @@ public with sharing class SFcastLineItem {
      *  @param TODO
      *  @param TODO
      */
-    public void createEmptyLineItem(String selFQ, Decimal quotaAmt,
+    public void createEmptyLineItem(Decimal quotaAmt,
     SpecialistForecastController.UserWrapper info) {
         userName               = info.userName;
         roleName               = info.roleName;
