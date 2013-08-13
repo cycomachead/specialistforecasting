@@ -1007,8 +1007,8 @@ public with sharing class SpecialistForecastController {
             if (forecastDetailsList.size() == 0) {
                 throw new SpecialistForecastException(
                     'No Specialist Forecasts were found for ' + preparedByUser +
-                    ' in ' + selectedFQ + ', ' + selectedFY + ' for the category'
-                    + ' ' + categoryTitle + '.');
+                    'forecasts in ' + selectedFQ + ', ' + selectedFY + ' for the'
+                    + ' category ' + categoryTitle + '.');
             }
         } catch (Exception ex) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.Error,
