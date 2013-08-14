@@ -33,15 +33,20 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  */
 
 global with sharing class SpecialistForecastBatch implements
-    Database.Batchable<AggregateResult> {
+Database.Batchable<AggregateResult> {
 
-        // TODO Use generic labels.
-
-    private static final String DONT_SEND_EMAIL = ForecastHelper.DONT_SEND_EMAIL;
+    private static final String DONT_EMAIL = ForecastHelper.DONT_EMAIL;
+    private static final String SUCCESS_SUBJ =
+        'SpecialistForecastBatch Process Completed';
+    private static final String SUCCESS_BODY =
+        'Specialist Forecast Batch Process has completed';
+    private static final String ERROR_SUBJ   =
+        'Error in the Specialist Forecast Batch Process';
+    private static final String ERROR_BODY   =
+        'Specialist Forecast Batch Process did not complete. \n\n';
 
     global Map<String, AggregateResult[]> input {get; set;}
     global Map<String, SpecialistForecastLineItem__c> processedRecords {get; set;}
-    public DateTime starttime = System.now();
     public Boolean isRunningByUser = false;
 
     /**
@@ -57,27 +62,23 @@ global with sharing class SpecialistForecastBatch implements
      * @param String formattedBody
      */
     private static void sendNotification(String subject,
-    String formattedBody, String gackEmailIds) {
-
-        if (gackEmailIds == DONT_SEND_EMAIL) {
+    String formattedBody, String addr) {
+        if (addr == DONT_EMAIL || addr == null) {
             return;
         }
 
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-
-        mail.setToAddresses(new String[]{gackEmailIds});
-        mail.setSubject(subject);
-        mail.setPlainTextBody(formattedBody);
-
+                                     mail.setToAddresses(new String[]{ addr });
+                                     mail.setSubject(subject);
+                                     mail.setPlainTextBody(formattedBody);
         try {
             Messaging.sendEmail(new Messaging.Email[] { mail });
-        } catch(System.Exception ex) {
+        } catch(Exception ex) {
         }
     }
 
     /**
      *
-     * @return TODO
      */
     global void execute(Database.BatchableContext context, List<Sobject> items) {
         // upsert to SpecialistForecastLineItem  based on input map.
@@ -141,9 +142,7 @@ global with sharing class SpecialistForecastBatch implements
 
         } catch(DMLException e) {
             String email = ForecastHelper.getCronEmail();
-            sendNotification('Error in the Specialist Forecast Batch Process',
-                    'Specialist Forecast Batch Process not completed Successfully'
-                        + e.getMessage(), email);
+            sendNotification(ERROR_SUBJ, ERROR_BODY + e.getMessage(), email);
         }
     }
 
@@ -157,9 +156,7 @@ global with sharing class SpecialistForecastBatch implements
         if (isRunningByUser) {
             email = usr.EMail;
         }
-
-        sendNotification('SpecialistForecastBatch Process Completed',
-                'Specialist Forecast Batch Process has completed', email);
+        sendNotification(SUCCESS_SUBJ, SUCCESS_BODY, email);
     }
 
     /*
@@ -167,11 +164,12 @@ global with sharing class SpecialistForecastBatch implements
      * current process
      */
     private void updateSFLineItems() {
+        DateTime NOW = System.now();
         SpecialistForecastLineItem__c[] spllist = [SELECT Id,
             OriginalPipelineAmount__c, OriginalClosedAmount__c,
             OriginalBestCaseAmount__c, OriginalCommitAmount__c
             FROM SpecialistForecastLineItem__c
-            WHERE LastModifiedDate < :starttime];
+            WHERE LastModifiedDate < :NOW];
 
         for (SpecialistForecastLineItem__c item : spllist) {
               item.OriginalClosedAmount__c   = 0;
@@ -180,7 +178,7 @@ global with sharing class SpecialistForecastBatch implements
               item.OriginalPipelineAmount__c = 0;
         }
          // TODO- store the update() in UpdateResult[] and log the error messages if any record failed update.
-         Database.update(spllist,false);
+         Database.update(spllist, false);
 
     }
 }

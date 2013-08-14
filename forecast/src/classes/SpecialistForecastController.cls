@@ -354,7 +354,7 @@ public with sharing class SpecialistForecastController {
                 subTotalpipelineAmount         = 0,
                 subTotalQuotaAmount            = 0;
 
-        // TODO
+        // Maps Forecast Owner Ids to queried objects to process.
         Map<Id,SFcastLineItem> ownerlineItemsMap = new Map<Id,SFcastLineItem>();
 
         // Current copy of individual table row before adding to the main list
@@ -367,7 +367,7 @@ public with sharing class SpecialistForecastController {
         lineItemList.clear();
 
         HierarchyUtil.RoleNodeWrapper[] lstRoles;
-        // Consolidate data TODO -
+        // "Holding" lineItem to grab from map and put data into the list.
         SFcastLineItem lineItem;
 
         // Clear maps before adding back. Optimize this?
@@ -394,7 +394,8 @@ public with sharing class SpecialistForecastController {
         /********************** consolidation Start *************************/
         // Merge Forecast Quota records with aggreated forcast records for each
         // forcast owner
-        // MORE NEEDED -- TODO
+        // Quotas are a separate object and this puts them together so they can
+        // be tied to owners when looking at the VF page (last column of table)
         ownerlineItemsMap = aggregateLineItemsByOwner(lineItemsList);
         for (AggregateResult ar : forecastQuotas) {
             Id         ownerId = (Id) ar.get('SpecialistForecastUser__c');
@@ -407,7 +408,8 @@ public with sharing class SpecialistForecastController {
             }
         }
         /********************** consolidation End *****************************/
-        // TODO
+        // Represents if a user has forecast objects that they own / would
+        //  display on the VF page
         Boolean haslineItemstoDisplay = false;
         // consolidate child records with 2nd level roles/users
         for (Id lineOwnerID : mapSecondLevelUsersAndChild.keySet()) {
@@ -452,8 +454,8 @@ public with sharing class SpecialistForecastController {
                     subTotalQuotaAmount    += quotaAmount;
 
                     // manager overrides the value then diplay only that amount
-                    //  no calculation else aggregation of amount will be
-                    //  displayed for the user
+                    // no calculation else aggregation of amount will be
+                    // displayed for the user
                     if (!mgrCommitOverride && childLineOwnerId != lineOwnerID) {
                         subTotalcommitOverrideAmount += (commitOverrideAmount <= 0
                             ? commitAmount : commitOverrideAmount);
@@ -485,7 +487,6 @@ public with sharing class SpecialistForecastController {
             Boolean isNotOwnerLine = lineOwnerID != sfLI.ForecastOwner__c;
             // if not ownerLine then assign forecast values
             if (haslineItemstoDisplay && isNotOwnerLine) {
-                // TODO why use subTotalal?
                 currLine.userName       = ownerInfo.userName;
                 currLine.roleName       = ownerInfo.roleName;
                 currLine.userId         = ownerInfo.userId;
@@ -519,11 +520,10 @@ public with sharing class SpecialistForecastController {
                     currLine.myBestCaseOverridden   = false;
                     currLine.strLineItmId           = '';
                 }
-                addLineItem();
             } else if (!haslineItemstoDisplay && isNotOwnerLine) {
                 currLine.createEmptyLineItem(quotaAmount, ownerInfo);
-                addLineItem();
-            } //end if
+            } //end if, and add lineItem to table
+            if (isNotOwnerLine) { addLineItem(); }
 
             haslineItemstoDisplay          = false; // Reset Values
             subTotalclosedAmount           = 0;

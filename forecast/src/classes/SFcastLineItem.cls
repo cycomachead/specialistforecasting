@@ -30,7 +30,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *  Class used as value object for Specialist Forecast Lineitem
  *
  */
-
 public with sharing class SFcastLineItem {
     /** Total constant for the last line in the VF table. */
     private static final String GRAND_TOTAL = ForecastHelper.GRAND_TOTAL;
@@ -102,23 +101,23 @@ public with sharing class SFcastLineItem {
         return '';
     }
 
-    /** TODO */
+    /** Returns the previous commit amount, formatted as a string. */
     public String getPrevVFDirectRepCommitAmount() {
         return ForecastHelper.formatAsDollar(prevDirectRepCommitAmount);
     }
 
-    /** TODO */
+    /** Returns the previous best case amount formatted as a string */
     public String getPrevVFDirectRepBestcaseAmount() {
         return ForecastHelper.formatAsDollar(prevDirectRepBestcaseAmount);
     }
 
-    /** TODO */
+    /** True IFF commit and previous commit do not match */
     public Boolean getCommitPreviousAmountMatch() {
         return prevDirectRepCommitAmount != null && commitAmount != null
             && prevDirectRepCommitAmount != commitAmount;
     }
 
-    /** TODO */
+    /** True IFF best case and previous best case do not match */
     public boolean getBestCasePreviousAmountMatch() {
         return prevDirectRepBestcaseAmount != null && bestCaseAmount != null
             && prevDirectRepBestCaseAmount != bestCaseAmount;
@@ -126,16 +125,16 @@ public with sharing class SFcastLineItem {
 
     /**
      *  Create  displayble virtual LineItem for the VF page
-     *  @param TODO
-     *  @param TODO
+     *  @param quota is the value of the quota for the forecast owner
+     *  @param info is a UserWrapper with the user details for the forecast
      */
-    public void createEmptyLineItem(Decimal quotaAmt,
+    public void createEmptyLineItem(Decimal quota,
     SpecialistForecastController.UserWrapper info) {
         userName               = info.userName;
         roleName               = info.roleName;
         userId                 = info.userID;
         roleId                 = info.roleID;
-        quotaAmount            = quotaAmt;
+        quotaAmount            = quota;
         closedAmount           = 0;
         commitAmount           = 0;
         commitOverrideAmount   = 0;
@@ -147,6 +146,7 @@ public with sharing class SFcastLineItem {
     }
 
     // Increment the values used in the total line for the VF page.
+    // The parameter order should follow the column order!
     public void increment(Decimal closedAmt, Decimal commitOverrideAmt,
     Decimal commitAmt, Decimal bestCaseOverrideAmt, Decimal bestCaseAmt,
     Decimal pipelineAmt, Decimal quotaAmt) {

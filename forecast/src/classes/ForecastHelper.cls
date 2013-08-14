@@ -28,7 +28,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 
 /**
  *  Helper Class used for Forecast related functionalities
- *  TODO -- more needed
+ *  This class contains basic labels used for Specialist Forecasting and some
+ *  common functions that aren't tied to any specific class.
+ *  Not all functions are currently in use.
  *  @author Michael Ball
  */
 public with sharing class ForecastHelper {
@@ -55,7 +57,7 @@ public with sharing class ForecastHelper {
 
     public static final String HIERARCHY_TYPE_ROLE = 'ROLE';
     public static final String HIERARCHY_TYPE_USER = 'USER';
-    public static final String DONT_SEND_EMAIL     = 'DoNotSendEmail';
+    public static final String DONT_EMAIL          = 'DoNotSendEmail';
     public static final String VALUE_YES           = 'yes';
     public static final String QTR_ALL             = 'All';
     public static final String BATCH_RUN_DEF_DAY   = 'Sunday';
@@ -112,25 +114,37 @@ public with sharing class ForecastHelper {
         }
         throw new SpecialistForecastException(CRON_SCHED_ERR);
     }
-    /** TODO */
+    /** returns the notification email set in custom settings */
     public static String getCronEmail() {
-        Map<String, String> email =
-            RetrieveForecastConfigurations.getForecastConfigurationsByName(
-            BATCH_COMPLETED);
-        if (email != null && email.get(ACTIVE) == 'true') {
-            return email.get(CONFIG_VAL);
+        try {
+            Map<String, String> email =
+                RetrieveForecastConfigurations.getForecastConfigurationsByName(
+                BATCH_COMPLETED);
+            if (email != null && email.get(ACTIVE) == 'true') {
+                return email.get(CONFIG_VAL);
+            }
+            return DONT_EMAIL;
+        } catch (Exception ex) {
+            return null;
         }
-        return DONT_SEND_EMAIL;
     }
-    /** TODO */
+
+    /**
+     *  Returns the scheduled run day from custom settings, or the default day
+     *  if one can't be found.
+    */
     public static String getCronRunDay() {
-        Map<String, String> runday =
-            RetrieveForecastConfigurations.getForecastConfigurationsByName(
-            ForecastHelper.SUBMIT_BATCH_RUN);
-        if (runday != null && runday.get(ACTIVE) == 'true' ) {
-            return runday.get(CONFIG_VAL);
+        try {
+            Map<String, String> runday =
+                RetrieveForecastConfigurations.getForecastConfigurationsByName(
+                ForecastHelper.SUBMIT_BATCH_RUN);
+            if (runday != null && runday.get(ACTIVE) == 'true' ) {
+                return runday.get(CONFIG_VAL);
+            }
+            return BATCH_RUN_DEF_DAY;
+        } catch (Exception ex) {
+            return BATCH_RUN_DEF_DAY;
         }
-        return BATCH_RUN_DEF_DAY;
     }
 
     /**
@@ -273,7 +287,7 @@ public with sharing class ForecastHelper {
      *  Formats a string for a table view to look like: $0.00
      *  @param value is Decimal type representing some money.
      *  @return a string formatted as US currency.
-     */ //FIXME There should be a generic way to do this!
+     */ //In the future this could be handled based on user currency.
     public static String formatAsDollar(Decimal value) {
         String[] formatter = new String[] {'0','number','###,###,##0.00'};
         if (value != null) {
@@ -287,7 +301,6 @@ public with sharing class ForecastHelper {
 
     /**************************************************************************/
     /**               FISCAL YEAR CALCUATION UTIL METHODS                    **/
-
     /**
      *  Given a DATE, a FQ, and FY, determine if the date is in FQ-FY.
      *  @param date is string YYYY-MM-DD

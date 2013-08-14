@@ -27,9 +27,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Helper Class used for Forecast Hierarchy related functionalities
+ *  Helper Class used for Forecast Hierarchy related functionalities
  *
- * @author mkatragadda
+ *  @author mkatragadda
  */
 public with sharing class HierarchyUtil {
 
@@ -338,7 +338,7 @@ public with sharing class HierarchyUtil {
     }
 
     /**
-     * This method will fetch Manager/Owner user as id FROM the forecast
+     * This method will fetch Manager/Owner user as id from the forecast
      * hieararchy configurations
      * @return TODO
      */
@@ -354,10 +354,9 @@ public with sharing class HierarchyUtil {
                 FROM ForecastHierarchyConfigurations__c
                 WHERE IsActive__c = true and IsManager__c = true];
         } catch (Exception ex) {
-            // TODO add error message
             return null;
         }
-        for(ForecastHierarchyConfigurations__c config : configurationsList) {
+        for (ForecastHierarchyConfigurations__c config : configurationsList) {
             forecastHierarchyConfigRoleUserMap.put(config.HierarchyRole__c,
                 config.HierarchyRoleUser__r.id);
         }

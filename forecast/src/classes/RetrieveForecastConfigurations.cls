@@ -108,7 +108,7 @@ public with sharing class RetrieveForecastConfigurations {
     /**
      *  This method will fetch the list of forecast configurations for a given
      *  category from custom settings
-     *  @return TODO
+     *  @return a set of settings for the requested category
      *  @throws SpecialistForecastException
      */
     public static Set<String> getForecastConfigurationNames(String category) {

@@ -35,10 +35,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 @isTest(SeeAllData = true)
 public class SpecForecastSchedulerTest {
 
-    private static testMethod void testStoreScheduler() {
+    private static testMethod void testForecastScheduler() {
         try{
             String sch = '0 50 * * * ?';
-            System.schedule('AppStore Scheduler Job', sch, new StoreScheduler());
+            System.schedule('AppStore Scheduler Job', sch, new ForecastScheduler());
             System.assert(true);
         } catch(Exception e) {
             System.assert(false, 'Test failed. ' + e.getMessage());

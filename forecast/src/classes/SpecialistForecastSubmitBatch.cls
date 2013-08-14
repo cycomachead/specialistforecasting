@@ -36,7 +36,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 global with sharing class SpecialistForecastSubmitBatch implements
     Database.Batchable<SpecialistForecastLineItem__c> {
 
-    public static final String DONT_SEND_EMAIL = ForecastHelper.DONT_SEND_EMAIL;
+    public static final String DONT_EMAIL = ForecastHelper.DONT_EMAIL;
 
     /** */
     global SpecialistForecastLineItem__c[] lineItemRecords { get;set; }
@@ -83,7 +83,7 @@ global with sharing class SpecialistForecastSubmitBatch implements
      */
     private static void sendNotification(String subject,
     String formattedBody, String gackEmailIds) {
-        if (gackEmailIds == DONT_SEND_EMAIL) {
+        if (gackEmailIds == DONT_EMAIL) {
             return;
         }
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
