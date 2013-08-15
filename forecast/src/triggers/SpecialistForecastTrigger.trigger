@@ -46,6 +46,7 @@ trigger SpecialistForecastTrigger on SpecialistForecast__c bulk(before insert,
                 if (sf.ForecastCategory__c == null) {
                     sf.addError('Please supply a category for the forecast.');
                 }
+                // Future: Consider removing this field, no longer needed?
                 if (sf.OwnerId != sf.OwnerCopy__c) {
                     sf.OwnerCopy__c = sf.OwnerId;
                 }

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Specialist Forecast Quota</label>
+    <pluralLabel>Specialist Forecast Quotas</pluralLabel>
+    <description>Specialist Forecast Quotas used for the Specialist Forecasting Package, allow uses to be a assigned a Quota for each forecast.</description>
+
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <sharingModel>Private</sharingModel>
+
     <actionOverrides>
         <actionName>Accept</actionName>
         <type>Default</type>
@@ -32,17 +44,11 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
-    <deploymentStatus>Deployed</deploymentStatus>
-    <!-- FIXME -->
-    <description>Specialist Forecast Quota within 62 Org</description>
-    <enableActivities>true</enableActivities>
-    <enableEnhancedLookup>false</enableEnhancedLookup>
-    <enableFeeds>true</enableFeeds>
-    <enableHistory>true</enableHistory>
-    <enableReports>true</enableReports>
+
     <fields>
         <fullName>Month__c</fullName>
         <externalId>false</externalId>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <inlineHelpText>The month the forecast quota applies to.</inlineHelpText>
         <label>Month</label>
         <picklist>
@@ -102,6 +108,7 @@
     </fields>
     <fields>
         <fullName>FiscalYear__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <inlineHelpText>The fiscal year the quota applies to.</inlineHelpText>
         <label>Fiscal Year</label>
@@ -138,7 +145,7 @@
     </fields>
     <fields>
         <fullName>QuotaAmount__c</fullName>
-        <description>Quota amount for For Individual AE</description>
+        <inlineHelpText>Quota amount for For Individual AE</inlineHelpText>
         <externalId>false</externalId>
         <label>Quota Amount</label>
         <precision>16</precision>
@@ -150,6 +157,7 @@
     </fields>
     <fields>
         <fullName>QuotaNotes__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>Quota Notes</label>
         <length>32768</length>
@@ -160,8 +168,9 @@
     </fields>
     <fields>
         <fullName>SpecialistForecastUser__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <deleteConstraint>SetNull</deleteConstraint>
-        <description>User Lookup for Sales Engineer/Executive</description>
+        <inlineHelpText>User Lookup for Sales Engineer/Executive</inlineHelpText>
         <externalId>false</externalId>
         <label>Forecast User</label>
         <referenceTo>User</referenceTo>
@@ -171,7 +180,7 @@
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
     </fields>
-    <label>Specialist Forecast Quota</label>
+
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
@@ -183,6 +192,7 @@
         <label>All</label>
         <language>en_US</language>
     </listViews>
+
     <nameField>
         <displayFormat>SFQ-{00000000}</displayFormat>
         <label>Specialist Forecast Quota</label>
@@ -190,7 +200,7 @@
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Specialist Forecast Quotas</pluralLabel>
+
     <searchLayouts/>
-    <sharingModel>Private</sharingModel>
+
 </CustomObject>

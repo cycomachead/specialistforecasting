@@ -36,7 +36,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 public with sharing class ForecastHelper {
 
     /** Category Configuration Settings */
-    public static final String CAT_STORE_BATCH_JOB = 'StoreBatchJob';
+    public static final String CAT_STORE_BATCH_JOB = 'SForecastBatchJob';
     public static final String CAT_SUPPORTED_DATA  = 'SupportedData';
     public static final String CAT_SUPPORTED_FY    = 'Supported Fiscal Years';
 
@@ -51,12 +51,13 @@ public with sharing class ForecastHelper {
     public static final String BEST_CASE   = 'Best Case';
     public static final String CLOSED      = 'Closed';
     public static final String CLOSED_WON  = 'Closed Won';
-    public static final String COMMIT_MSG  = 'Commit';
+    public static final String COMMIT_MSG      = 'Commit';
     public static final String PIPELINE    = 'Pipeline';
     public static final String GRAND_TOTAL = 'Total';
 
     public static final String HIERARCHY_TYPE_ROLE = 'ROLE';
     public static final String HIERARCHY_TYPE_USER = 'USER';
+    /** Forecast Configurations Custom Settings Strings */
     public static final String DONT_EMAIL          = 'DoNotSendEmail';
     public static final String VALUE_YES           = 'yes';
     public static final String QTR_ALL             = 'All';
@@ -66,14 +67,14 @@ public with sharing class ForecastHelper {
     public static final String BATCH_COMPLETED     = 'BatchCompletedEmail';
     public static final String SUBMIT_BATCH = 'SpecialistForecastSubmitBatch';
     public static final String SUBMIT_BATCH_RUN = 'SpecialistForecastSubmitRun';
+    public static final String BATCH_COMMENT       =
+        'Default Batch Processing Settings Used for Specialist Forecasting';
 
     /** Error messages */
     private static final String CANT_FIND_USER =
             SpecialistForecastException.CANT_FIND_USER;
-    private static final String CRON_SCHED_ERR =
-            SpecialistForecastException.CRON_SCHED_ERR;
     private static final String LI_ERROR = SpecialistForecastException.LI_ERROR;
-    private static final String QUOTA_ERROR    =
+    private static final String QUOTA_ERROR =
             SpecialistForecastException.QUOTA_ERROR;
 
     /** List of all supported quarters. */
@@ -83,11 +84,15 @@ public with sharing class ForecastHelper {
     // For future, this should be created dynamically, not from config settingd
 
     /**************************************************************************/
+
     /** Returns configuration settings for batch jobs. */
     public static Map<String, String> getBatchJobs() {
-        Set<String> batchJobNames =
-            RetrieveForecastConfigurations.getForecastConfigurationNames(
-            ForecastHelper.CAT_STORE_BATCH_JOB);
+        Set<String> batchJobNames;
+        try {
+            batchJobNames =
+                RetrieveForecastConfigurations.getForecastConfigurationNames(
+                ForecastHelper.CAT_STORE_BATCH_JOB);
+        } catch (Exception ex) {}
         if (batchJobNames == null || batchJobNames.size() == 0) {
             return null;
         }
@@ -101,19 +106,35 @@ public with sharing class ForecastHelper {
         return batchJobs;
     }
 
-    /**
-     *  @return current 'cron' style expr. for scheduled jobs.
-     *  @throws SpecialistForecastException
-     */
-    public static String getCronExpression() {
-        Map<String, String> expression =
-            RetrieveForecastConfigurations.getForecastConfigurationsByName(
-            SCHEDULER_FREQUENCY);
-        if (expression != null && expression.get(ACTIVE) == 'true') {
-            return expression.get(CONFIG_VAL);
+    /** This checks that custom settings are in place for batch jobs to run. */
+    public static void setupBatchJobs(Boolean force) {
+        Map<String, String> jobs;
+        try {
+            jobs = getBatchJobs();
+        } catch (Exception ex) {}
+        if (force || jobs == null) {
+            ForecastConfigurations__c batch = new ForecastConfigurations__c(
+                Name = SF_BATCH,
+                ConfigurationCategory__c = CAT_STORE_BATCH_JOB,
+                ConfigurationValue__c = VALUE_YES,
+                IsActive__c = true,
+                Comment__c = BATCH_COMMENT);
+            ForecastConfigurations__c submit = new ForecastConfigurations__c(
+                Name = SUBMIT_BATCH,
+                ConfigurationCategory__c = CAT_STORE_BATCH_JOB,
+                ConfigurationValue__c = VALUE_YES,
+                IsActive__c = true,
+                Comment__c = BATCH_COMMENT);
+            ForecastConfigurations__c[] configs = new ForecastConfigurations__c[]
+                { batch, submit };
+            try {
+                UPSERT configs Name;
+            } catch (Exception ex) {
+                return;
+            }
         }
-        throw new SpecialistForecastException(CRON_SCHED_ERR);
     }
+
     /** returns the notification email set in custom settings */
     public static String getCronEmail() {
         try {
@@ -144,6 +165,29 @@ public with sharing class ForecastHelper {
             return BATCH_RUN_DEF_DAY;
         } catch (Exception ex) {
             return BATCH_RUN_DEF_DAY;
+        }
+    }
+
+    /**
+     *  Send error email notification to the provided addr
+     *  @param String subject
+     *  @param String formattedBody
+     *  @param addr is the email address to send to.
+     */
+    public static void sendNotification(String subject,
+    String formattedBody, String addr) {
+        if (addr == DONT_EMAIL || addr == null) {
+            return;
+        }
+
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                                     mail.setToAddresses(new String[]{ addr });
+                                     mail.setSubject(subject);
+                                     mail.setPlainTextBody(formattedBody);
+        try {
+            Messaging.sendEmail(new Messaging.Email[] { mail });
+        } catch(Exception ex) {
+            // Usually run from console, so no need to notify user?
         }
     }
 

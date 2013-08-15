@@ -31,7 +31,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
  *
  *  To run it from developer console, use the below code snippet
  *  String sch = '0 50 * * * ?';
- *  System.schedule('AppStore Scheduler Job', sch, new ForecastScheduler());
+ *  System.schedule('Specialist Forecast Scheduler Job', sch, new ForecastScheduler());
  *  System.debug('\n\n ==> Done');
  */
 global with sharing class ForecastScheduler implements Schedulable {
@@ -45,6 +45,10 @@ global with sharing class ForecastScheduler implements Schedulable {
     global void execute(SchedulableContext sc) {
         Map<String, String> jobs = ForecastHelper.getBatchJobs();
 
+        if (jobs == null) {
+            return;
+        }
+        
         if (jobs.containsKey(SF_BATCH) && jobs.get(SF_BATCH) == VALUE_YES) {
             Id batchProcessId = Database.executeBatch(
                 new SpecialistForecastBatch(), BATCH_SIZE);

@@ -45,8 +45,6 @@ public with sharing class SpecialistForecastException extends Exception {
      */
 
     // Complete sentences
-    public static final String CRON_SCHED_ERR =
-        'No active Cron Expression specified for Store Scheduler.';
     public static Final String EMPTY_CAT =
         'Cannot get forecast configurations for an empty category';
     public static Final String ROLE_ID_NULL =
@@ -68,6 +66,16 @@ public with sharing class SpecialistForecastException extends Exception {
     public static Final String LI_ERROR =
         'An error occurred while trying to access Specialist Forecast ' +
         'line items.';
+    public static final String NO_PERMS =
+        'You do not have permission to view reports for this user.';
+    public static final String REFRESH_SUCCESS =
+        'Data refresh request submitted successfully.';
+    public static final String OVER_ERROR =
+        'Failed to update the Forecast Override ';
+    public static final String OVERRIDE_SUCCESS =
+        'Override Amount updated successfully';
+    public static final String REP_SUCCESS =
+        'Report Submitted successfully';
 
     // Sentence Fragments, meant to have something appended when used
     public static final String NO_DATA_NAME = 'No data found by name: ';

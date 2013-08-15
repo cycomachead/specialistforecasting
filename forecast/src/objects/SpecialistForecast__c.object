@@ -2,7 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Specialist Forecast</label>
     <pluralLabel>Specialist Forecasts</pluralLabel>
-    <description>Primary Custom Object for Specialist Forecasting</description>
+    <description>Primary Custom Object for Specialist Forecasting that stores required info for each specialist forecast.</description>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableFeeds>true</enableFeeds>
@@ -55,6 +55,7 @@
         <formula>
             Opportunity__r.Account.Name
         </formula>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <type>Text</type>
     </fields>
     <fields>
@@ -62,12 +63,14 @@
         <label>Opportunity</label>
         <referenceTo>Opportunity</referenceTo>
         <relationshipName>SpecialistForecastToOpportunity</relationshipName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>FiscalYear__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>The Fiscal Year of the forecast record</inlineHelpText>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>The Fiscal Year of the forecast record, which should always be set automatically.</inlineHelpText>
         <label>Fiscal Year</label>
         <trackHistory>false</trackHistory>
         <picklist>
@@ -102,7 +105,8 @@
     <fields>
         <fullName>Month__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>The month the forecast belongs to.</inlineHelpText>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>The month the forecast belongs to, calculated from the Close Date.</inlineHelpText>
         <label>Month</label>
         <trackHistory>false</trackHistory>
         <picklist>
@@ -162,7 +166,8 @@
         <fullName>ForecastCloseDate__c</fullName>
         <externalId>false</externalId>
         <label>Close Date</label>
-        <inlineHelpText>Date the AE expects the opportunity to close</inlineHelpText>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>Date the AE expects the opportunity to close.</inlineHelpText>
         <required>true</required>
         <trackHistory>false</trackHistory>
         <type>Date</type>
@@ -170,6 +175,7 @@
     <fields>
         <fullName>ForecastType__c</fullName>
         <externalId>false</externalId>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <inlineHelpText>A product which may be associated with the forecast.</inlineHelpText>
         <label>Forecast Product Type</label>
         <trackHistory>true</trackHistory>
@@ -189,6 +195,7 @@
     </fields>
     <fields>
         <fullName>ForecastNotes__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <label>Forecast Notes</label>
         <length>32768</length>
         <type>LongTextArea</type>
@@ -196,6 +203,7 @@
     </fields>
     <fields>
         <fullName>MgrForecastNotes__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <label>Manager Forecast Notes</label>
         <length>32768</length>
         <type>LongTextArea</type>
@@ -203,7 +211,8 @@
     </fields>
     <fields>
         <fullName>ForecastStage__c</fullName>
-        <label>AE Forecast Stage</label>
+        <label>AE Opportunity Stage</label>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <inlineHelpText>Opportunity Stage chosen by the AE for the forecast.</inlineHelpText>
         <type>Picklist</type>
         <picklist>
@@ -266,9 +275,7 @@
     <fields>
         <fullName>ForecastCategory__c</fullName>
         <externalId>false</externalId>
-        <!-- <required>true</required> -->
         <label>Forecast Category</label>
-        <!-- FIXME helptext -->
         <trackHistory>true</trackHistory>
         <picklist>
             <controllingField>ForecastStage__c</controllingField>
@@ -338,18 +345,20 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>Based on the Opportunity Stage, select a category the forecast apples to.</inlineHelpText>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ForecastAmount__c</fullName>
         <required>true</required>
-        <label>AE Opportunity Amount</label>
+        <label>Opportunity Amount</label>
         <inlineHelpText>AE's forecast amount for his/her part of the opportunity.</inlineHelpText>
         <precision>16</precision>
         <scale>2</scale>
         <type>Currency</type>
         <trackHistory>true</trackHistory>
-        <description>AE's forecast amount for his/her part of the opportunity.s</description>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
     </fields>
     <fields>
         <fullName>ExcludeFromCalculation__c</fullName>
@@ -372,8 +381,10 @@
        <label>Product Lead</label>
        <length>80</length>
        <type>Text</type>
+       <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
     </fields>
     <fields>
+        <!-- Future: Consider removing this field, no longer needed? -->
         <fullName>OwnerCopy__c</fullName>
         <externalId>false</externalId>
         <label>Owner Copy</label>
@@ -381,6 +392,7 @@
         <referenceTo>User</referenceTo>
         <relationshipName>SpecialistForecastToUser</relationshipName>
         <trackHistory>false</trackHistory>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -390,16 +402,8 @@
             OwnerCopy__r.Manager.FirstName &amp; ' ' &amp; OwnerCopy__r.Manager.LastName
         </formula>
         <type>Text</type>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
     </fields>
-    <!-- <fields>
-        <fullName>FiscalQuarter__c</fullName>
-        <label>Fiscal Quarter</label>
-        <formula>
-            CASE(Month(ForecastCloseDate__c),12,Text(FiscalYear__c) &amp;' Q4' , 11,Text(FiscalYear__c) &amp;' Q4' , 1,Text(FiscalYear__c)  &amp;' Q4' ,10,Text(FiscalYear__c) &amp;' Q3' , 9,Text(FiscalYear__c) &amp;' Q3', 8,Text(FiscalYear__c) &amp; ' Q3' ,7,Text(FiscalYear__c) &amp; ' Q2' , 6,Text(FiscalYear__c) &amp;' Q2' , 5,Text(FiscalYear__c) &amp;' Q2' , 4,Text(FiscalYear__c) &amp;' Q1' , 3,Text(FiscalYear__c) &amp;' Q1' , 2,Text(FiscalYear__c) &amp;' Q1' , '')
-        </formula>
-        <type>Text</type>
-    </fields> -->
-
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
@@ -418,7 +422,6 @@
         <label>All</label>
         <language>en_US</language>
     </listViews>
-
     <recordTypes>
         <fullName>SpecialistForecastData</fullName>
         <description>Record Type assigned to platform or service cloud</description>
@@ -432,7 +435,3 @@
         <label>Specialist Forecast Opportunity Line Data</label>
     </recordTypes>
 </CustomObject>
-
-
-
-

@@ -27,41 +27,49 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Batch job for processing Specialist Forecast amounts to Specialist Forecast Reports
- *
- * To Run this Class FROM the Console:
+ *  Batch job for processing Specialist Forecasting
+ *  This job sets the Submitted Date of of Line Items to null.
  *
  */
-
 global with sharing class SpecialistForecastSubmitBatch implements
-    Database.Batchable<SpecialistForecastLineItem__c> {
+Database.Batchable<SpecialistForecastLineItem__c> {
 
-    public static final String DONT_EMAIL = ForecastHelper.DONT_EMAIL;
+    private static final String SUCCESS_SUBJ =
+        'Specialist Forecast Submit date batch Process Completed';
+    private static final String SUCCESS_BODY =
+        'Specialist Forecast Submitted date to null Batch Process has completed';
+    private static final String ERROR_SUBJ =
+        'Specialist Forecast Submit Date Batch Process Had Errors';
+    private static final String ERROR_BODY =
+        'The batch process to set submission dates to null had errors.\n\n';
 
     /** */
     global SpecialistForecastLineItem__c[] lineItemRecords { get;set; }
 
     /**
-     *
-     * @return
+     *  Grab all lineItems with a submission date.
      */
-    global SpecialistForecastLineItem__c[]  start(
+    global SpecialistForecastLineItem__c[] start(
     Database.BatchableContext context) {
-        lineItemRecords = [SELECT id, SubmittedDate__C FROM
-            SpecialistForecastLineItem__c WHERE SubmittedDate__c != null];
+        try {
+            lineItemRecords = [SELECT id, SubmittedDate__C FROM
+                SpecialistForecastLineItem__c WHERE SubmittedDate__c != null];
+        } catch (Exception ex) {
+            ForecastHelper.sendNotification(ERROR_SUBJ, ERROR_BODY +
+                ex.getMessage(), ForecastHelper.getCronEmail());
+        }
         return lineItemRecords;
     }
 
     /**
-     *
-     * @return
+     *  For all line items, set the SubmittedDate__c to null
      */
     global void execute(Database.BatchableContext context,
     SpecialistForecastLineItem__c[] items) {
         SpecialistForecastLineItem__c[] updatebleRecords = new
-            List<SpecialistForecastLineItem__c>();
+            SpecialistForecastLineItem__c[0];
 
-        for(SpecialistForecastLineItem__c line : items){
+        for (SpecialistForecastLineItem__c line : items) {
             line.SubmittedDate__C = null;
             updatebleRecords.add(line);
         }
@@ -69,45 +77,18 @@ global with sharing class SpecialistForecastSubmitBatch implements
         // now upsert at one shot
         try {
              UPDATE updatebleRecords;
-        } catch (DMLException e) {
-            String email = ForecastHelper.getCronEmail();
-            sendNotification('SpecialistForecast Batch Process Completed',
-                'Specialist Forecast submit Batch Process has completed', email);
+        } catch (DMLException ex) {
+            ForecastHelper.sendNotification(ERROR_SUBJ, ERROR_BODY +
+                ex.getMessage(), ForecastHelper.getCronEmail());
         }
     }
 
     /**
-     * Send error email notification to the gack email
-     * @param String subject
-     * @param String formattedBody
-     */
-    private static void sendNotification(String subject,
-    String formattedBody, String gackEmailIds) {
-        if (gackEmailIds == DONT_EMAIL) {
-            return;
-        }
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-
-        mail.setToAddresses(new String[] {gackEmailIds});
-        mail.setSubject(subject);
-        mail.setPlainTextBody(formattedBody);
-
-        try {
-            Messaging.sendEmail(new Messaging.Email[] { mail });
-        } catch(System.Exception ex) {
-        }
-    }
-
-    /**
-     *
-     * @return
+     *  Send an email notification when the batch successful completes
      */
     global void finish(Database.BatchableContext context) {
-        String email = ForecastHelper.getCronEmail();
-
-        sendNotification('Specialist Forecast Submit date batch Process Completed',
-                'Specialist Forecast Submitted date to null Batch Process has completed',
-                email);
+        ForecastHelper.sendNotification(SUCCESS_SUBJ, SUCCESS_BODY,
+            ForecastHelper.getCronEmail());
     }
 
 }

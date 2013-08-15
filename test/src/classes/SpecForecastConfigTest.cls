@@ -27,7 +27,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * Class for testing forecast configurations custom settings
+ *  Class for testing forecast configurations custom settings
+ *  NOTE: There aren't many tests here because configurations in custom settings
+ *  can change very easily. You should modify these tests as you modify your own
+ *  custom settings
+ *  A working example test is provided that uses some basic data.
  */
 
 @isTest(SeeAllData = true)
@@ -35,105 +39,49 @@ public class SpecForecastConfigTest {
 
     // Fill in SFCast Custom Settings.
     private static testMethod void createTestData() {
+        SObject[] settings = [SELECT Id FROM ForecastConfigurations__c limit 20];
+        DELETE settings;
         // New forecast config objects
+        // true forces an upsert of data.
+        ForecastHelper.setupBatchJobs(true);
+
     }
 
     // Test the data Retrieval from ForecastConfigurations custom settings
     private static testMethod void testRetrieveForecastConfigurations() {
-        Map<String, String> fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestLabel.BU_ENTERPRISE);
-        if (fConfig == null) {
-            System.assert(false, 'Null Item Found, test failed');
+        createTestData();
+        Map<String, String> batches =
+            RetrieveForecastConfigurations.getForecastConfigurationsByName(
+                SpecForecastTestLabel.SF_BATCH);
+        if (batches == null) {
+            System.assert(false, 'No Batch Configuration Found');
         }
-        System.assert(fConfig.get('ConfigurationValue').contains('AMER-FS,JP-FS,EMEA-FS,APAC-FS'));
-        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestLabel.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
-
-        try {
-            Set<String> valuesForEcommMember = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestLabel.CAT_ECOMM_MEMBER);
-            System.assert(false); // should have thrown exception
-        } catch(SpecialistForecastException ex) {
-            System.assert(true);
-        } catch(Exception ex) {
-            System.assert(false, 'An uxpected exception has occurred. ' + ex.getMessage());
-        }
-
-
-        Set<String> bUnits = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestLabel.CAT_BUSINESS_UNIT);
-        System.assert(bUnits.contains('Enterprise'));
-        System.assert(bUnits.contains('Commercial'));
-        System.assert(bUnits.contains('Public Sector'));
-        System.assert(bUnits.contains('Radian6'));
-        System.assert(bUnits.contains('Data.com'));
-
-        Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestLabel.CAT_GEO);
-        System.assert(geos.contains('AMER-FS'));
-        System.assert(geos.contains('JP-FS'));
-        System.assert(geos.contains('EMEA-FS'));
-        System.assert(geos.contains('APAC-FS'));
-        System.assert(geos.contains('AMER-PUBSEC'));
-        System.assert(geos.contains('R6-COO'));
-        System.assert(geos.contains('Data-Services'));
-        System.assert(geos.contains('Data-SVP'));
-        System.assert(geos.contains('Data-Marketing'));
-        System.assert(geos.contains('Data-Alliances'));
-
-        Set<String> validSubtypesNames = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestLabel.CAT_VALID_SUBTYPES);
-        System.assert(validSubtypesNames.contains(SpecForecastTestLabel.CAT_VALID_SUBTYPES_SALES));
-        System.assert(validSubtypesNames.contains(SpecForecastTestLabel.CAT_VALID_SUBTYPES_OUTLOOK));
-        System.assert(validSubtypesNames.contains(SpecForecastTestLabel.CAT_VALID_SUBTYPES_PLAN));
-
-        Set<String> validSubtypesValues = RetrieveForecastConfigurations.getForecastConfigurations(SpecForecastTestLabel.CAT_VALID_SUBTYPES);
-        System.assert(validSubtypesValues.contains(SpecForecastTestLabel.SUBTYPE_CLOSED
-            + ',' + SpecForecastTestLabel.SUBTYPE_COMMIT + ',' +
-            SpecForecastTestLabel.SUBTYPE_BEST_CASE + ',' +
-            SpecForecastTestLabel.SUBTYPE_PIPELINE));
-        System.assert(validSubtypesValues.contains(SpecForecastTestLabel.SUBTYPE_OUTLOOK));
-        System.assert(validSubtypesValues.contains(SpecForecastTestLabel.SUBTYPE_PLAN));
-
+        System.assert(batches.get(SpecForecastTestLabel.CONFIG_VAL).contains(
+            SpecForecastTestLabel.VALUE_YES));
+        System.assert(batches.get(SpecForecastTestLabel.CONFIG_CAT).contains(
+            SpecForecastTestLabel.CAT_STORE_BATCH_JOB));
+        System.assert(batches.get(SpecForecastTestLabel.ACTIVE) == 'true');
+        System.assert(batches.get(SpecForecastTestLabel.COMMENT) ==
+            SpecForecastTestLabel.BATCH_COMMENT);
     }
 
-    // Test the extra data Retrieval from ForecastConfigurations custom settings
-    private static testMethod void testExtraRetrieveForecastConfigurations() {
-
-        Map<String, String> fConfig;
-        //Test Commercial Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestLabel.BU_COMMERCIAL);
-        if (fConfig == null) {
-            System.assert(false, 'Null Item Found, test failed');
+    // Like the first method, but test for the submit batch properties.
+    // Simply a double-check. Both methods are identical.
+    private static testMethod void testRetrieveSubmitBatchConfig() {
+        createTestData();
+        Map<String, String> batches =
+            RetrieveForecastConfigurations.getForecastConfigurationsByName(
+                SpecForecastTestLabel.SUBMIT_BATCH);
+        if (batches == null) {
+            System.assert(false, 'No Batch Configuration Found');
         }
-
-        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestLabel.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
-
-        //Test Public Sector Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestLabel.BU_PUBLIC_SECTOR);
-        System.assert(fConfig.get('ConfigurationValue').contains('AMER-PUBSEC'));
-        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestLabel.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
-
-        //Test Data.com Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestLabel.BU_DATA_DOT_COM);
-
-        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestLabel.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
-
-        //Test Radian6 Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestLabel.BU_RADIAN6);
-        System.assert(fConfig.get('ConfigurationValue').contains('R6-COO'));
-        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestLabel.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
-
-        //Test Heroku Geos
-        fConfig = RetrieveForecastConfigurations.getForecastConfigurationsByName(SpecForecastTestLabel.BU_HEROKU);
-
-        System.assert(fConfig.get('ConfigurationCategory').contains(SpecForecastTestLabel.CAT_BUSINESS_UNIT));
-        System.assert(fConfig.get('IsActive') == 'true');
-
-        Set<String> geos = RetrieveForecastConfigurations.getForecastConfigurationNames(SpecForecastTestLabel.CAT_GEO);
-        System.assert(geos.contains('AMER/EMEA-CS'));
-        System.assert(geos.contains('APAC-CS'));
-        System.assert(geos.contains('JP-CS'));
-
+        System.assert(batches.get(SpecForecastTestLabel.CONFIG_VAL).contains(
+            SpecForecastTestLabel.VALUE_YES));
+        System.assert(batches.get(SpecForecastTestLabel.CONFIG_CAT).contains(
+            SpecForecastTestLabel.CAT_STORE_BATCH_JOB));
+        System.assert(batches.get(SpecForecastTestLabel.ACTIVE) == 'true');
+        System.assert(batches.get(SpecForecastTestLabel.COMMENT) ==
+            SpecForecastTestLabel.BATCH_COMMENT);
     }
 
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Forecast Hierarchy Configurations</label>
+    <label>Forecast Hierarchy Configuration</label>
     <pluralLabel>Forecast Hierarchy Configurations</pluralLabel>
-    <description>Forecast Hierarchy Configurations to Map a specific Role to a User that will act as a manager</description>
+    <description>Forecast Hierarchy Configurations map a specific Role to a User that will act as a manager</description>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableFeeds>true</enableFeeds>
@@ -18,16 +18,16 @@
     <fields>
         <fullName>HierarchyRole__c</fullName>
         <label>Hierarchy Role</label>
-        <length>20</length>
+        <length>64</length>
         <required>true</required>
         <type>Text</type>
     </fields>
     <fields>
-    <fullName>HierarchyRoleUser__c</fullName>
-    <label>Hierarchy Role User</label>
-    <referenceTo>User</referenceTo>
-    <relationshipName>HierarchyRoleUsers</relationshipName>
-    <type>Lookup</type>
+        <fullName>HierarchyRoleUser__c</fullName>
+        <label>Hierarchy Role User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>HierarchyRoleUsers</relationshipName>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>IsManager__c</fullName>
@@ -64,7 +64,7 @@
         <type>Text</type>
         <unique>true</unique>
     </fields>
-   <fields>
+    <fields>
         <fullName>checkAccessToSyncJob__c</fullName>
         <defaultValue>false</defaultValue>
         <label>Check AccessTo SyncJob</label>
@@ -80,7 +80,7 @@
         <columns>Comment__c</columns>
         <columns>HashForCheck__c</columns>
         <columns>ExtIdentifier__c</columns>
-    <columns>CheckAccessToSyncJob__c</columns>
+        <columns>CheckAccessToSyncJob__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

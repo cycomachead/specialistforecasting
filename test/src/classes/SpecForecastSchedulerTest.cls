@@ -38,22 +38,10 @@ public class SpecForecastSchedulerTest {
     private static testMethod void testForecastScheduler() {
         try{
             String sch = '0 50 * * * ?';
-            System.schedule('AppStore Scheduler Job', sch, new ForecastScheduler());
+            System.schedule('Specialist Forecast Scheduler Job', sch, new ForecastScheduler());
             System.assert(true);
-        } catch(Exception e) {
-            System.assert(false, 'Test failed. ' + e.getMessage());
+        } catch (Exception ex) {
+            System.assert(false, 'Test failed. ' + ex.getMessage());
         }
     }
-
-    private static testMethod void testStartScheduledJob() {
-        try {
-            StoreBatchAdminController storeBatchAdmin = new StoreBatchAdminController();
-            storeBatchAdmin.setNotificationMinute('50');
-            storeBatchAdmin.startScheduledJob();
-            System.assert(true);
-        } catch (Exception e) {
-            System.assert(false, 'Test Failed. ' + e.getMessage());
-        }
-    }
-
 }

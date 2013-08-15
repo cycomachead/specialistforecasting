@@ -27,9 +27,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 */
 
 /**
- * To retrieve forecast configurations
+ * To retrieve forecast configurations from custom settings
  */
-
 public with sharing class RetrieveForecastConfigurations {
 
     private static Map<String, Set<String>> forecastConfigs = new
@@ -42,16 +41,14 @@ public with sharing class RetrieveForecastConfigurations {
         SpecialistForecastException.NO_DATA_CAT;
     private static Final String EMPTY_CAT =
         SpecialistForecastException.EMPTY_CAT;
-    private static final String CRON_SCHED_ERR =
-        SpecialistForecastException.CRON_SCHED_ERR;
     private static final String  NO_DATA_NAME =
         SpecialistForecastException.NO_DATA_NAME;
 
-    private static final String NAME = ForecastHelper.NAME;
+    private static final String NAME       = ForecastHelper.NAME;
     private static final String CONFIG_CAT = ForecastHelper.CONFIG_CAT;
     private static final String CONFIG_VAL = ForecastHelper.CONFIG_VAL;
-    private static final String ACTIVE = ForecastHelper.ACTIVE;
-    private static final String COMMENT = ForecastHelper.COMMENT;
+    private static final String ACTIVE     = ForecastHelper.ACTIVE;
+    private static final String COMMENT    = ForecastHelper.COMMENT;
 
     /**
      *  This method will fetch forecast configurations custom settings

@@ -1,0 +1,12 @@
+Use Specialist Forecasting to allow Specialist AE's to generate more specific and accurate forecasts for each Opportunity based on individual products or services. Generate reports, better manage expectations, and help revenue grow!
+
+Specialist Forecasting lets AE's create forecasts separate from the Core AE's. Maybe an AE's wants to forecast only a specific product on as part of a larger deal, and can set his/her own forecast amounts. Maybe an AE expects a deal to close at a later time and would like to have a different close date. Specialist Forecasting give you the power to have more AE's generate reports for their portions of each opportunity.
+
+Key Features Include:
+* Easy to use app with minimal configuration!
+* Fully Customizable as an Unmanaged Package
+* Support for automatic generation of forecast reports
+* The ability to create a separate role hierarchy
+* Allow Managers to override their reports' forecasts and submit new reports to executives
+* Allow Forecasting based on specific product categories or segments
+* And Many More!

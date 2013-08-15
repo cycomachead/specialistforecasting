@@ -1,7 +1,0 @@
-class SpecForecastBatchTestclass
-class SpecForecastConfigTestclass
-class SpecForecastHelperTestclass
-class SpecForecastHierarchyHelperTestclass
-class SpecForecastSchedulerTestclass
-class SpecForecastTestclass
-class SpecForecastTestLabelclass

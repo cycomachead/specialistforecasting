@@ -103,6 +103,7 @@
         <members>SpecialistForecast__c</members>
         <members>SpecialistForecastLineItem__c</members>
         <members>SpecialistForecastQuota__c</members>
+        <members>SpecialistForecastOverride__c</members>
         <members>SpecialistForecastTab</members>
         <members>ForecastHierarchyConfigurations__c</members>
         <name>CustomTab</name>
@@ -127,6 +128,3 @@
     </types>
     <version>28.0</version>
 </Package>
-
-
-

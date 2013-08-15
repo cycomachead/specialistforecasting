@@ -26,14 +26,12 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISE
 OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 -->
 
-
-<apex:page showHeader="true" docType="html-5.0" cache="false"
+<apex:page showHeader="true" docType="html-5.0" cache="false"  sideBar="false"
     tabStyle="SpecialistForecastTab__tab" controller="SpecialistForecastController"
     title="Specialist Forecast Reports" standardStylesheets="false">
     <apex:stylesheet value="{!$Resource.SpecialistForecastCSS}" />
 
     <apex:form>
-        <!-- id="spforecastForm" -->
         <apex:actionfunction name="callMethod" action="{!viewSpecialistReport}" />
 
         <!-- Override Popup -->
@@ -93,7 +91,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                 <apex:pageBlock>
                    <apex:pagemessages />
                    <div class="pbSubheader brandTertiaryBgr tertiaryPalette">
-                       <h3>{!preparedByName} {!categoryTitle} Forecasts</h3> <!-- FIXME this name is terrible -->
+                       <h3>{!preparedByName} {!categoryTitle} Forecasts</h3>
                    </div>
                    <br />
                    <table class="topTable" width="1000">
@@ -394,7 +392,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
                 </table>
             </apex:pageBlock>
         </div>
-
     </apex:form>
     <!-- End main page form -->
     <script type="text/javascript">

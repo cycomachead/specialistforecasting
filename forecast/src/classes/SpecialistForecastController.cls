@@ -36,32 +36,37 @@ public with sharing class SpecialistForecastController {
     /** Static helper strings and error messages. */
     private static final String CLOSED      = ForecastHelper.CLOSED;
     private static final String CLOSED_WON  = ForecastHelper.CLOSED_WON;
-    private static final String COMMIT_MSG  = ForecastHelper.COMMIT_MSG;
+    private static final String COMMIT_MSG      = ForecastHelper.COMMIT_MSG;
     private static final String BEST_CASE   = ForecastHelper.BEST_CASE;
     private static final String QTR_ALL     = ForecastHelper.QTR_ALL;
     private static final String FOR_ID      =
-            SpecialistForecastException.FOR_ID;
+        SpecialistForecastException.FOR_ID;
     private static final String USER_ID_NULL =
-            SpecialistForecastException.USER_ID_NULL + FOR_ID;
+        SpecialistForecastException.USER_ID_NULL + FOR_ID;
     private static final String ROLE_ID_NULL =
-            SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
+        SpecialistForecastException.ROLE_ID_NULL + FOR_ID;
     private static final String USER_MISSING_ID =
-            SpecialistForecastException.USER_MISSING_ID;
+        SpecialistForecastException.USER_MISSING_ID;
     private static final String NO_ACCESS =
-            SpecialistForecastException.NO_ACCESS;
+        SpecialistForecastException.NO_ACCESS;
     private static final String UNEXPECTED =
-            SpecialistForecastException.UNEXPECTED;
-    private static final String NO_PERMS = 'You do not have permission to view reports for this user.';
-    private static final String REFRESH_SUCCESS = 'Data refresh request submitted successfully.';
-    private static final String OVER_ERROR = 'Failed to update the Forecast Override ';
-    private static final String OVERRIDE_SUCCESS = 'Override Amount updated successfully';
-    private static final String REP_SUCCESS = 'Report Submitted successfully';
+        SpecialistForecastException.UNEXPECTED;
+    private static final String NO_PERMS =
+        SpecialistForecastException.NO_PERMS;
+    private static final String REFRESH_SUCCESS =
+        SpecialistForecastException.REFRESH_SUCCESS;
+    private static final String OVER_ERROR =
+        SpecialistForecastException.OVER_ERROR;
+    private static final String OVERRIDE_SUCCESS =
+        SpecialistForecastException.OVERRIDE_SUCCESS;
+    private static final String REP_SUCCESS =
+        SpecialistForecastException.REP_SUCCESS;
 
     // The max size of the recent users list, mostly to keep things manageable.
     private static final Integer MAX_BACK_SIZE = 16;
     // Access Check if user can view forecast reports
     private Boolean canView = true;
-    // TODO
+    // Maps a Mananger to their direct reports
     private Map<Id,Set<Id>> mapSecondLevelUsersAndChild = new Map<Id,Set<Id>>();
     /**
      *  This keeps track of basic user properities used for generating the
@@ -346,9 +351,9 @@ public with sharing class SpecialistForecastController {
                 bestCaseMgrOverrideAmount      = 0,
                 pipelineAmount                 = 0,
                 quotaAmount                    = 0,
-                subTotalclosedAmount           = 0, // FIXME
-                subTotalcommitAmount           = 0,
-                subTotalbestCaseAmount         = 0,
+                subTotalclosedAmount           = 0, // Used for calcuation total
+                subTotalcommitAmount           = 0, // amounts for second level
+                subTotalbestCaseAmount         = 0, // forecasts
                 subTotalcommitOverrideAmount   = 0,
                 subTotalbestCaseOverrideAmount = 0,
                 subTotalpipelineAmount         = 0,
@@ -418,7 +423,6 @@ public with sharing class SpecialistForecastController {
             // Iterate over a user's forcast data to create their totals.
             // Calculate values, don't add to table yet.
             for (Id childLineOwnerId : mapSecondLevelUsersAndChild.get(lineOwnerID)) {
-                // lineItem is TODO
                 lineItem = ownerlineItemsMap.get(childLineOwnerId);
                 if (lineItem != null) {
                     haslineItemstoDisplay = true;

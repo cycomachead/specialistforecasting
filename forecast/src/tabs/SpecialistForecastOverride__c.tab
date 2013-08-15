@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>View and Search for all Specialist Forecast Overrides.</description>
-    <label>Specialist Forecast Overrides</label>
+    <description>View and Search for all Specialist Forecast Quotas.</description>
+    <label>Specialist Forecast Quotas</label>
     <customObject>true</customObject>
     <mobileReady>false</mobileReady>
     <motif>Custom147: Scales</motif>

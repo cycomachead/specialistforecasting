@@ -44,6 +44,7 @@ public class SpecForecastBatchTest {
     private static testMethod void testBatch() {
         Test.startTest();
         Integer count = [SELECT count() FROM SpecialistForecast__c];
+        count = (count < 1) ? 1 : count;
         Id batchProcessId = Database.executeBatch(new SpecialistForecastBatch(), count);
         Test.stopTest();
         System.debug('specialistForecastBatchID = ' + batchProcessId);

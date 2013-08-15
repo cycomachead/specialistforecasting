@@ -2,8 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Specialist Forecast Line Item</label>
     <pluralLabel>Specialist Forecast Line Items</pluralLabel>
-    <!-- TODO -->
-    <description>Specialist Forecast Line Items</description>
+    <description>Specialist Forecast Line Items hold data used in the Specialist Forecasting Package</description>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableFeeds>true</enableFeeds>
@@ -44,6 +43,7 @@
     </actionOverrides>
     <fields>
         <fullName>ExcludeFromCalculation__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Exclude From Calculation?</label>
@@ -53,6 +53,7 @@
     </fields>
     <fields>
         <fullName>ExtIdentifier__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
         <label>External Identifier</label>
@@ -66,7 +67,8 @@
     <fields>
         <fullName>Month__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>The month the specialist forecast applies to.</inlineHelpText>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>The month the specialist forecast applies to, calculated based on the Close Date.</inlineHelpText>
         <label>Month</label>
         <picklist>
             <picklistValues>
@@ -126,7 +128,8 @@
     <fields>
         <fullName>FiscalYear__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Returns the FY of the record</inlineHelpText>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>The Fiscal Year of the forecast, set from the close date.</inlineHelpText>
         <label>Fiscal Year</label>
         <picklist>
             <picklistValues>
@@ -161,16 +164,18 @@
     </fields>
     <fields>
         <fullName>ForecastNotes__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>Forecast Notes</label>
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
+        <visibleLines>6</visibleLines>
     </fields>
     <fields>
         <fullName>ForecastOwner__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Forecast Owner</label>
@@ -183,6 +188,7 @@
     </fields>
     <fields>
         <fullName>MyBestCaseOverridden__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>My Best Case Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -192,6 +198,7 @@
     </fields>
     <fields>
         <fullName>MyCommitOverridden__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>My Commit Overridden?</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -201,7 +208,8 @@
     </fields>
     <fields>
         <fullName>OriginalBestCaseAmount__c</fullName>
-        <description>AE's forecasted opportunity best case amount for his/her specific products</description>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
+        <inlineHelpText>AE's forecasted opportunity best case amount for his/her specific products</inlineHelpText>
         <externalId>false</externalId>
         <label>Original Best Case Amount</label>
         <precision>16</precision>
@@ -213,7 +221,7 @@
     </fields>
     <fields>
         <fullName>OriginalClosedAmount__c</fullName>
-        <description>AE's forecasted opportunity closed amount for their specific products</description>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>Original Closed Amount</label>
         <precision>16</precision>
@@ -225,7 +233,7 @@
     </fields>
     <fields>
         <fullName>OriginalCommitAmount__c</fullName>
-        <description>AE's forecasted opportunity commit amount for their specific products</description>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>Original Commit Amount</label>
         <precision>16</precision>
@@ -237,8 +245,7 @@
     </fields>
     <fields>
         <fullName>OriginalPipelineAmount__c</fullName>
-        <description>AE's forecasted opportunity pipeline amount for their specific products</description>
-        <externalId>false</externalId>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>        <externalId>false</externalId>
         <label>Original Pipeline Amount</label>
         <precision>16</precision>
         <required>false</required>
@@ -249,6 +256,7 @@
     </fields>
     <fields>
         <fullName>SpecialistForecastOverride__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Specialist Forecast Override</label>
@@ -261,6 +269,7 @@
     </fields>
     <fields>
         <fullName>SubmittedDate__c</fullName>
+        <description>Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs</description>
         <externalId>false</externalId>
         <label>Submitted Date</label>
         <required>false</required>
@@ -377,5 +386,4 @@
     </recordTypes>
 
     <searchLayouts/>
-
 </CustomObject>

@@ -9,5 +9,6 @@
     <tab>SpecialistForecast__c</tab>
     <tab>SpecialistForecastLineItem__c</tab>
     <tab>SpecialistForecastQuota__c</tab>
+    <tab>SpecialistForecastOverride__c</tab>
     <tab>ForecastHierarchyConfigurations__c</tab>
 </CustomApplication>

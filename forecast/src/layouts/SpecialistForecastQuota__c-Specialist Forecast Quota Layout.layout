@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
-    <detailHeading>true</detailHeading>
+        <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Specialist Forecast Quota Detail</label>
         <layoutColumns>
@@ -17,11 +17,9 @@
                 <behavior>Edit</behavior>
                 <field>QuotaAmount__c</field>
             </layoutItems>
-          
-           
         </layoutColumns>
         <layoutColumns>
-             <layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>FiscalYear__c</field>
             </layoutItems>
@@ -29,12 +27,6 @@
                 <behavior>Edit</behavior>
                 <field>SpecialistForecastUser__c</field>
             </layoutItems>
-            <!-- FIXME
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>CurrencyIsoCode</field>
-            </layoutItems>
-            -->
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Month__c</field>
@@ -44,7 +36,7 @@
     </layoutSections>
     <layoutSections>
     <detailHeading>true</detailHeading>
-        <editHeading>true</editHeading>
+    <editHeading>true</editHeading>
         <label>System Information</label>
         <layoutColumns>
             <layoutItems>
@@ -61,7 +53,7 @@
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
-    <detailHeading>true</detailHeading>
+        <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <layoutColumns/>
         <style>CustomLinks</style>
