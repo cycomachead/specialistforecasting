@@ -1,4 +1,5 @@
 # Specialist Forecasting
+![icon](/assets/icon.png)
 ## Salesforce Labs Unmanaged Package
 Use Specialist Forecasting to allow Specialist AE's to generate more specific and accurate forecasts for each Opportunity based on individual products or services. Generate reports, better manage expectations, and help revenue grow!
 ## Features (Extended Description)
@@ -22,10 +23,11 @@ To make Specialist Forecasting work for your organization, you'll want to change
 All users of SpecialistForecasting must have a UserRole to be able to access the application. (Forecasting and reports are based heavily on a role hierarchy). Additionally, a lookup filter is placed on the User object so that when searching for users, only users with a UserRole can be found.
 
 Upon install, you will need to enable access to Specialist Forecasting on the User Profiles of users who will be working with forecasts. These are the tabs and objects they should have access to (by default). All these settings can be changes as necessary.
-###### Custom App Settings
+##### Custom App Settings
 The "Specialist Forecasting" app should be set to visible.
-######  Custom Tab Settings
+#####  Custom Tab Settings
 The following tabs should all be set to "Default On" The main tab a user needs to work with Specialist Forecasting, is the "Specialist Forecast Reports" tab. (All other tabs are significantly less important, but useful.)
+
 * Forecast Hierarchy Configurations
 * Specialist Forecast Quotas
 * Specialist Forecast Batch Processing
@@ -33,14 +35,17 @@ The following tabs should all be set to "Default On" The main tab a user needs t
 * Specialist Forecast Line Items
 * Specialist Forecasts
 * Specialist Forecast Overrides
-###### Custom Object Settings
+
+##### Custom Object Settings
 CRUD needs to be updated for the five custom objects. While you may tweak these settings as necessary, all users should have Create, Read, and Edit permissions at minimum.
-Forecast Hierarchy Configurations. (Create and and Edit are optional here.)
-Specialist Forecasts
-Specialist Forecast Line Items
-Specialist Forecast Quotas
-Specialist Forecast Overrides
-###### Notes
+
+* Forecast Hierarchy Configurations. (Create and and Edit are optional here.)
+* Specialist Forecasts
+* Specialist Forecast Line Items
+* Specialist Forecast Quotas
+* Specialist Forecast Overrides
+
+##### Notes
 Users, of course, will still need access to standard objects, like Opportunities and Accounts to use Specialist Forecasting. Additionally, you may add the Specialist Forecasts Reports tab to other applications (like Sales) if you feel that it fits better in another place for your company.
 #### Basic Configuration Settings
 Specialist Forecasting uses custom settings for some configurations. A sample set of configurations is provided as [CSV](/forecast/data/SampleConfigurations.csv) which can be data loaded into your organization. Each setting has comments as to what it controls. Currently, the use of custom settings is limited, however, you could easily expand the application to allow readable settings for a variety of additional parameters. (Read below for basic instructions.)
