@@ -74,7 +74,7 @@ For more information on how to use the Apex System Scheduler, refer to [this pag
 A forecast may have a product type associated with it. By default, there are two products, "Product 1" and "Product 2" which are defined in the file `/objects/SpecialistForecast__c.object`. They belong to the `ForecastType__c` field and you may simply add or change the fields in the metadata file with no ill effects. This is used mainly as a way to separate forecasts, and isn't required for the app to work properly.
 
 ### Building
-Currently, deployment of specialist forecasting is done using `ant`. Move the files from [/tools](/tools), if you'd like and run the command   `ant deployForecasts`. The build file will need to be adjusted fir your installation, so modify [build.properties](/tools/build.properities) to contain the info you need. You should also enter in your Org login information.
+Currently, deployment of specialist forecasting is done using `ant`. Move the files from [/tools](/tools), if you'd like and run the command   `ant deployForecast`. The build file will need to be adjusted fir your installation, so modify [build.properties](/tools/build.properities) to contain the info you need. You should also enter in your Org login information.
 
 There are quite a few targets contained in build.xml that aren't necessary for deployment, but may come in handy.
 ### Code Overview

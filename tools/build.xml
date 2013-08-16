@@ -27,7 +27,7 @@
         <pathelement location="${loader.dir}/classes"/>
     </path>
 
-    <import file="${tools.dir}/build/tools.xml"/>
+    <import file="${tools.dir}/tools.xml"/>
 
     <echo message="build dir: ${build.dir}"/>
     <echo message="Java Home: ${JAVA_HOME}"/>
@@ -36,7 +36,7 @@
     <echo />
 
     <echo message="forecastHome: ${forecast.home}"/>
-    <echo message="test.home: ${tests.home}"/>
+    <echo message="test.home: ${forecast.home}"/>
     <echo />
 
     <taskdef name="deploy" classname="com.salesforce.ant.DeployTask" classpath="${tools.home}/java/ext/ant-salesforce.jar"/>
