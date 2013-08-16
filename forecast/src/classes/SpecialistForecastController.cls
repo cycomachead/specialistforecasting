@@ -925,7 +925,7 @@ public with sharing class SpecialistForecastController {
     }
 
     /** True IFF a user is overriding their own reports forcasts */
-    private boolean isSelfOverride() {
+    public boolean isSelfOverride() {
         return UserInfo.getUserId() == lineItemOwnerID;
     }
 

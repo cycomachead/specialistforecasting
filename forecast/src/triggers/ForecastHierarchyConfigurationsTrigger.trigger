@@ -38,20 +38,20 @@ trigger ForecastHierarchyConfigurationsTrigger on ForecastHierarchyConfiguration
 
     if (Trigger.isBefore) {
         if (Trigger.isInsert || Trigger.isUpdate) {
-            for (ForecastHierarchyConfigurations__c forecastConfigurations : Trigger.new) {
-                if (forecastConfigurations.HierarchyRoleUser__c == null
-                || forecastConfigurations.HierarchyRole__c == null) {
-                    forecastConfigurations.addError('Failed Validation #1.'
+            for (ForecastHierarchyConfigurations__c fhConfig : Trigger.new) {
+                if (fhConfig.HierarchyRoleUser__c == null
+                || fhConfig.HierarchyRole__c == null) {
+                    fhConfig.addError('Failed Validation #1.'
                         + 'User and Role are required.');
                 }
-                if (forecastConfigurations.IsActive__c) {
+                if (fhConfig.IsActive__c) {
                     //duplicate check
-                    strHash = HierarchyUtil.createHash(forecastConfigurations);
+                    strHash = HierarchyUtil.createHash(fhConfig);
                     if (mapForDupe.get(strHash) == null) {
-                        forecastConfigurations.HashForCheck__c = strHash;
-                        mapForDupe.put(strHash, forecastConfigurations);
+                        fhConfig.HashForCheck__c = strHash;
+                        mapForDupe.put(strHash, fhConfig);
                     } else {
-                        forecastConfigurations.addError('Failed Validation #2. '
+                        fhConfig.addError('Failed Validation #2. '
                          + 'Error while inserting or updating a duplicate record.');
                     }
                 }
@@ -76,8 +76,8 @@ trigger ForecastHierarchyConfigurationsTrigger on ForecastHierarchyConfiguration
         if (Trigger.isInsert || Trigger.isUpdate) {
             // get the roles that are added or updated
             Set<String> newOrUpdatedRoles = new Set<String>();
-            for (ForecastHierarchyConfigurations__c forecastConfigurations : Trigger.new) {
-                newOrUpdatedRoles.add(forecastConfigurations.HierarchyRole__c);
+            for (ForecastHierarchyConfigurations__c fhConfig : Trigger.new) {
+                newOrUpdatedRoles.add(fhConfig.HierarchyRole__c);
             }
 
             // get the list of existing mappings for these roles
@@ -98,18 +98,18 @@ trigger ForecastHierarchyConfigurationsTrigger on ForecastHierarchyConfiguration
                 existingRoles.add(config.HierarchyRole__c);
             }
 
-            for(ForecastHierarchyConfigurations__c forecastConfigurations : Trigger.new) {
-                if (forecastConfigurations.IsActive__c && forecastConfigurations.IsManager__c) {
+            for(ForecastHierarchyConfigurations__c fhConfig : Trigger.new) {
+                if (fhConfig.IsActive__c && fhConfig.IsManager__c) {
                     if (Trigger.isInsert) {
-                        if (existingRoles.contains(forecastConfigurations.HierarchyRole__c) ) {
-                            forecastConfigurations.addError('Failed Validation'
+                        if (existingRoles.contains(fhConfig.HierarchyRole__c) ) {
+                            fhConfig.addError('Failed Validation'
                             + '#4. An active User Mapping for this Role already exists.');
                         }
                     }
                     if (Trigger.isUpdate) {
-                        if (existingRoles.contains(forecastConfigurations.HierarchyRole__c)
-                        && forecastConfigurations.HierarchyRole__c != Trigger.oldMap.get(forecastConfigurations.Id).HierarchyRole__c) {
-                            forecastConfigurations.addError('Failed Validation'
+                        if (existingRoles.contains(fhConfig.HierarchyRole__c)
+                        && fhConfig.HierarchyRole__c != Trigger.oldMap.get(fhConfig.Id).HierarchyRole__c) {
+                            fhConfig.addError('Failed Validation'
                             + '#5. An active User Mapping for this Role already exists.');
                         }
                     }

@@ -40,6 +40,9 @@ trigger SpecialistForecastTrigger on SpecialistForecast__c bulk(before insert,
                 if (sf.ForecastCloseDate__c == null) {
                     sf.addError('Please supply a date for the forecast.');
                 }
+                if (sf.Opportunity__c == null) {
+                    sf.addError('Please supply an Opportunity for the forecast.');
+                }
                 if (sf.ForecastStage__c == null) {
                     sf.addError('Please supply a stage for the forecast.');
                 }

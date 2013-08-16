@@ -69,16 +69,10 @@ public with sharing class SpecForecastHierarchyUtilTest {
         SpecialistForecastException.PARENT_ID_NULL;
 
     static {
-        //EVP WW Corporate Sales Hillary's level by role
         roleTestDataMap.put('00E30000000tBgV', new HierarchyTestData('00E30000000tBgV', 'SVP Corporate Sales', '00E30000000raoJ', true, false, true, 5));
-        //EMEA CS VP by role
         roleTestDataMap.put('00E00000006DERY', new HierarchyTestData('00E00000006DERY', 'Reg 1 - A - B', '00E30000000tBgV', true, false, true, 4));
-
-        //Hillary's level by user
         userTestDataMap.put('005300000013TxE', new HierarchyTestData('00E30000000tBgV', 'SVP Corporate Sales', '00E30000000raoJ', true, false, true, 5));
-        //EMEA CS VP by user Rob
         userTestDataMap.put('00530000000qbHh', new HierarchyTestData('00E00000006DERY', 'Reg 1 - A - B', '00E30000000tBgV', true, false, true, 4));
-
         //test data is retrieved as a Map
         testDataAsMap.put('00E30000000tBgV', new Map<String,String> {'SVP Corporate Sales'=>'Joe Six-Pack',
                                                                         'Reg2 - a - VP'=>'Ronald McDonald',

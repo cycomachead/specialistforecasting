@@ -304,10 +304,10 @@ public with sharing class SpecForecastTest {
     public static testMethod void testUserWrapper() {
         String uid = UserInfo.getUserId();
         SpecialistForecastController cont = new SpecialistForecastController();
-        // Object uw = SpecialistForecastController.getUserInfo(uid);
-        //System.assert(uw.Name == UserInfo.getName());
-        //System.assert(uw.uid == uid);
-        //System.assert(uw.firstName == UserInfo.getFirstName());
+        SpecialistForecastController.UserWrapper uw = cont.getUserInfo(uid);
+        System.assert(uw.userName == UserInfo.getName());
+        System.assert(uw.userId == uid);
+        System.assert(uw.firstName == UserInfo.getFirstName());
     }
 
     /** Simple test of SFcastLineItem methods for empty cases. */
@@ -326,22 +326,57 @@ public with sharing class SpecForecastTest {
     public static testMethod void testPopups() {
         SpecialistForecastController cont = new SpecialistForecastController();
         // Simulate clicking on forecast owner's row.
-        cont.lineItemOwnerId = cont.sfLI.ForecastOwner__c;
+        cont.lineItemOwnerId = UserInfo.getUserId();
         System.assert(cont.isSelfOverride());
-        // No popup's displayed by default.
-        System.assert(!cont.displayPopup);
-        System.assert(!cont.displayDrilDownPopup);
+        // popups null by default.
+        System.assert(cont.displayPopup == null);
+        System.assert(cont.displayDrilDownPopup == null);
         cont.showOverridePopup();
         System.assert(cont.displayPopup);
         cont.closeOverridePopup();
         System.assert(!cont.displayPopup);
-        cont.showDrillDownPopup();
+        // Must reset owner after initialized called in close method
+        cont.lineItemOwnerId = UserInfo.getUserId();
+        cont.showDrilDownPopup();
         System.assert(cont.displayDrilDownPopup);
-        cont.closeDrillDownPopup();
+        cont.closeDrilDownPopup();
         System.assert(!cont.displayDrilDownPopup);
         cont.initializeOverrideVariables();
         System.assertEquals('', cont.lineItemOwnerId);
     }
+
+    /** Test the Back Link with a bad UID to see what happens. */
+    public static testMethod void testBackLink() {
+        SpecialistForecastController cont = new SpecialistForecastController();
+        cont.setRecentsList();
+        cont.backLink();
+        System.assert(cont.preparedByUser.contains(UserInfo.getName()));
+        Id test = [SELECT Id FROM User limit 1].Id;
+        cont.selectedBackUser = test;
+        cont.backLink();
+        System.assert(cont.sfLI.ForecastOwner__c == test);
+    }
+
+    /** Test Setting fiscal years method. */
+    public static testMethod void fiscalYears() {
+        SpecialistForecastController cont = new SpecialistForecastController();
+        cont.setFiscalYears();
+        cont.setFiscalYears(new SelectOption[0]);
+        System.assertEquals(0, cont.getFiscalYears().size());
+    }
+
+
+    /** Test Viewing a report */
+    public static testMethod void veiwReport() {
+        SpecialistForecastController cont = new SpecialistForecastController();
+        try {
+            cont.viewSpecialistReport();
+            System.assert(true, 'no errors when trying to view report');
+        } catch (Exception ex) {
+            System.assert(false, 'errors when trying to view report');
+        }
+    }
+
 
     /**************************************************************************/
     /** Detele all forecast records and line items from org. */
@@ -351,6 +386,7 @@ public with sharing class SpecForecastTest {
         SpecialistForecastLineItem__c[] li = [SELECT id FROM SpecialistForecastLineItem__c];
         DELETE li;
     }
+
     /**
      * set up page reference object for testing
      */

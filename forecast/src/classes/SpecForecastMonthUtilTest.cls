@@ -194,6 +194,12 @@ public with sharing class SpecForecastMonthUtilTest {
         System.assertEquals(MonthUtil.getFY(1896, 6), 95);
         System.assertEquals(MonthUtil.getFY(2000, 1), 99);
         System.assertEquals(MonthUtil.getFY(1776, 2), 75);
+        try {
+            MonthUtil.reset(27, false);
+            System.assert(false); // error expected
+        } catch (Exception ex) {
+            System.assert(true);
+        }
         MonthUtil.resetFromOrg(); // precaution for future tests.
     }
 

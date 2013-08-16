@@ -20,6 +20,7 @@
         <members>SpecForecastMonthUtilTest</members>
         <members>SpecForecastSchedulerTest</members>
         <members>SpecForecastTest</members>
+        <members>SpecForecastTestTrigger</members>
         <members>SpecForecastTestLabel</members>
         <name>ApexClass</name>
     </types>
