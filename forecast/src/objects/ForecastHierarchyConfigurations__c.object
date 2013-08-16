@@ -2,7 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Forecast Hierarchy Configuration</label>
     <pluralLabel>Forecast Hierarchy Configurations</pluralLabel>
-    <description>Forecast Hierarchy Configurations map a specific Role to a User that will act as a manager</description>
+    <description>Forecast Hierarchy Configurations map a specific Role to a User that will act as a manager. Part of the Specialist Forecasting AppExchange package from Salesforce Labs.</description>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableFeeds>true</enableFeeds>

@@ -37,11 +37,20 @@ global with sharing class ForecastIterable implements Iterator<AggregateResult> 
 
     global ForecastIterable() {
         count = 0;
-        ownerMap = [SELECT OwnerId, ForecastCategory__c, FiscalYear__c, Month__c,
-                     SUM(ForecastAmount__c) amnt FROM SpecialistForecast__c
-                    WHERE  ExcludeFromCalculation__c != true GROUP By OwnerId,
-                    ForecastCategory__c, FiscalYear__c, Month__c Order by OwnerID,
-                    FiscalYear__c, Month__c];
+        ownerMap = [SELECT OwnerId,
+                           ForecastCategory__c,
+                           FiscalYear__c,
+                           Month__c,
+                    SUM(ForecastAmount__c) amnt
+                    FROM SpecialistForecast__c
+                    WHERE ExcludeFromCalculation__c != true
+                    GROUP By OwnerId,
+                             ForecastCategory__c,
+                             FiscalYear__c,
+                             Month__c
+                    ORDER by OwnerID,
+                             FiscalYear__c,
+                             Month__c];
     }
 
     global boolean hasNext() {

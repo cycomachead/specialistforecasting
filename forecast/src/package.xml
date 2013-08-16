@@ -13,6 +13,14 @@
         <members>SpecialistForecastSubmitBatch</members>
         <members>SFcastLineItem</members>
         <members>ForecastScheduler</members>
+        <members>SpecForecastBatchTest</members>
+        <members>SpecForecastConfigTest</members>
+        <members>SpecForecastHelperTest</members>
+        <members>SpecForecastHierarchyUtilTest</members>
+        <members>SpecForecastMonthUtilTest</members>
+        <members>SpecForecastSchedulerTest</members>
+        <members>SpecForecastTest</members>
+        <members>SpecForecastTestLabel</members>
         <name>ApexClass</name>
     </types>
     <types>

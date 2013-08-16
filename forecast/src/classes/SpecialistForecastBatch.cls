@@ -151,9 +151,12 @@ Database.Batchable<AggregateResult> {
      */
     private void updateSFLineItems() {
         DateTime NOW = System.now();
-        SpecialistForecastLineItem__c[] spllist = [SELECT Id,
-            OriginalPipelineAmount__c, OriginalClosedAmount__c,
-            OriginalBestCaseAmount__c, OriginalCommitAmount__c
+        SpecialistForecastLineItem__c[] spllist =
+            [SELECT Id,
+                    OriginalPipelineAmount__c,
+                    OriginalClosedAmount__c,
+                    OriginalBestCaseAmount__c,
+                    OriginalCommitAmount__c
             FROM SpecialistForecastLineItem__c
             WHERE LastModifiedDate < :NOW];
 

@@ -82,7 +82,7 @@ public with sharing class SpecialistForecastException extends Exception {
     public static Final String NO_DATA_CAT =
         'Unable to get forecast configurations for ';
     public static final String CANT_FIND_USER =
-        'Unable able for find a user for UserID: ';
+        'Unable to find a user for UserID: ';
     public static final String FOR_ID = ' for ID: ';
     public static final String UNEXPECTED = 'Unexpected Report Error: ';
 

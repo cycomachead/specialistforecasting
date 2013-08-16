@@ -72,7 +72,8 @@ public with sharing class MonthUtil {
     /**
      *  Work-around since inner classes cannot be static and static variables
      *  must be declared at the begging of a class.
-     *  Static -- TODO
+     *  Static -- is used so that you don't need to keep a mmonthutil object
+     *  around, but it could be changed if necessary.
      */
     private static OrgData setup = new OrgData();
     static { resetFromOrg(); }
@@ -292,4 +293,3 @@ public with sharing class MonthUtil {
         return (year < 10 ? '0' : '') + year;
     }
 }
-

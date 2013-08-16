@@ -198,8 +198,18 @@ public with sharing class ForecastHelper {
      */
     public static User getDetailsByUserId(Id userId) {
         try {
-            User aUser = [SELECT Id, Name, UserName, Email, UserType, UserRoleId,
-                IsActive, Alias, FirstName, UserRole.Name FROM User WHERE Id = :userId];
+            User aUser = [SELECT Id,
+                                 Name,
+                                 UserName,
+                                 Email,
+                                 UserType,
+                                 UserRoleId,
+                                 IsActive,
+                                 Alias,
+                                 FirstName,
+                                 UserRole.Name
+                         FROM User
+                         WHERE Id = :userId];
             return aUser;
         } catch (Exception ex) {
             throw new SpecialistForecastException(CANT_FIND_USER + userID + '.');
@@ -232,22 +242,30 @@ public with sharing class ForecastHelper {
     public static SpecialistForecastLineItem__c[] getAllLineItems(String fy,
     String[] mons, Set<Id> owners) {
         try {
-            return [SELECT Id, ForecastOwner__c, FiscalYear__c, Month__c,
-            OriginalBestcaseAmount__c, OriginalClosedAmount__c,
-            OriginalCommitAmount__c, OriginalPipelineAmount__c,
-            SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c,
-            SpecialistForecastOverride__r.ManagerOverriddenCommitAmount__c,
-            SpecialistForecastOverride__r.OwnOverriddenBestcaseAmount__c,
-            SpecialistForecastOverride__r.ManagerOverriddenBestCaseAmount__c,
-            SpecialistForecastOverride__r.ManagerOverrideCommitNotes__c,
-            SpecialistForecastOverride__r.ManagerOverrideBestcaseNotes__c,
-            SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c,
-            SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c,
-            SpecialistForecastOverride__c, SubmittedDate__c
-            FROM SpecialistForecastLineItem__c
-            WHERE ExcludeFromCalculation__c = false
-            AND FiscalYear__c = :fy AND Month__c IN :mons
-            AND ForecastOwner__c IN :owners ORDER By ForecastOwner__c];
+            return [SELECT Id,
+                           ForecastOwner__c,
+                           FiscalYear__c,
+                           Month__c,
+                           OriginalBestcaseAmount__c,
+                           OriginalClosedAmount__c,
+                           OriginalCommitAmount__c,
+                           OriginalPipelineAmount__c,
+                           SpecialistForecastOverride__r.OwnOverriddenCommitAmount__c,
+                           SpecialistForecastOverride__r.ManagerOverriddenCommitAmount__c,
+                           SpecialistForecastOverride__r.OwnOverriddenBestcaseAmount__c,
+                           SpecialistForecastOverride__r.ManagerOverriddenBestCaseAmount__c,
+                           SpecialistForecastOverride__r.ManagerOverrideCommitNotes__c,
+                           SpecialistForecastOverride__r.ManagerOverrideBestcaseNotes__c,
+                           SpecialistForecastOverride__r.PreviousDirectRepCommitAmount__c,
+                           SpecialistForecastOverride__r.PreviousDirectRepBestcaseAmount__c,
+                           SpecialistForecastOverride__c,
+                           SubmittedDate__c
+                   FROM SpecialistForecastLineItem__c
+                   WHERE ExcludeFromCalculation__c = false
+                   AND FiscalYear__c = :fy
+                   AND Month__c IN :mons
+                   AND ForecastOwner__c IN :owners
+                   ORDER By ForecastOwner__c];
         } catch (Exception ex) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
                 LI_ERROR + ex.getMessage()));
@@ -266,12 +284,15 @@ public with sharing class ForecastHelper {
     public static AggregateResult[] getAllQuotas(String fy, String[] mons,
     Set<Id> owners) {
         try {
-            return [SELECT SpecialistForecastUser__c, FiscalYear__c,
-            SUM(QuotaAmount__c) amnt FROM SpecialistForecastQuota__c
-            WHERE FiscalYear__c = :fy AND Month__c IN :mons
-            AND SpecialistForecastuser__c IN :owners
-            GROUP BY SpecialistForecastuser__c, FiscalYear__c
-            ORDER BY SpecialistForecastuser__c];
+            return [SELECT SpecialistForecastUser__c,
+                           FiscalYear__c,
+                    SUM(QuotaAmount__c) amnt
+                    FROM SpecialistForecastQuota__c
+                    WHERE FiscalYear__c = :fy
+                    AND Month__c IN :mons
+                    AND SpecialistForecastuser__c IN :owners
+                    GROUP BY SpecialistForecastuser__c, FiscalYear__c
+                    ORDER BY SpecialistForecastuser__c];
         } catch (Exception ex) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,
                 QUOTA_ERROR + ex.getMessage()));
@@ -305,7 +326,6 @@ public with sharing class ForecastHelper {
          String[] accessFields = new String [] {'checkAccessToSyncJob__c'};
          // Check if the user has Read access for the field
          for (String fieldToCheck : accessFields) {
-             System.debug('\n\n ### MAP ACCESS:\t ' + mForecast.get(fieldToCheck).getDescribe().isAccessible());
              if (mForecast.get(fieldToCheck) == null ||
              !mForecast.get(fieldToCheck).getDescribe().isAccessible()) {
                  return false;

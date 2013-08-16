@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <defaultLandingTab>SpecialistForecastTab</defaultLandingTab>
-    <description>Use Specialist Forecasting to keep track of individual AE forecasts, generate and share reports with managers and executives.</description>
+    <description>Use Specialist Forecasting to keep track of individual AE forecasts, generate and share reports with managers and executives. Part of the Specialist Forecasting Unmanaged Package from Salesforce Labs.</description>
     <label>Specialist Forecasting</label>
     <tab>standard-Account</tab>
     <tab>standard-Opportunity</tab>

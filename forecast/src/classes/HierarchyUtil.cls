@@ -83,9 +83,9 @@ public with sharing class HierarchyUtil {
 
     /**
      *  public method to get all the subordinates
-     *  @param TODO
-     *  @param TODO
-     *  @return TODO
+     *  @param an id to start search from
+     *  @param either a User or a Role to search for.
+     *  @return a RoleNodeWrapper with the user/role subordinates.
      *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getSubordinates(Id identifier, String type) {
@@ -102,14 +102,17 @@ public with sharing class HierarchyUtil {
         return getSubordinatesByRole(identifier);
     }
 
-    // Helper method to send the roles and user names as a Map
-    // The user name for the role is retrieved FROM the custom setting
-    // ForecastHierarchyConfigurations
-    // if it is not defined there then null is returned
+    /**
+     *  Helper method to send the roles and user names as a Map
+     *  The user name for the role is retrieved FROM the custom setting
+     *  ForecastHierarchyConfigurations
+     *  if it is not defined there then null is returned
+     */
     public static Map<String,String> getSubordinatesWithMappedUsersAsMap(
     Id identifier, String type) {
         Map<String, String> subOrdinates = new Map<String, String>();
         RoleNodeWrapper currentNode = getSubordinates(identifier, type);
+
         if (currentNode != null) {
             // get the current role and user
             if (currentNode.myMappedUser != null) {
@@ -131,13 +134,14 @@ public with sharing class HierarchyUtil {
 
     /**
      *  public method to get all the direct subordinates by userId
-     *  @param TODO
+     *  @param userId to start the search from.
      *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getSubordinatesByUser(Id userId) {
         if (userId == null) {
             throw new SpecialistForecastException(USER_ID_NULL);
         }
+
         User myUser;
         try {
             myUser = [SELECT UserRoleId FROM User WHERE Id = :userId];
@@ -160,10 +164,18 @@ public with sharing class HierarchyUtil {
 
         // Get role to users mapping in a map with key as role id
         try {
-            roleUsersMap = new Map<Id, UserRole>([SELECT Id, name, parentRoleId,
-                (SELECT Id, name, FirstName
-                FROM users WHERE isActive = true and usertype = 'STANDARD')
-                FROM UserRole WHERE parentRoleId = :parentRoleId]);
+            roleUsersMap = new Map<Id, UserRole>(
+                [SELECT Id,
+                        Name,
+                        parentRoleId,
+                        (SELECT Id,
+                                Name,
+                                FirstName
+                        FROM users
+                        WHERE isActive = true
+                        AND usertype = 'STANDARD')
+                FROM UserRole
+                WHERE parentRoleId = :parentRoleId]);
             //add the parent to the map as well to fetch the parent information
             UserRole parentRoleInfo = [SELECT id, Name, parentRoleId,
                 (SELECT id, name, FirstName
@@ -193,7 +205,7 @@ public with sharing class HierarchyUtil {
 
     /**
      *  public method to get all the seven level subordinates by userId
-     *  @return
+     *  @return RoleNodeWrapper containing subordinates
      *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getMappedAllLevelSubordinatesByUser(Id userId) {
@@ -213,7 +225,7 @@ public with sharing class HierarchyUtil {
 
     /**
      *  public method to get all the seven level subordinates by role
-     *  @return
+     *  @return return all the children roles as a RoleNodeWrapper
      *  @throws SpecialistForecastException
      */
     public static RoleNodeWrapper getMappedAllLevelSubordinatesByRole(
@@ -238,7 +250,8 @@ public with sharing class HierarchyUtil {
 
         while (level < 7) {
             UserRole[] currentRoles = new UserRole[0];
-            currentRoles = [SELECT id FROM UserRole
+            currentRoles = [SELECT id
+                            FROM UserRole
                             WHERE parentRoleId in :parentRoleIds];
             for (UserRole role : currentRoles) {
                 //check if mapping for this role exists, only if mapping exists
@@ -254,16 +267,32 @@ public with sharing class HierarchyUtil {
 
         // Get role to users mapping in a map with key as role id
         try {
-            roleUsersMap = new Map<Id, UserRole>([SELECT Id, Name, parentRoleId,
-                (SELECT id, name, FirstName
-                    FROM users WHERE isActive = true AND usertype = 'STANDARD')
-                    FROM UserRole WHERE parentRoleId in :parentRoleIds]);
+            roleUsersMap = new Map<Id, UserRole>(
+                [SELECT Id,
+                        Name,
+                        parentRoleId,
+                        (SELECT Id,
+                                Name,
+                                FirstName
+                         FROM users
+                         WHERE isActive = true
+                         AND usertype = 'STANDARD')
+                FROM UserRole
+                WHERE parentRoleId in :parentRoleIds]);
             //add the parent to the map as well to fetch the top parent
             //  information
-            UserRole parentRoleInfo = [SELECT id, Name, parentRoleId,
-                (SELECT id, name, FirstName
-                FROM users WHERE isActive = true AND usertype = 'STANDARD')
-                FROM UserRole WHERE id = :parentRoleId];
+            UserRole parentRoleInfo =
+                [SELECT Id,
+                        Name,
+                        parentRoleId,
+                        (SELECT Id,
+                                Name,
+                                FirstName
+                        FROM users
+                        WHERE isActive = true
+                        AND usertype = 'STANDARD')
+                FROM UserRole
+                WHERE id = :parentRoleId];
             roleUsersMap.put(parentRoleInfo.id, parentRoleInfo);
         } catch (Exception ex) {
             return null;
@@ -338,9 +367,9 @@ public with sharing class HierarchyUtil {
     }
 
     /**
-     * This method will fetch Manager/Owner user as id from the forecast
-     * hieararchy configurations
-     * @return TODO
+     *  This method will fetch Manager/Owner user as id from the forecast
+     *  hieararchy configurations
+     *  @return The Hiearchy Configurations settings from the org.
      */
     public static Map<Id, Id> getForecastHierarchyConfigurationsRoleUserMap() {
         forecastHierarchyConfigRoleUserMap = new Map<Id, Id>();
@@ -349,10 +378,14 @@ public with sharing class HierarchyUtil {
         // fetch all the forecast hierarchy configurations
         try {
             configurationsList = [SELECT HierarchyRole__c,
-                HierarchyRoleUser__r.id, IsManager__c,
-                IsActive__c, Comment__c, HashForCheck__c
-                FROM ForecastHierarchyConfigurations__c
-                WHERE IsActive__c = true and IsManager__c = true];
+                                         HierarchyRoleUser__r.Id,
+                                         IsManager__c,
+                                         IsActive__c,
+                                         Comment__c,
+                                         HashForCheck__c
+                                  FROM ForecastHierarchyConfigurations__c
+                                  WHERE IsActive__c = true
+                                  AND IsManager__c = true];
         } catch (Exception ex) {
             return null;
         }
@@ -367,8 +400,8 @@ public with sharing class HierarchyUtil {
      *  This method is used to create a hash to validate duplicate records during
      *  insert.  We need only one manager user assigned to a specific role. This
      *  is called from the trigger.
-     *  @param TODO
-     *  @return TODO
+     *  @param FHC object to create the hash for.
+     *  @return A string representing the hash for the object.
      */
     public static String createHash(ForecastHierarchyConfigurations__c fhc) {
         String roleID, userID;
@@ -382,7 +415,6 @@ public with sharing class HierarchyUtil {
              userId);
         Blob bsig = Crypto.generateDigest('SHA1', bPrehash);
         return EncodingUtil.convertToHex(bsig);
-
     }
 
  }

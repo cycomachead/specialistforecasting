@@ -68,8 +68,9 @@ public with sharing class SpecialistForecastController {
     private Boolean canView = true;
     // Maps a Mananger to their direct reports
     private Map<Id,Set<Id>> mapSecondLevelUsersAndChild = new Map<Id,Set<Id>>();
+
     /**
-     *  This keeps track of basic user properities used for generating the
+     *  This keeps track of basic user properties used for generating the
      *  VisualForce table. It's designed to reduce the need to query the DB
      *  and this should always be checked first before trying a new query.
      *  Use the getUserInfo(Id) method to access data instead of calling .get()
@@ -103,7 +104,7 @@ public with sharing class SpecialistForecastController {
     // Working Line items to be added to the lineItemList as data is processed.
     public SFcastLineItem       currLine = new SFcastLineItem();
     // The "Total" (last) line of the table on the VF page.
-    public SFcastLineItem      totalLine = new SFcastLineItem();
+    public SFcastLineItem      totalLine;
 
     /** Variables used for dealing with override and drilldown views.
      *  These are assigned from the visual force table page when clicking links.
@@ -176,7 +177,7 @@ public with sharing class SpecialistForecastController {
 
     /**  Returns true IFF the user is allowed to submit forecast reports */
     public Boolean getCanSubmit() {
-        return (sfLI.ForecastOwner__c == UserInfo.getUserId() &&
+        return (sfLI != null && sfLI.ForecastOwner__c == UserInfo.getUserId() &&
                 selectedFQ != QTR_ALL);
     }
 
@@ -192,7 +193,8 @@ public with sharing class SpecialistForecastController {
     /** Returns the list of fiscal quaters as a SelectOption[] for VF page */
     public SelectOption[] getFiscalQuarters() {
         if (fiscalQuarters == null) {
-            fiscalQuarters = new SelectOption[] {new SelectOption(QTR_ALL, QTR_ALL)};
+            fiscalQuarters = new SelectOption[] {
+                new SelectOption(QTR_ALL, QTR_ALL) };
 
             for (Integer i = 1; i < 5; i += 1) {
                 fiscalQuarters.add(new SelectOption('Q' + i, 'Q' + i));
@@ -228,7 +230,7 @@ public with sharing class SpecialistForecastController {
     }
 
     /** Add recent user, w/o dupes and list size < MAX_BACK_SIZE */
-    private void setRecentsList() {
+    public void setRecentsList() {
         if (recentsList == null) { recentsList = new SelectOption[0]; }
 
         String name = getUserInfo(sfLI.ForecastOwner__c).userName;
@@ -278,9 +280,9 @@ public with sharing class SpecialistForecastController {
         if (selectedFQ == QTR_ALL) { return null; }
         String strMonth = ForecastHelper.getMonthsInQuarter(selectedFQ)[0];
         SpecialistForecastlineItem__c rep = new SpecialistForecastlineItem__c();
-        rep.ForecastOwner__C =  sfLI.ForecastOwner__c;
-        rep.FiscalYear__c = selectedFY;
-        rep.Month__c = strMonth;
+        rep.ForecastOwner__c =  sfLI.ForecastOwner__c;
+        rep.FiscalYear__c    = selectedFY;
+        rep.Month__c         = strMonth;
         rep.submittedDate__c = System.now();
         rep.ExtIdentifier__c = sfLI.ForecastOwner__c + selectedFY + strMonth;
         try {
@@ -309,7 +311,7 @@ public with sharing class SpecialistForecastController {
      *  data from SpecialistForecast Object to SpecialistForecast lineItem
      */
     public PageReference refreshSpecialistForecastDataNow() {
-        Integer  BATCH_SIZE = 500;
+        Integer  BATCH_SIZE = 250;
         SpecialistForecastBatch spfBatch = new SpecialistForecastBatch();
         spfBatch.isRunningByUser = true;
 
@@ -595,8 +597,12 @@ public with sharing class SpecialistForecastController {
     private void getMappedUserInfoFromRoleHierarchy(Id userId) {
         User usr;
         try {
-            usr = [SELECT Name, UserRoleId, UserRole.Name, FirstName
-                    FROM User WHERE Id = :userId];
+            usr = [SELECT Name,
+                          UserRoleId,
+                          UserRole.Name,
+                          FirstName
+                    FROM User
+                    WHERE Id = :userId];
             if (usr == null || usr.UserRoleID == null) {
                 throw new SpecialistForecastException();
             }
@@ -713,9 +719,10 @@ public with sharing class SpecialistForecastController {
     }
 
     /**
-     *  Agreegate the records by owner for display as we are having one record
-     *  for a quater and  we store as months
+     *  Aggregate the records by owner for to display on the main table.
+     *  Essentially sums up all forecast values for a single owner.
      *  @param List of SpecialistForecastlineItem__c
+     *  @return a map of SFcastLineItem with totaled values for owners.
      */
     private Map<Id, SFcastLineItem> aggregatelineItemsByOwner(
     SpecialistForecastlineItem__c[] inpLineItemList) {
@@ -975,12 +982,20 @@ public with sharing class SpecialistForecastController {
         if (categoryTitle == CLOSED) { category.add(CLOSED_WON); }
 
         try {
-            forecastDetailsList = [SELECT Opportunity__c, Opportunity__r.Name,
-                Account__c, FiscalYear__c, Month__c, ForecastAmount__c,
-                ForecastCategory__c, ForecastCloseDate__c, ForecastStage__c
-                FROM SpecialistForecast__c WHERE FiscalYear__c = :selectedFY
-                AND Month__c in :months AND OwnerId = :lineItemOwnerID
-                AND ForecastCategory__c in :category];
+            forecastDetailsList = [SELECT Opportunity__c,
+                                          Opportunity__r.Name,
+                                          Account__c,
+                                          FiscalYear__c,
+                                          Month__c,
+                                          ForecastAmount__c,
+                                          ForecastCategory__c,
+                                          ForecastCloseDate__c,
+                                          ForecastStage__c
+                                    FROM SpecialistForecast__c
+                                    WHERE FiscalYear__c = :selectedFY
+                                    AND Month__c in :months
+                                    AND OwnerId = :lineItemOwnerID
+                                    AND ForecastCategory__c in :category];
             if (forecastDetailsList.size() == 0) {
                 throw new SpecialistForecastException(
                     'No Specialist Forecasts were found for ' + preparedByUser +
@@ -995,22 +1010,22 @@ public with sharing class SpecialistForecastController {
 
     /*****************  Utily Methods for general use  ************************/
     /** Return 0 if INP is null, else inp. */
-    private static Integer defaultValue(Integer inp) {
+    public static Integer defaultValue(Integer inp) {
         return inp == null ? 0 : inp;
     }
 
     /** Return 0 if INP is null, else inp. */
-    private static Decimal defaultValue(Decimal inp) {
+    public static Decimal defaultValue(Decimal inp) {
         return inp == null ? 0 : inp;
     }
 
     /** Return '' if INP is null, else inp. */
-    private static String defaultValue(String inp) {
+    public static String defaultValue(String inp) {
         return inp == null ? '' : inp;
     }
 
     /** Return false if INP is null, else inp. */
-    private static Boolean defaultValue(Boolean inp) {
+    public static Boolean defaultValue(Boolean inp) {
         return inp == null ? false : inp;
     }
 
@@ -1026,8 +1041,12 @@ public with sharing class SpecialistForecastController {
         if (info == null) { // Create data if none found.
             info = new UserWrapper();
             try {
-                User usr       = [SELECT Name, UserRoleID, UserRole.Name, FirstName
-                                  FROM User WHERE Id = :uid limit 1];
+                User usr       = [SELECT Name,
+                                         UserRoleID,
+                                         UserRole.Name,
+                                         FirstName
+                                  FROM User
+                                  WHERE Id = :uid limit 1];
                 info.userId    = uid;
                 info.userName  = usr.Name;
                 info.firstName = usr.FirstName;

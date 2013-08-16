@@ -52,8 +52,10 @@ Database.Batchable<SpecialistForecastLineItem__c> {
     global SpecialistForecastLineItem__c[] start(
     Database.BatchableContext context) {
         try {
-            lineItemRecords = [SELECT id, SubmittedDate__C FROM
-                SpecialistForecastLineItem__c WHERE SubmittedDate__c != null];
+            lineItemRecords = [SELECT Id,
+                                      SubmittedDate__c
+                                FROM SpecialistForecastLineItem__c
+                                WHERE SubmittedDate__c != null];
         } catch (Exception ex) {
             ForecastHelper.sendNotification(ERROR_SUBJ, ERROR_BODY +
                 ex.getMessage(), ForecastHelper.getCronEmail());

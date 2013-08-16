@@ -29,14 +29,14 @@ OF THE POSSIBILITY OF SUCH DAMAGE. Written by Michael Ball.
 /**
  *  Scheduler to use for AppStore
  *
- *  To run it from developer console, use the below code snippet
+ *  To run it from developer console, use the following code snippet
  *  String sch = '0 50 * * * ?';
  *  System.schedule('Specialist Forecast Scheduler Job', sch, new ForecastScheduler());
  *  System.debug('\n\n ==> Done');
  */
 global with sharing class ForecastScheduler implements Schedulable {
 
-    global Integer BATCH_SIZE = 2000;
+    global Integer BATCH_SIZE = 250;
 
     private static final String SF_BATCH     = ForecastHelper.SF_BATCH;
     private static final String VALUE_YES    = ForecastHelper.VALUE_YES;
@@ -48,7 +48,7 @@ global with sharing class ForecastScheduler implements Schedulable {
         if (jobs == null) {
             return;
         }
-        
+
         if (jobs.containsKey(SF_BATCH) && jobs.get(SF_BATCH) == VALUE_YES) {
             Id batchProcessId = Database.executeBatch(
                 new SpecialistForecastBatch(), BATCH_SIZE);

@@ -2,7 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Protected</customSettingsVisibility>
-    <description>Custom Configuration settings used for the Specialist Forecasting package.</description>
+    <description>Custom Configuration settings used for the Specialist Forecasting AppExchange package from Salesforce Labs.</description>
     <fields>
         <fullName>ConfigurationCategory__c</fullName>
         <label>Configuration Category</label>
