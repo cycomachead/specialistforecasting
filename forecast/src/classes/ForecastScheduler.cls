@@ -52,17 +52,25 @@ global with sharing class ForecastScheduler implements Schedulable {
         if (jobs.containsKey(SF_BATCH) && jobs.get(SF_BATCH) == VALUE_YES) {
             Id batchProcessId = Database.executeBatch(
                 new SpecialistForecastBatch(), BATCH_SIZE);
-            AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed,
-                TotalJobItems, NumberOfErrors
-                    FROM AsyncApexJob WHERE Id = :batchProcessId];
+            AsyncApexJob aaj = [SELECT Id,
+                                        Status,
+                                        JobItemsProcessed,
+                                        TotalJobItems,
+                                        NumberOfErrors
+                                 FROM AsyncApexJob
+                                 WHERE Id = :batchProcessId];
         }
 
         if (jobs.containsKey(SUBMIT_BATCH) && jobs.get(SUBMIT_BATCH) == VALUE_YES
         && system.now().format('EEEE') == ForecastHelper.getCronRunDay()) {
             Id batchProcessId = Database.executeBatch(new SpecialistForecastSubmitBatch(), BATCH_SIZE);
-            AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed,
-                TotalJobItems, NumberOfErrors
-                    FROM AsyncApexJob WHERE Id = :batchProcessId];
+            AsyncApexJob aaj = [SELECT Id,
+                                        Status,
+                                        JobItemsProcessed,
+                                        TotalJobItems,
+                                        NumberOfErrors
+                                 FROM AsyncApexJob
+                                 WHERE Id = :batchProcessId];
         }
     }
 

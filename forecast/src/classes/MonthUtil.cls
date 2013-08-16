@@ -197,9 +197,9 @@ public with sharing class MonthUtil {
      *  @return Months of the fiscal year, in order Q1, month 1 ... Q4, month 3.
      */
     public static String[] getOrderedFiscalMonths() {
-        if (ORDERED_MONTHS == null) {
-            ORDERED_MONTHS = rotatedFrom(FY_START);
-        }
+        // if (ORDERED_MONTHS == null) {
+        //     ORDERED_MONTHS = rotatedFrom(FY_START);
+        // } This case should never happen.
         return ORDERED_MONTHS;
     }
 

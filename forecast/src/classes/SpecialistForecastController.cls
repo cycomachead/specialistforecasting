@@ -79,9 +79,9 @@ public with sharing class SpecialistForecastController {
     private Map<Id,UserWrapper> mapUsers = new Map<Id,UserWrapper>();
 
     // UI lists for moving around and viewing forecasts data
-    private SelectOption[] recentsList  = new SelectOption[0];
-    private SelectOption[] fiscalYears;
-    private SelectOption[] fiscalQuarters;
+    public SelectOption[] recentsList  = new SelectOption[0];
+    public SelectOption[] fiscalYears;
+    public SelectOption[] fiscalQuarters;
     // Holds the UID of the user selected from the recents picklist
     public String selectedBackUser      { get;set; }
     // Set from the fiscal year dropdown picklist
@@ -930,7 +930,7 @@ public with sharing class SpecialistForecastController {
     }
 
     /** Sets default values for all variables. */
-    private void initializeOverrideVariables() {
+    public void initializeOverrideVariables() {
         overrideAmount    = null;
         originalAmount    = 0;
         originalOldAmount = 0;

@@ -99,6 +99,9 @@ public with sharing class SpecForecastHelperTest {
         System.assertEquals('FY99', previousFY);
         previousFY = ForecastHelper.getPreviousFiscalYear('FY103');
         System.assertEquals('FY02', previousFY);
+        // error case
+        previousFY = ForecastHelper.getPreviousFiscalYear('notGonnaHappen');
+        System.assertEquals('ERROR', previousFY);
     }
 
     // Ensures that the method returns at least the current year.
@@ -110,6 +113,18 @@ public with sharing class SpecForecastHelperTest {
         System.assert(supportedFYs.size() >= 1, 'At least 1 FY is supported');
         System.assert(years.contains(ForecastHelper.getCurrentFiscalYear()),
             'List should contain the current fiscal year');
+        ForecastConfigurations__c yrs = new ForecastConfigurations__c(
+            Name = 'Supported Fiscal Years',
+            ConfigurationCategory__c = 'SupportedData',
+            ConfigurationValue__c = 'FY10,FY11,FY12,FY13,FY14,FY15,FY16,FY17,FY18,FY19',
+            IsActive__c = true,
+            Comment__c = '');
+        UPSERT yrs Name;
+        supportedFYs = ForecastHelper.getSupportedFiscalYears();
+        // use because there's not list contains.
+        years.addAll(supportedFYs);
+        System.assertEquals(10, supportedFYs.size());
+        System.assert(years.contains('FY10'), 'List should contain FY10');
     }
 
     // Test for supported fiscal quarters, simple and basic.
@@ -174,104 +189,65 @@ public with sharing class SpecForecastHelperTest {
         monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
         System.assertEquals('December', monthAndFiscalYear[0]);
         System.assertEquals('FY13', monthAndFiscalYear[1]);
-
-        myDate = Date.newInstance(2013, 1, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('January', monthAndFiscalYear[0]);
-        System.assertEquals('FY13', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 2, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('February', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 3, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('March', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 4, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('April', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 5, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('May', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 6, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('June', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 7, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('July', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 8, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('August', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 9, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('September', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 10, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('October', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 11, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('November', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2013, 12, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('December', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-
-        myDate = Date.newInstance(2014, 1, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('January', monthAndFiscalYear[0]);
-        System.assertEquals('FY14', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 2, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('February', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 3, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('March', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 4, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('April', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 5, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('May', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 6, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('June', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 7, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('July', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 8, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('August', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 9, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('September', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 10, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('October', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 11, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('November', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
-        myDate = Date.newInstance(2014, 12, 17);
-        monthAndFiscalYear = ForecastHelper.extractFYAndMonth(myDate);
-        System.assertEquals('December', monthAndFiscalYear[0]);
-        System.assertEquals('FY15', monthAndFiscalYear[1]);
     }
 
+    /** Test getting and inserting setup data. */
+    public static testMethod void testSetupConfig() {
+        Map<String, String> configs;
+        reset();
+        configs = ForecastHelper.getBatchJobs();
+        System.assert(configs == null, 'No batch settings');
+        ForecastHelper.setupBatchJobs(false);
+        System.assert(true, 'Setup was successful.');
+        configs = ForecastHelper.getBatchJobs();
+        System.assertEquals(2, configs.size());
+    }
+
+    /** Test simple emailing. */
+    public static testMethod void testEmail() {
+        String badAddr;
+        ForecastHelper.sendNotification('', '', badAddr);
+        System.assert(true, 'Passes for null case');
+        ForecastHelper.sendNotification('Hello', 'Goodbye', 'not=a-vaild?em.ail');
+        System.assert(true, 'No errors on terrible addr.');
+    }
+
+    /** Test getting a user. This is a very basic test. */
+    public static testMethod void testGetUsers() {
+        Id uid = UserInfo.getUserId();
+        User u = ForecastHelper.getDetailsByUserId(uid);
+        System.assertEquals(uid, u.Id);
+        UserRole ur = ForecastHelper.getRoleByUserId(uid);
+        System.assertEquals(UserInfo.getUserRoleId(), ur.Id);
+    }
+
+    /** Test for get cron email errors. */
+    public static testMethod void testGetEmail() {
+        reset();
+        String em = ForecastHelper.getCronEmail();
+        System.assert(em == null, 'No email found');
+    }
+
+    /** Test number to string currency formatting. */
+    public static testMethod void testFormatting() {
+        System.assertEquals('0.00', ForecastHelper.formatAsDollar(0));
+        System.assertEquals('1.50', ForecastHelper.formatAsDollar(1.5));
+        System.assertEquals('3.14', ForecastHelper.formatAsDollar(3.14159));
+    }
+
+    /** Check Access Function. */
+    public static testMethod void testAccess() {
+        User u = [SELECT Id, Name FROM User WHERE Name = 'Chatter Expert' limit 1];
+        Boolean b;
+        System.runAs(u) {
+            b = ForecastHelper.checkForecastDataSyncAccessForCurrentUser();
+        }
+        System.assert(!b, 'Chatter user shouldn\'t have access');
+    }
+
+    /** Reset Config data for use in various functions. */
+    public static void reset() {
+        SObject[] configs = [SELECT Id FROM ForecastConfigurations__c];
+        DELETE configs;
+    }
 }

@@ -92,10 +92,12 @@ public with sharing class ForecastHelper {
             batchJobNames =
                 RetrieveForecastConfigurations.getForecastConfigurationNames(
                 ForecastHelper.CAT_STORE_BATCH_JOB);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {} //do nothing here, end below.
+
         if (batchJobNames == null || batchJobNames.size() == 0) {
             return null;
         }
+
         Map<String, String> batchJobs = new Map<String, String>();
         for(String batchName : batchJobNames) {
             Map<String, String> strBatches =
@@ -108,10 +110,8 @@ public with sharing class ForecastHelper {
 
     /** This checks that custom settings are in place for batch jobs to run. */
     public static void setupBatchJobs(Boolean force) {
-        Map<String, String> jobs;
-        try {
-            jobs = getBatchJobs();
-        } catch (Exception ex) {}
+        Map<String, String> jobs = getBatchJobs();
+
         if (force || jobs == null) {
             ForecastConfigurations__c batch = new ForecastConfigurations__c(
                 Name = SF_BATCH,
@@ -354,44 +354,20 @@ public with sharing class ForecastHelper {
      */ //In the future this could be handled based on user currency.
     public static String formatAsDollar(Decimal value) {
         String[] formatter = new String[] {'0','number','###,###,##0.00'};
-        if (value != null) {
-            value.setScale(2);
-            String formatted = String.format(value.format(), formatter);
-            if (!formatted.contains('.' )) { formatted += '.00'; }
-            return formatted;
+        if (value == null) { value = 0.0; }
+        value = value.setScale(2);
+        String formatted = String.format(value.format(), formatter);
+        if (!formatted.contains('.' )) { formatted += '.00'; }
+        // This isn't a great solution for a value like 1.5 ....
+        if (formatted.indexOf('.') != (formatted.length() - 3)) {
+            formatted += '0';
         }
-        return null;
+        return formatted;
+
     }
 
     /**************************************************************************/
     /**               FISCAL YEAR CALCUATION UTIL METHODS                    **/
-    /**
-     *  Given a DATE, a FQ, and FY, determine if the date is in FQ-FY.
-     *  @param date is string YYYY-MM-DD
-     *  @paran fq is a string Q#, or 'All'
-     *  @param fy is a string FY##
-     *  @return True IFF the date is in the selected quarter and year.
-     */
-    // NOTE: This is currently untested and unused.
-    public static Boolean dateInFQAndFY(String dates, String fq, String fy) {
-        Integer recordYr, recordMon, checkQtr, checkYr;
-        try {
-            recordYr  = Integer.valueOf(dates.substring(0,3));
-            recordMon = Integer.valueOf(dates.substring(5,6));
-            checkQtr  = fq != QTR_ALL ? Integer.valueOf(fq.substring(1)) : 0;
-            checkYr   = Integer.valueOf(fy.substring(2));
-        } catch (Exception ex) {
-            // ERROR
-            return null;
-        }
-
-        Boolean correctFY = MonthUtil.getFY(recordYr, recordMon) == checkYr;
-        if (fq == QTR_ALL) {
-            return correctFY;
-        } else {
-            return MonthUtil.getFiscalQtr(recordMon) == checkQtr && correctFY;
-        }
-    }
     /**
      * @return current fiscal quarter as a string, 'Q#', based on system time.
      */

@@ -273,18 +273,77 @@ public with sharing class SpecForecastTest {
         cont.setRecentsList();
         recents = cont.getRecentsList();
         System.assert(recents.size() == 1);
+        for (Integer i = 0; i < 20; i += 1) {
+            // override the add method to have 20 items.
+            cont.recentsList.add(new SelectOption(String.valueOf(i), String.valueOf(i)));
+        }
+        System.assert(recents.size() == 21);
+        // now trigger a removal.
+        cont.setRecentsList();
+        recents = cont.getRecentsList();
+        System.assertEquals(recents.size(), 20);
+    }
+
+    /** Test the prepared by methods for user names. */
+    public static testMethod void testPrepBy() {
+        SpecialistForecastController cont = new SpecialistForecastController();
+        // Testing values for the current user/forecast owner.
+        System.assertEquals(UserInfo.getName() + (UserInfo.getName().endsWith('s') ? '\'' : '\'s'), cont.preparedByUser);
+        // If owner, 'first name' is my.
+        System.assertEquals('My', cont.preparedByName);
+        User u = [SELECT Id, Name, FirstName FROM User WHERE Id != :UserInfo.getUserId() limit 1];
+        // Update the preparedBy Strings
+        cont.setPreparedBy(u.Id);
+        // Testing values for the current user/forecast owner.
+        System.assertEquals(u.Name + (u.Name.endsWith('s') ? '\'' : '\'s'), cont.preparedByUser);
+        // If owner, 'first name' is my.
+        System.assertEquals(u.FirstName + (u.FirstName.endsWith('s') ? '\'' : '\'s'), cont.preparedByName);
     }
 
     /** Test the ability to get user wrapper details. */
     public static testMethod void testUserWrapper() {
         String uid = UserInfo.getUserId();
         SpecialistForecastController cont = new SpecialistForecastController();
-        //SpecialistForecastController.UserWrapper uw = SpecialistForecastController.getUserInfo(uid);
+        // Object uw = SpecialistForecastController.getUserInfo(uid);
         //System.assert(uw.Name == UserInfo.getName());
         //System.assert(uw.uid == uid);
         //System.assert(uw.firstName == UserInfo.getFirstName());
     }
 
+    /** Simple test of SFcastLineItem methods for empty cases. */
+    public static testMethod void lineItemTest() {
+        SFcastLineItem li = new SFcastLineItem();
+        // Test for default values
+        // userRole name looks odd, but does need the space.
+        System.assertEquals(' ()', li.getUserRoleName());
+        System.assertEquals('0.00', li.getPrevVFDirectRepCommitAmount());
+        System.assertEquals('0.00', li.getPrevVFDirectRepBestcaseAmount());
+        System.assertEquals(false, li.getCommitPreviousAmountMatch());
+        System.assertEquals(false, li.getBestCasePreviousAmountMatch());
+    }
+
+    /** This is a test to check for popups for overrides and drilldowns. */
+    public static testMethod void testPopups() {
+        SpecialistForecastController cont = new SpecialistForecastController();
+        // Simulate clicking on forecast owner's row.
+        cont.lineItemOwnerId = cont.sfLI.ForecastOwner__c;
+        System.assert(cont.isSelfOverride());
+        // No popup's displayed by default.
+        System.assert(!cont.displayPopup);
+        System.assert(!cont.displayDrilDownPopup);
+        cont.showOverridePopup();
+        System.assert(cont.displayPopup);
+        cont.closeOverridePopup();
+        System.assert(!cont.displayPopup);
+        cont.showDrillDownPopup();
+        System.assert(cont.displayDrilDownPopup);
+        cont.closeDrillDownPopup();
+        System.assert(!cont.displayDrilDownPopup);
+        cont.initializeOverrideVariables();
+        System.assertEquals('', cont.lineItemOwnerId);
+    }
+
+    /**************************************************************************/
     /** Detele all forecast records and line items from org. */
     private static void deleteAll() {
         SpecialistForecast__c[] fcasts = [SELECT id FROM SpecialistForecast__c];
